@@ -5,24 +5,29 @@ import ActionHandler from './ActionHandler';
 
 import updaters from './updaters';
 import effects from './effects';
+import Service from "../Service";
 
-const handlerVersions = [{
-    versionName: "v1",
-    updaters,
-    effects
-}];
+class DemuxService extends Service {
+    constructor(driver, options) {
+        super();
+        this.handlerVersions = [{
+            versionName: options.version,
+            updaters,
+            effects
+        }];
+        this.actionHandler = new ActionHandler(this.handlerVersions, driver);
+        this.actionReader = new NodeosActionReader(options.endpoint, options.startBlock);
+        this.actionWatcher = new BaseActionWatcher(
+            this.actionReader,
+            this.actionHandler,
+            options.interval
+        );
+    }
 
-const actionHandler = new ActionHandler(handlerVersions, process.env.MONGODB_URL);
+    start() {
+        this.actionWatcher.watch();
+    }
+}
 
-const actionReader = new NodeosActionReader(
-    process.env.TELOS_ENDPOINT,
-    parseInt(process.env.STARTING_BLOCK, 10) // First actions relevant to this dapp happen at this block
-);
+export default DemuxService;
 
-const actionWatcher = new BaseActionWatcher(
-    actionReader,
-    actionHandler,
-    250
-);
-
-export default actionWatcher;

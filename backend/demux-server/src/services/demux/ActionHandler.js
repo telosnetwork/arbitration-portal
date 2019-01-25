@@ -1,6 +1,6 @@
 import {AbstractActionHandler} from 'demux'
 import colors from "colors";
-import models from '../../mongoose/models';
+import models from '../../models';
 
 let state = {
     indexState: {

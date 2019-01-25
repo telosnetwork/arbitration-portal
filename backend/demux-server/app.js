@@ -22,6 +22,12 @@ mongoose.connect(url, { useNewUrlParser: true }).then(() => {
 });
 
 
+//TODO: config and store services in array or dictionary
+
+//TODO: loop over service and start
+   //IF Failure server stops
+   //muito robusto
+
 
 
 
