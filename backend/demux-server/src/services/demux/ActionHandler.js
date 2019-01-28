@@ -3,6 +3,8 @@ import models from '../../models';
 
 import colors from "colors";
 
+
+//TODO: move state to
 let state = {
     indexState: {
         blockNumber: 0,
@@ -23,8 +25,6 @@ class ActionHandler extends AbstractActionHandler {
         await handle(state);
 
         //TODO: update demux service state history
-        // const { blockNumber } = state.indexState;
-        // stateHistory[blockNumber] = JSON.parse(JSON.stringify(state));
     }
 
     async updateIndexState(stateObj, block, isReplay, handlerVersionName) {
@@ -45,12 +45,6 @@ class ActionHandler extends AbstractActionHandler {
     async rollbackTo(blockNumber) {
         //TODO: possibly remove elements from db where blockNum > N
         console.log('rolling backing to: ', blockNumber);
-        const latestBlockNumber = state.indexState.blockNumber;
-        const toDelete = [...Array(latestBlockNumber - (blockNumber)).keys()].map(n => n + blockNumber + 1);
-        for (const n of toDelete) {
-            delete stateHistory[n]
-        }
-        state = stateHistory[blockNumber]
     }
 }
 

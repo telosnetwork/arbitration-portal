@@ -6,7 +6,11 @@ class ServiceManager {
         let handlers = [
             ...onExitHandlers,
             {
-                event: 'exit,SIGINT,SIGUSR1,SIGUSR2,uncaughtexception',
+                event: 'SIGINT,SIGUSR1,SIGUSR2,uncaughtexception',
+                onEvent: this.exit
+            },
+            {
+                event: 'exit',
                 onEvent: this.onExit
             }
         ];
@@ -34,17 +38,20 @@ class ServiceManager {
         let service = this.getServiceByName(serviceName);
         if(service)
             service.obj.start();
+        else
+            throw Error(`service: ${serviceName} not found`);
     }
 
     stopService(serviceName) {
         let service = this.getServiceByName(serviceName);
         if (service)
             service.obj.stop();
+        else
+            throw Error(`service: ${serviceName} not found`);
     }
 
     startAll() {
         this.services.forEach( (service) => {
-            console.log(service);
             service.obj.start();
         });
     }
@@ -53,13 +60,19 @@ class ServiceManager {
         handlers.forEach( (handler) => {
             let events = handler.event.split(',');
             events.forEach((e) => {
-                console.log(`binding event ${e}`);
+                // console.log(`binding event ${e}`);
                 process.on(`${e}`, handler.onEvent.bind(this));
             });
         });
     }
 
+    exit() {
+        console.log(`exiting`);
+        process.exit();
+    }
+
     onExit() {
+        console.log('onExit called');
         for (let i = 0; i < this.services.length; i++)
             this.services[i].obj.onExit();
 
