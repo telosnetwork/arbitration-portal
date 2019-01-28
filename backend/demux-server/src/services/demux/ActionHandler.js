@@ -31,7 +31,7 @@ class ActionHandler extends AbstractActionHandler {
         //TODO: update state object in mongodb
 
         //How often should the state be updated in mongo...
-        console.log("updating state index state");
+        // console.log("updating state index state");
     }
 
     //TODO: on exception, update demux state in mongo

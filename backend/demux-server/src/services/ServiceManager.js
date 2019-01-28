@@ -32,12 +32,14 @@ class ServiceManager {
 
     startService(serviceName) {
         let service = this.getServiceByName(serviceName);
-        service.obj.start();
+        if(service)
+            service.obj.start();
     }
 
     stopService(serviceName) {
         let service = this.getServiceByName(serviceName);
-        service.obj.stop();
+        if (service)
+            service.obj.stop();
     }
 
     startAll() {

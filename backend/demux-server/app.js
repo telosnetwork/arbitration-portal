@@ -5,7 +5,7 @@ import 'dotenv/config';
 import mongoose from 'mongoose';
 import models  from './src/models';
 
-import assert from 'assert';
+//TODO: Set up logging
 
 //Services
 import Demux from './src/services/demux';
@@ -22,7 +22,7 @@ mongoose.connect(process.env.MONGODB_URL, { useNewUrlParser: true }).then(() => 
 
    try {
       services.addService('demux', new Demux(models, {
-         version: 'v1',
+         version: 'v1', //TODO: set version in environment configuration
          endpoint: process.env.TELOS_ENDPOINT,
          startBlock: parseInt(process.env.STARTING_BLOCK),
          interval: 250
