@@ -25,7 +25,14 @@ class DemuxService extends Service {
     }
 
     start() {
-        this.actionWatcher.watch();
+        this.actionWatcher.watch().then(() => {
+            this.isRunning = true;
+        });
+    }
+
+    onExit() {
+        super.onExit();
+        //TODO: update demux service state on exit
     }
 }
 

@@ -1,6 +1,7 @@
 import {AbstractActionHandler} from 'demux'
-import colors from "colors";
 import models from '../../models';
+
+import colors from "colors";
 
 let state = {
     indexState: {
@@ -13,9 +14,6 @@ let state = {
     models: models
 };
 
-const stateHistory = {};
-const stateHistoryMaxLength = 300;
-
 class ActionHandler extends AbstractActionHandler {
     constructor(actionsHandler) {
         super(actionsHandler);
@@ -23,24 +21,32 @@ class ActionHandler extends AbstractActionHandler {
 
     async handleWithState(handle) {
         await handle(state);
-        const { blockNumber } = state.indexState;
-        stateHistory[blockNumber] = JSON.parse(JSON.stringify(state));
+
+        //TODO: update demux service state history
+        // const { blockNumber } = state.indexState;
+        // stateHistory[blockNumber] = JSON.parse(JSON.stringify(state));
     }
 
     async updateIndexState(stateObj, block, isReplay, handlerVersionName) {
-        stateObj.indexState.blockNumber = block.blockInfo.blockNumber;
-        stateObj.indexState.blockHash = block.blockInfo.blockHash;
-        stateObj.indexState.isReplay = isReplay;
-        stateObj.indexState.handlerVersionName = handlerVersionName;
+        //TODO: update state object in mongodb
+
+        //How often should the state be updated in mongo...
+        console.log("updating state index state");
     }
 
-    async loadIndexState() {
+    //TODO: on exception, update demux state in mongo
+
+    async loadIndexState() { //Called on launch of service
+        //TODO: update mongo state
+        console.log('loading state index');
         return state.indexState;
     }
 
-    async rollbackTo(blockNumber) { console.log(blockNumber);
+    async rollbackTo(blockNumber) {
+        //TODO: possibly remove elements from db where blockNum > N
+        console.log('rolling backing to: ', blockNumber);
         const latestBlockNumber = state.indexState.blockNumber;
-        const toDelete = [...Array(latestBlockNumber - (blockNumber)).keys()].map(n => n + blockNumber + 1)
+        const toDelete = [...Array(latestBlockNumber - (blockNumber)).keys()].map(n => n + blockNumber + 1);
         for (const n of toDelete) {
             delete stateHistory[n]
         }
