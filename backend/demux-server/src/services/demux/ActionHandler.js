@@ -39,7 +39,7 @@ class ActionHandler extends AbstractActionHandler {
     }
 
     async rollbackTo(blockNumber) { console.log(blockNumber);
-        const latestBlockNumber = state.indexState.blockNumber
+        const latestBlockNumber = state.indexState.blockNumber;
         const toDelete = [...Array(latestBlockNumber - (blockNumber)).keys()].map(n => n + blockNumber + 1)
         for (const n of toDelete) {
             delete stateHistory[n]
