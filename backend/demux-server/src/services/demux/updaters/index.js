@@ -1,4 +1,4 @@
-import tokenHandlers from "./token"
+import tokenHandlers from './token';
 
 export default [
     ...tokenHandlers

@@ -1,8 +1,8 @@
-import transferHandler from "./transfer";
+import transferHandler from './transfer';
 
 export default [
     {
-        actionType: "eosio.token::transfer",
-        apply: transferHandler
+        actionType: `${process.env.TELOS_CONTRACT}::transfer`,
+        apply:      transferHandler
     }
 ];

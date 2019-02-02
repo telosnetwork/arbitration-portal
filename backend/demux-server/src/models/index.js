@@ -1,13 +1,17 @@
-import caseFile from './case.js';
-import claim from './claim';
-import joinedCase from './joinedCase';
-import transfer from './transfer';
-import demuxState from './demuxState';
+import Balance         from './balance.model';
+import Claim           from './claim.model';
+import Case            from './case.model';
+import Joined          from './joinedCase.model';
+import Transfer        from './transfer.model';
+import BlockIndexState from './block-index-state.model';
+// import BlockHist       from './block-state-hist.model';
 
 export default {
-    case: caseFile,
-    claim: claim,
-    jCase: joinedCase,
-    transfer: transfer,
-    state: demuxState
+    balance:         Balance,
+    claim:           Claim,
+    case:            Case,
+    joined:          Joined,
+    transfer:        Transfer,
+    blockIndexState: BlockIndexState
+    // blockhist:       BlockHist
 };

@@ -1,44 +1,64 @@
-import colors from "colors";
+//NOTE: Balance tracking on eosio.arb is not implemented.
 
-//NOTE: balance tracking on eosio.arb is no yet implemented.
-
-function transfer (state, payload, blockInfo, context) {
+async function transferHandler (state, payload, blockInfo, context) {
     try {
-        // console.log("state: ", state);
-        // console.log("payload: ", payload);
-        // console.log("blockInfo: ", blockInfo);
-        // console.log("context: ", context);
-
-        let to = payload.data.to;
-        let from = payload.data.from;
+        // Set eosio.token transfer action schema
+        let from     = payload.data.from;
+        let to       = payload.data.to;
         let quantity = payload.data.quantity;
-        let symbol = quantity.split(' ')[1];
+        let value    = quantity.split(' ')[0];
+        let symbol   = quantity.split(' ')[1];
 
-        if (to ===  'eosio.arb' && symbol === 'TLOS') {
-            console.log(`adding transfer action to data base`);
-            state.models.transfer.create({
-                from: payload.data.from,
-                to: payload.data.to,
-                trxHash: payload.transactionId,
+        if (to === 'eosio.arb' && symbol === 'TLOS') {
+            console.log('Creating a new transfer action record in db');
+            await state.transfer.create({ 
+                trxHash:  payload.transactionId,
+                from:     payload.data.from,
+                to:       payload.data.to,
                 quantity: payload.data.quantity,
-                memo: payload.data.memo
+                memo:     payload.data.memo
             });
 
-            //TODO: Find Balance under from account_name
-                    //if account_name has balance
-                    //then apply delta
+            console.log(`Upserting Balance of ${from} account_name`);
+            const account = await state.balance.findOne({ owner: from }).exec();
+            let escrow = 0;
+            if (account) {
+                ({ escrow } = account)
+            }
+            let newBalance = escrow - value;
+            await state.balance.updateOne({ owner: from }, {
+                id:       blockInfo.blockNumber,
+                owner:    from,
+                escrow:   newBalance
+            }, { upsert: true }).exec();
         }
 
-        if(from === 'eosio.arb' && symbol === 'TLOS') {
-            console.log(`adding transfer action to data base`);
-            //TODO: add transfer to db
-            //TODO: find Balance under to account_name
-                    //if account_name has balance
-                    //then apply delta
+        if (from === 'eosio.arb' && symbol === 'TLOS') {
+            console.log('Creating a new transfer action record in db');
+            await state.transfer.create({ 
+                trxHash:  payload.transactionId,
+                from:     payload.data.from,
+                to:       payload.data.to,
+                quantity: payload.data.quantity,
+                memo:     payload.data.memo
+            });
+
+            console.log(`Upserting Balance of ${to} account_name`);
+            const account = await state.balance.findOne({ owner: to }).exec();
+            let escrow = 0;
+            if (account) {
+                ({ escrow } = account)
+            }
+            let newBalance = escrow + value;
+            await state.balance.updateOne({ owner: to }, {
+                id:       blockInfo.blockNumber,
+                owner:    to,
+                escrow:   newBalance
+            }, { upsert: true }).exec();
         }
     } catch (err) {
-        console.error("transfer updater error: ", err);
+        console.error('Transfer updater error: ', err);
     }
 }
 
-export default transfer
+export default transferHandler;

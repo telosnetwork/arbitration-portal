@@ -3,12 +3,16 @@ class Service {
         let isRunning = false;
     }
 
-    start() { }
+    start() { 
+        console.log(`startHandler called for Service`);
+    }
 
-    stop() { }
+    stop() { 
+        console.log(`stopHandler called for Service`);
+    }
 
     onExit() {
-        console.log(`onExitHandler called for service`);
+        console.log(`onExitHandler called for Service`);
     }
 }
 

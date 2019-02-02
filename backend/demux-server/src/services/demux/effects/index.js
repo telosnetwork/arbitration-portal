@@ -1,3 +1,3 @@
-import tokenEffects from "./token";
+import tokenEffects from './token';
 
 export default [...tokenEffects];

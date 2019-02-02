@@ -1,8 +1,8 @@
-import transferEffect from "./transfer";
+import transferEffect from './transfer';
 
 export default [
     {
-        actionType: "eosio.token::transfer",
-        run: transferEffect
+        actionType: `${process.env.TELOS_CONTRACT}::transfer`,
+        run:        transferEffect
     }
 ];

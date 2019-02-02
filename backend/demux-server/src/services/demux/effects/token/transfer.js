@@ -1,8 +1,10 @@
-import colors from "colors";
-
 function transferEffect(payload, blockInfo, context) {
-    // console.log("transfer effect payload: ".green, payload);
-    // console.log("transfer effect blockInfo: ".green, blockInfo);
+    try {
+        console.log('Transfer effect PAYLOAD:   ',  payload);
+        console.log('Transfer effect BlockInfo: ', blockInfo);   
+    } catch (err) {
+        console.error('Transfer effect error: ', err);
+    }
 }
 
 export default transferEffect;

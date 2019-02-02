@@ -1,16 +1,14 @@
-
-
 class ServiceManager {
     constructor(onExitHandlers) {
         this.services = [];
         let handlers = [
             ...onExitHandlers,
             {
-                event: 'SIGINT,SIGUSR1,SIGUSR2,uncaughtexception',
+                event:  'SIGINT,SIGUSR1,SIGUSR2,uncaughtexception',
                 onEvent: this.exit
             },
             {
-                event: 'exit',
+                event:  'exit',
                 onEvent: this.onExit
             }
         ];
@@ -21,7 +19,7 @@ class ServiceManager {
         this.services.push(
             {
                 name: serviceName,
-                obj: serviceObj
+                obj:  serviceObj
             }
         )
     }
@@ -34,25 +32,25 @@ class ServiceManager {
         return null;
     }
 
-    startService(serviceName) {
+    startService(serviceName) { // Call start() on given serviceName
         let service = this.getServiceByName(serviceName);
         if(service)
             service.obj.start();
         else
-            throw Error(`service: ${serviceName} not found`);
+            throw Error(`Service: ${serviceName} not found`);
     }
 
-    stopService(serviceName) {
+    stopService(serviceName) { // Call stop() on given serviceName
         let service = this.getServiceByName(serviceName);
         if (service)
             service.obj.stop();
         else
-            throw Error(`service: ${serviceName} not found`);
+            throw Error(`Service: ${serviceName} not found`);
     }
 
     startAll() {
         this.services.forEach( (service) => {
-            service.obj.start();
+            service.obj.start(); // Call start() of DemuxService which extends the Service Class
         });
     }
 
@@ -60,22 +58,20 @@ class ServiceManager {
         handlers.forEach( (handler) => {
             let events = handler.event.split(',');
             events.forEach((e) => {
-                // console.log(`binding event ${e}`);
-                process.on(`${e}`, handler.onEvent.bind(this));
+                process.on(`${e}`, handler.onEvent.bind(this)); // Bind each Function to the Event and associate this to an Instantiated Object
             });
         });
     }
 
     exit() {
-        console.log(`exiting`);
+        console.log(`Exiting...`);
         process.exit();
     }
 
     onExit() {
         console.log('onExit called');
         for (let i = 0; i < this.services.length; i++)
-            this.services[i].obj.onExit();
-
+            this.services[i].obj.onExit(); // Call onExit() of DemuxSerivce which extends the Service Class
         process.exit();
     }
 }
