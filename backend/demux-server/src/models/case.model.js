@@ -11,26 +11,47 @@ const CaseSchema = new Schema({
         default:  0,
         required: true
     },
-    status: {
+    case_status: {
         type:     Number,
         default:  0,
         required: true
     },
-    claimants:   [String],
-    arbitrators: [String],
-    languages:   [String],
+    claimants: [{
+        type:    String,
+        default: ''
+    }],
+    // respondants: [{
+    //     type:    String,
+    //     default: ''
+    // }],
+    arbitrators: [{
+        type:    String,
+        default: ''
+    }],
+    required_langs: [{
+        type:    Number,
+        default: 0
+    }],
     unread_claims: [{
         type: mongoose.ObjectId,
         ref: 'Claim' // Schema Reference
     }],
     accepted_claims: [{
-        type: mongoose.ObjectId,
-        ref: 'Claim'
+        type:    Number,
+        default: 0
     }],
     case_ruling: {
         type:    String,
         default: ''
     }
+    // arb_comment: {
+    //     type: String,
+    //     default: ''
+    // },
+    // last_edit: {
+    //     type: Number,
+    //     default: 0
+    // }
 });
 Case = mongoose.model('Case', CaseSchema);
 // } catch (e) {

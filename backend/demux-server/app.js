@@ -9,7 +9,8 @@ import models   from './src/models';
 
 //Services
 import Demux from './src/services/demux';
-import ServiceManager from "./src/services/ServiceManager";
+import io from './src/utils/io';
+import ServiceManager from "./src/services/ServiceManager"
 
 let services = new ServiceManager([]);
 
@@ -43,6 +44,9 @@ mongoose.connect(process.env.MONGODB_URL, { useNewUrlParser: true }).then(() => 
       console.log('Service start error: ', e);
    }
 
-   app.listen(process.env.SERVER_PORT, () => console.info(`Arbitration server listening on port ${process.env.SERVER_PORT}!`));
+   const server = app.listen(process.env.SERVER_PORT, () => console.info(`Arbitration server listening on port ${process.env.SERVER_PORT}!`));
+
+   // Socket IO
+   io.connect(server);
 });
 

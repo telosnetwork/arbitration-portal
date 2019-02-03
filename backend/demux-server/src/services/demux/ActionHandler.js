@@ -1,5 +1,6 @@
 import { AbstractActionHandler } from 'demux'
 import models from '../../models';
+import io from '../../utils/io';
 
 const stateHist = {};
 const stateHistMaxLength = 20;
@@ -12,9 +13,10 @@ class ActionHandler extends AbstractActionHandler {
 
     async handleWithState(handle) {
         console.log('Handler with State...');
+        const context = { socket: io.getSocket() }
         const state = models;
         try {
-            await handle(state); // Passed to all calls of Updaters.APPLY & Effects.RUN
+            await handle(state, context); // Passed to all calls of Updaters.APPLY & Effects.RUN
 
             // Update Demux Service State Hist
             let blockNumber;

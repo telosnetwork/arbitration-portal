@@ -6,17 +6,12 @@ let Claim = null;
 
 try {
     const ClaimSchema = new Schema({
-        id: {
+        claim_id: {
             type:     Number,
             default:  0,
             required: true
         },
-        accepted: {
-            type:     Boolean,
-            default:  false,
-            required: true
-        },
-        summary: {
+        claim_summary: {
             type:     String,
             default:  '',
             required: true
