@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import './styles/App.css';
 import ScatterBridge        from './utils/scatterBridge';
 import IOClient             from './utils/io-client';
-import Button from '@material-ui/core/Button'
+import Button               from '@material-ui/core/Button'
 
 class App extends Component {
 

@@ -3,7 +3,7 @@ async function newArbStatusHandler (state, payload, blockInfo, context) {
         console.log('NewArbStatus updater PAYLOAD:   ', payload);
         console.log('NewArbStatus updater BlockInfo: ', blockInfo);
 
-        // new_status && arbitrator
+        // Modif Arbitrator Model Status
     } catch (err) {
         console.error('NewArbStatus updater error: ', err);
     }

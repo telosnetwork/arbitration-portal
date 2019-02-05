@@ -8,21 +8,17 @@ try {
     const ClaimSchema = new Schema({
         claim_id: {
             type:     Number,
-            default:  0,
             required: true
         },
         claim_summary: {
             type:     String,
-            default:  '',
             required: true
         },
         decision_link: {
-            type:    String,
-            default: ''
+            type:    String
         },
         decision_class: {
-            type:    Number,
-            default: 0
+            type:    Number
         }
     });
     Claim = mongoose.model('Claim', ClaimSchema);

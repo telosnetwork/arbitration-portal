@@ -5,6 +5,7 @@ import Joined          from './joinedCase.model';
 import Transfer        from './transfer.model';
 import BlockIndexState from './block-index-state.model';
 // import BlockHist       from './block-state-hist.model';
+import Counter         from './counter.model';
 
 export default {
     balance:         Balance,
@@ -12,6 +13,7 @@ export default {
     case:            Case,
     joined:          Joined,
     transfer:        Transfer,
-    blockIndexState: BlockIndexState
+    blockIndexState: BlockIndexState,
     // blockhist:       BlockHist
+    counter:         Counter
 };

@@ -8,17 +8,14 @@ try {
     const BalanceSchema = new Schema({
         id: {
             type:     Number,
-            default:  0,
             required: true
         },
         owner: {
             type:     String,
-            default:  '',
             required: true
         },
         escrow: { // Amount held from the Contract Account
             type:     Number,
-            default:  0,
             required: true
         }
     });

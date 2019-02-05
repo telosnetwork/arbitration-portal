@@ -9,10 +9,10 @@ import acceptClaimHandler  from './acceptClaim';
 import advanceCaseHandler  from './advanceCase';
 import dismissCaseHandler  from './dismissCase';
 import resolveCaseHandler  from './resolveCase';
-import newCfStatusHandler  from './newCfStatus';
+import newCfStatusHandler  from './newcfstatus';
 import recuseHandler       from './recuse';
-import newJoinderHandler   from './newJoinder';
-import joinCasesHandler    from './joinCases';
+import newJoinderHandler   from './newjoinder';
+import joinCasesHandler    from './joincases';
 import newArbStatusHandler from './newArbStatus';
 
 export default [
