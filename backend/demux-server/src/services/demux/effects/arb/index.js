@@ -9,9 +9,9 @@ import acceptClaimEffect  from './acceptClaim';
 import advanceCaseEffect  from './advanceCase';
 import dismissCaseEffect  from './dismissCase';
 import resolveCaseEffect  from './resolveCase';
-import newCfStatusEffect  from './newCfStatus';
+import newCfStatusEffect  from './newcfstatus';
 import recuseEffect       from './recuse';
-import newJoinderEffect   from './newJoinder';
+import newJoinderEffect   from './newjoinder';
 import joinCasesEffect    from './joinCases';
 import newArbStatusEffect from './newArbStatus';
 
