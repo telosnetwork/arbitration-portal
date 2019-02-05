@@ -6,6 +6,7 @@ import Transfer        from './transfer.model';
 import BlockIndexState from './block-index-state.model';
 // import BlockHist       from './block-state-hist.model';
 import Counter         from './counter.model';
+// import Arbitrator      from './arbitrator.model';
 
 export default {
     balance:         Balance,
@@ -16,4 +17,5 @@ export default {
     blockIndexState: BlockIndexState,
     // blockhist:       BlockHist
     counter:         Counter
+    // arbitrator:      Arbitrator
 };

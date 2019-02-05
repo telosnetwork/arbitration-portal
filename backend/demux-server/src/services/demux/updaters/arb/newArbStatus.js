@@ -3,7 +3,15 @@ async function newArbStatusHandler (state, payload, blockInfo, context) {
         console.log('NewArbStatus updater PAYLOAD:   ', payload);
         console.log('NewArbStatus updater BlockInfo: ', blockInfo);
 
-        // Modif Arbitrator Model Status
+        let arbitrator = payload.data.arbitrator;
+
+        // Arbitrator Status
+        let arb_status = payload.data.new_status;
+
+        await state.arbitrator.findOneAndUpdate({ name: arbitrator }, {
+            name:       arbitrator,
+            arb_status: arb_status
+        }, { upsert: true }).exec();
     } catch (err) {
         console.error('NewArbStatus updater error: ', err);
     }
