@@ -1,7 +1,7 @@
 import express from 'express';
 import cors    from 'cors';
 import 'dotenv/config';
-import posts    from './routes/posts';
+import posts    from './src/routes/posts';
 import mongoose from 'mongoose';
 import models   from './src/models';
 
@@ -9,7 +9,7 @@ import models   from './src/models';
 
 //Services
 import Demux from './src/services/demux';
-import io from './src/utils/io';
+import io    from './src/utils/io';
 import ServiceManager from "./src/services/ServiceManager"
 
 let services = new ServiceManager([]);

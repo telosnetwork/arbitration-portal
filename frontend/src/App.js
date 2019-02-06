@@ -1,32 +1,87 @@
 import React, { Component } from 'react';
-import './styles/App.css';
+import axios                from 'axios';
 import ScatterBridge        from './utils/scatterBridge';
 import IOClient             from './utils/io-client';
+import './styles/App.css';
 import Button               from '@material-ui/core/Button'
 
 class App extends Component {
 
-    // state = {
-
-    // }
+    state = {
+        arbitrators: [],
+        cases: [],
+        balances: [],
+        claims: [],
+        // joinedcases: [],
+        transfers: []
+    }
 
     constructor (props) {
         super(props);
-        this.appName = 'Telos-Portal';
+        this.appName = process.env.REACT_APP_NAME;
         this.network = {
-          blockchain: `eos`,
-          protocol:   `https`,
-          host:       `api.kylin.alohaeos.com`,
-          port:       443,
-          chainId:    `5fff1dae8dc8e2fc4d5b23b2c7665c97f9e9d8edf2b6485a86ba311c25639191`
+          blockchain: `${process.env.REACT_APP_BLOCKCHAIN}`,
+          protocol:   `${process.env.REACT_APP_PROTOCOL}`,
+          host:       `${process.env.REACT_APP_HOST}`,
+          port:       `${process.env.REACT_APP_PORT}`,
+          chainId:    `${process.env.REACT_APP_CHAINID}`
         };
-        console.log(this.network);
         this.eosio = new ScatterBridge(this.network, this.appName);
-        // this.io    = new IOClient();
+        this.io    = new IOClient();
+    }
+
+    componentDidMount = async() => {
+        this.loadArbitrators();
+        this.loadCases();
+        this.loadBalances();
+        this.loadClaims();
+        // this.loadJoinedCases();
+        this.loadTransfers();
+
+        // this.io.onMessage('transferAction', (post) => {
+        //     this.setState((prevState) => ({  }))
+        // })
+        
+    }
+
+    loadArbitrators = async () => {
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}/posts/arbitrator`);
+        console.log('LoadArbitrators: ', response);
+        this.setState({ arbitrators: response.data.reverse() })
+    }
+
+    loadCases = async () => {
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}/posts/case`);
+        console.log('LoadCases: ', response);
+        this.setState({ cases: response.data.reverse() })
+    }
+
+    loadBalances = async () => {
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}/posts/balance`);
+        console.log('LoadBalances: ', response);
+        this.setState({ balances: response.data.reverse() })
+    }
+
+    loadClaims = async () => {
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}/posts/claim`);
+        console.log('LoadClaims: ', response);
+        this.setState({ claims: response.data.reverse() })
+    }
+
+    // loadJoinedCases = async () => {
+    //     const response = await axios.get(`${process.env.REACT_APP_API_URL}/posts/joinedcases`);
+    //     console.log('LoadJoinedCases: ', response);
+    //     this.setState({ joinedcases: response.data.reverse() })
+    // }
+
+    loadTransfers = async () => {
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}/posts/transfers`);
+        console.log('LoadTransfers: ', response);
+        this.setState({ transfers: response.data.reverse() })
     }
 
     transfer = async () => {
-        let actions = await this.eosio.makeAction('eosio.token', 'transfer', 
+        let actions = await this.eosio.makeAction(process.env.REACT_APP_EOSIO_TOKEN_ACCOUNT, 'transfer', 
             {
               from:      this.eosio.currentAccount.name,
               to:       'emanateissue',
