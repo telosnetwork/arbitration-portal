@@ -1,7 +1,7 @@
 import express from 'express';
-import cors from 'cors';
+import cors    from 'cors';
 import 'dotenv/config';
-
+import posts    from './routes/posts';
 import mongoose from 'mongoose';
 import models   from './src/models';
 
@@ -16,6 +16,7 @@ let services = new ServiceManager([]);
 
 let app = express();
 app.use(cors()); // Use Cors middleware -> Return Access-Control-Allow-Origin: *
+app.use('/posts', posts());
 
 mongoose.connect(process.env.MONGODB_URL, { useNewUrlParser: true }).then(() => {
    const db = mongoose.connection;
