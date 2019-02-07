@@ -30,10 +30,14 @@ async function fileCaseHandler (state, payload, blockInfo, context) {
         // Lang_Codes
         let lang_codes    = payload.data.lang_codes;
 
+        // Respondants
+        let respondant    = payload.data.respondant;
+
         await state.case.create({
             case_id:        case_counter,
             case_status:    case_status,
             claimant:       claimant,
+            respondant:     respondant,
             required_langs: lang_codes,
             unread_claims:  [unread_claims]
         }).exec();

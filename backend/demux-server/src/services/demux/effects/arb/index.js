@@ -1,3 +1,4 @@
+import withdrawEffect     from './withdraw';
 import fileCaseEffect     from './fileCase';
 import addClaimEffect     from './addClaim';
 import removeClaimEffect  from './removeClaim';
@@ -9,14 +10,22 @@ import dismissClaimEffect from './dismissClaim';
 import acceptClaimEffect  from './acceptClaim';
 import advanceCaseEffect  from './advanceCase';
 import dismissCaseEffect  from './dismissCase';
-// import resolveCaseEffect  from './resolveCase';
-// import newCfStatusEffect  from './newcfstatus';
+import resolveCaseEffect  from './resolveCase';
 import recuseEffect       from './recuse';
-// import newJoinderEffect   from './newjoinder';
-// import joinCasesEffect    from './joinCases';
+import newJoinderEffect   from './newjoinder';
+import joinCasesEffect    from './joinCases';
 import newArbStatusEffect from './newArbStatus';
+import setLangCodesEffect from './setLangCodes';
+import deleteCaseEffect   from './deleteCase';
 
 export default [
+    /**
+     * Case_Setup 
+     */
+    {
+        actionType: `${process.env.ARB_CONTRACT}::withdraw`,
+        run:        withdrawEffect
+    },
     {
         actionType: `${process.env.ARB_CONTRACT}::filecase`,
         run:        fileCaseEffect
@@ -37,6 +46,9 @@ export default [
         actionType: `${process.env.ARB_CONTRACT}::readycase`,
         run:        readyCaseEffect
     },
+    /**
+     * Case_Progression
+     */
     {
         actionType: `${process.env.ARB_CONTRACT}::addarbs`,
         run:        addArbsEffect
@@ -61,28 +73,35 @@ export default [
         actionType: `${process.env.ARB_CONTRACT}::dismisscase`,
         run:        dismissCaseEffect
     },
-    // {
-    //     actionType: `${process.env.ARB_CONTRACT}::resolvecase`,
-    //     run:        resolveCaseEffect
-    // },
-    // {
-    //     actionType: `${process.env.ARB_CONTRACT}::newcfstatus`,
-    //     run:        newCfStatusEffect
-    // },
+    {
+        actionType: `${process.env.ARB_CONTRACT}::resolvecase`,
+        run:        resolveCaseEffect
+    },
     {
         actionType: `${process.env.ARB_CONTRACT}::recuse`,
         run:        recuseEffect
     },
-    // {
-    //     actionType: `${process.env.ARB_CONTRACT}::newjoinder`,
-    //     run:        newJoinderEffect
-    // },
-    // {
-    //     actionType: `${process.env.ARB_CONTRACT}::joincases`,
-    //     run:        joinCasesEffect
-    // },
+    {
+        actionType: `${process.env.ARB_CONTRACT}::newjoinder`,
+        run:        newJoinderEffect
+    },
+    {
+        actionType: `${process.env.ARB_CONTRACT}::joincases`,
+        run:        joinCasesEffect
+    },
+    /**
+     * Arb_Actions
+     */
     {
         actionType: `${process.env.ARB_CONTRACT}::newarbstatus`,
         run:        newArbStatusEffect
+    },
+    {
+        actionType: `${process.env.ARB_CONTRACT}::setlangcodes`,
+        run:        setLangCodesEffect
+    },
+    {
+        actionType: `${process.env.ARB_CONTRACT}::deletecase`,
+        run:        deleteCaseEffect
     }
 ];

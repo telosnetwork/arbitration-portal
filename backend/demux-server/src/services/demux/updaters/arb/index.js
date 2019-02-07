@@ -1,3 +1,4 @@
+import withdrawHandler     from './withdraw';
 import fileCaseHandler     from './fileCase';
 import addClaimHandler     from './addClaim';
 import removeClaimHandler  from './removeClaim';
@@ -9,14 +10,22 @@ import dismissClaimHandler from './dismissClaim';
 import acceptClaimHandler  from './acceptClaim';
 import advanceCaseHandler  from './advanceCase';
 import dismissCaseHandler  from './dismissCase';
-// import resolveCaseHandler  from './resolveCase';
-// import newCfStatusHandler  from './newcfstatus';
+import resolveCaseHandler  from './resolveCase';
 import recuseHandler       from './recuse';
-// import newJoinderHandler   from './newjoinder';
-// import joinCasesHandler    from './joincases';
+import newJoinderHandler   from './newjoinder';
+import joinCasesHandler    from './joincases';
 import newArbStatusHandler from './newArbStatus';
+import setLangCodesHandler from './setLangCodes';
+import deleteCaseHandler   from './deleteCase';
 
 export default [
+    /**
+     * Case_Setup 
+     */
+    {
+        actionType: `${process.env.ARB_CONTRACT}::withdraw`,
+        apply:      withdrawHandler
+    },
     {
         actionType: `${process.env.ARB_CONTRACT}::filecase`,
         apply:      fileCaseHandler
@@ -37,6 +46,9 @@ export default [
         actionType: `${process.env.ARB_CONTRACT}::readycase`,
         apply:      readyCaseHandler
     },
+    /**
+     * Case_Progression
+     */
     {
         actionType: `${process.env.ARB_CONTRACT}::addarbs`,
         apply:      addArbsHandler
@@ -61,28 +73,35 @@ export default [
         actionType: `${process.env.ARB_CONTRACT}::dismisscase`,
         apply:      dismissCaseHandler
     },
-    // {
-    //     actionType: `${process.env.ARB_CONTRACT}::resolvecase`,
-    //     apply:      resolveCaseHandler
-    // },
-    // {
-    //     actionType: `${process.env.ARB_CONTRACT}::newcfstatus`,
-    //     apply:      newCfStatusHandler
-    // },
+    {
+        actionType: `${process.env.ARB_CONTRACT}::resolvecase`,
+        apply:      resolveCaseHandler
+    },
     {
         actionType: `${process.env.ARB_CONTRACT}::recuse`,
         apply:      recuseHandler
     },
-    // {
-    //     actionType: `${process.env.ARB_CONTRACT}::newjoinder`,
-    //     apply:      newJoinderHandler
-    // },
-    // {
-    //     actionType: `${process.env.ARB_CONTRACT}::joincases`,
-    //     apply:      joinCasesHandler
-    // },
+    {
+        actionType: `${process.env.ARB_CONTRACT}::newjoinder`,
+        apply:      newJoinderHandler
+    },
+    {
+        actionType: `${process.env.ARB_CONTRACT}::joincases`,
+        apply:      joinCasesHandler
+    },
+    /**
+     * Arb_Actions
+     */
     {
         actionType: `${process.env.ARB_CONTRACT}::newarbstatus`,
         apply:      newArbStatusHandler
+    },
+    {
+        actionType: `${process.env.ARB_CONTRACT}::setlangcodes`,
+        apply:      setLangCodesHandler
+    },
+    {
+        actionType: `${process.env.ARB_CONTRACT}::deletecase`,
+        apply:      deleteCaseHandler
     }
 ];

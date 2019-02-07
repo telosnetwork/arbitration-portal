@@ -5,6 +5,7 @@ import posts    from './src/routes/posts';
 import mongoose from 'mongoose';
 import models   from './src/models';
 
+// Debug Logging?
 // mongoose.set('debug', true);
 
 //Services

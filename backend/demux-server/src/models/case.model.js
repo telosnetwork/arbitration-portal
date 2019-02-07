@@ -38,7 +38,8 @@ try {
             type:    String
         },
         arbitrators: [{
-            type:    String
+            type:    String,
+            default: ''
         }],
         required_langs: [{
             type:    Number
@@ -51,10 +52,12 @@ try {
         //     ref: 'Claim' // Schema Reference
         // }],
         accepted_claims: [{
-            type:    Number
+            type:    Number,
+            default: 0
         }],
         case_ruling: {
-            type:    String
+            type:    String,
+            default: ''
         }
         // arb_comment: {
         //     type: String,
