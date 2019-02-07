@@ -8,8 +8,8 @@ async function newArbStatusHandler (state, payload, blockInfo, context) {
         // Arbitrator Status
         let arb_status = payload.data.new_status;
 
-        await state.arbitrator.findOneAndUpdate({ name: arbitrator }, {
-            name:       arbitrator,
+        await state.arbitrator.findOneAndUpdate({ arb: arbitrator }, {
+            arb:        arbitrator,
             arb_status: arb_status
         }, { upsert: true }).exec();
     } catch (err) {

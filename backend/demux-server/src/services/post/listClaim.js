@@ -12,6 +12,9 @@ import { Claim } from '../../models';
         if (claim_id) {
             const confirmedClaims = await Claim.find({ claim_id: claim_id }).exec();
             res.send(confirmedClaims);
+        } else {
+            const confirmedClaims = await Claim.find({}).exec();
+            res.send(confirmedClaims);
         }
     } catch (err) {
         console.error(err);

@@ -3,16 +3,17 @@ import addClaimEffect     from './addClaim';
 import removeClaimEffect  from './removeClaim';
 import shredCaseEffect    from './shredCase';
 import readyCaseEffect    from './readyCase';
+import addArbsEffect      from './addarbs';
 import assignToCaseEffect from './assignToCase';
 import dismissClaimEffect from './dismissClaim';
 import acceptClaimEffect  from './acceptClaim';
 import advanceCaseEffect  from './advanceCase';
 import dismissCaseEffect  from './dismissCase';
-import resolveCaseEffect  from './resolveCase';
-import newCfStatusEffect  from './newcfstatus';
+// import resolveCaseEffect  from './resolveCase';
+// import newCfStatusEffect  from './newcfstatus';
 import recuseEffect       from './recuse';
-import newJoinderEffect   from './newjoinder';
-import joinCasesEffect    from './joinCases';
+// import newJoinderEffect   from './newjoinder';
+// import joinCasesEffect    from './joinCases';
 import newArbStatusEffect from './newArbStatus';
 
 export default [
@@ -37,6 +38,10 @@ export default [
         run:        readyCaseEffect
     },
     {
+        actionType: `${process.env.ARB_CONTRACT}::addarbs`,
+        run:        addArbsEffect
+    },
+    {
         actionType: `${process.env.ARB_CONTRACT}::assigntocase`,
         run:        assignToCaseEffect
     },
@@ -56,26 +61,26 @@ export default [
         actionType: `${process.env.ARB_CONTRACT}::dismisscase`,
         run:        dismissCaseEffect
     },
-    {
-        actionType: `${process.env.ARB_CONTRACT}::resolvecase`,
-        run:        resolveCaseEffect
-    },
-    {
-        actionType: `${process.env.ARB_CONTRACT}::newcfstatus`,
-        run:        newCfStatusEffect
-    },
+    // {
+    //     actionType: `${process.env.ARB_CONTRACT}::resolvecase`,
+    //     run:        resolveCaseEffect
+    // },
+    // {
+    //     actionType: `${process.env.ARB_CONTRACT}::newcfstatus`,
+    //     run:        newCfStatusEffect
+    // },
     {
         actionType: `${process.env.ARB_CONTRACT}::recuse`,
         run:        recuseEffect
     },
-    {
-        actionType: `${process.env.ARB_CONTRACT}::newjoinder`,
-        run:        newJoinderEffect
-    },
-    {
-        actionType: `${process.env.ARB_CONTRACT}::joincases`,
-        run:        joinCasesEffect
-    },
+    // {
+    //     actionType: `${process.env.ARB_CONTRACT}::newjoinder`,
+    //     run:        newJoinderEffect
+    // },
+    // {
+    //     actionType: `${process.env.ARB_CONTRACT}::joincases`,
+    //     run:        joinCasesEffect
+    // },
     {
         actionType: `${process.env.ARB_CONTRACT}::newarbstatus`,
         run:        newArbStatusEffect

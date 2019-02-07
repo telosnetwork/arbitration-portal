@@ -36,7 +36,6 @@ class DemuxService extends Service {
 
     onExit() {
         super.onExit();
-        //TODO: Update Demux Service State on exit
     }
 }
 

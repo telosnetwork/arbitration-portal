@@ -31,13 +31,12 @@ try {
             type:     Number,
             required: true
         },
-        claimants: [{
+        claimant: {
             type:    String
-        }],
-        // respondants: [{
-        //     type:    String,
-        //     default: ''
-        // }],
+        },
+        respondant: {
+            type:    String
+        },
         arbitrators: [{
             type:    String
         }],

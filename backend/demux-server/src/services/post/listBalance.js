@@ -19,6 +19,9 @@ import { Balance } from '../../models';
         } else if (owner) {
             const confirmedBalances = await Balance.find({ owner: owner }).exec();
             res.send(confirmedBalances);
+        } else {
+            const confirmedBalances = await Balance.find({}).exec();
+            res.send(confirmedBalances);
         }
     } catch (err) {
         console.error(err);

@@ -30,6 +30,7 @@ class App extends Component {
         this.io    = new IOClient();
     }
 
+    // Real-Time Updates via Socket.io
     componentDidMount = async() => {
         this.loadArbitrators();
         this.loadCases();
@@ -38,10 +39,17 @@ class App extends Component {
         // this.loadJoinedCases();
         this.loadTransfers();
 
-        // this.io.onMessage('transferAction', (post) => {
-        //     this.setState((prevState) => ({  }))
-        // })
-        
+        /**
+         * Transfer Action Listeners
+         */
+        this.io.onMessage('transferAction', (transfer) => {
+            this.loadTransfers();
+            console.log('TransferAction Executed');
+        });
+
+        /**
+         * Arbitration (Member and Arbitrator) Action Listeners
+         */
     }
 
     loadArbitrators = async () => {
@@ -80,6 +88,9 @@ class App extends Component {
         this.setState({ transfers: response.data.reverse() })
     }
 
+    /**
+     * Transfer Actions
+     */
     transfer = async () => {
         let actions = await this.eosio.makeAction(process.env.REACT_APP_EOSIO_TOKEN_ACCOUNT, 'transfer', 
             {
@@ -92,6 +103,75 @@ class App extends Component {
         let result = await this.eosio.sendTx(actions);
         console.log('Results: ', result);
     }
+
+    /**
+     * Case_Setup Actions
+     */
+    filecase = async() => {
+        let actions = await this.eosio.makeAction(process.env.REACT_APP_CONTRACT_ACCOUNT, 'filecase',
+            {
+                claimant:   '',
+                claim_link: '',
+                lang_codes: ''
+            }
+        );
+        let result = await this.eosio.sendTx(actions);
+        console.log('Results: ', result);
+    }
+
+    addclaim = async() => {
+        let actions = await this.eosio.makeAction(process.env.REACT_APP_CONTRACT_ACCOUNT, 'addclaim',
+            {
+                case_id:    '',
+                claim_link: '',
+                claimant:   ''
+            }
+        );
+        let result = await this.eosio.sendTx(actions);
+        console.log('Results: ', result);
+    }
+
+    removeclaim = async() => {
+        let actions = await this.eosio.makeAction(process.env.REACT_APP_CONTRACT_ACCOUNT, 'removeclaim',
+            {
+                case_id:    '',
+                claim_hash: '',
+                claimant:   ''
+            }
+        );
+        let result = await this.eosio.sendTx(actions);
+        console.log('Results: ', result);
+    }
+
+    shredcase = async() => {
+        let actions = await this.eosio.makeAction(process.env.REACT_APP_CONTRACT_ACCOUNT, 'shredcase',
+            {
+                case_id:  '',
+                claimant: ''
+            }
+        );
+        let result = await this.eosio.sendTx(actions);
+        console.log('Results: ', result);
+    }
+
+    readycase = async() => {
+        let actions = await this.eosio.makeAction(process.env.REACT_APP_CONTRACT_ACCOUNT, 'readycase',
+            {
+                case_id:  '',
+                claimant: ''
+            }
+        );
+        let result = await this.eosio.sendTx(actions);
+        console.log('Results: ', result);
+    }
+
+    /**
+     * Case_Progression Actions
+     */
+
+    /**
+     * Arb_Actions 
+     */
 
     handleLogin = async () => {
         await this.eosio.connect();

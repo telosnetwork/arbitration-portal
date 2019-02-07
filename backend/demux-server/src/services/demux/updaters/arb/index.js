@@ -3,16 +3,17 @@ import addClaimHandler     from './addClaim';
 import removeClaimHandler  from './removeClaim';
 import shredCaseHandler    from './shredCase';
 import readyCaseHandler    from './readyCase';
+import addArbsHandler      from './addarbs';
 import assignToCaseHandler from './assignToCase';
 import dismissClaimHandler from './dismissClaim';
 import acceptClaimHandler  from './acceptClaim';
 import advanceCaseHandler  from './advanceCase';
 import dismissCaseHandler  from './dismissCase';
-import resolveCaseHandler  from './resolveCase';
-import newCfStatusHandler  from './newcfstatus';
+// import resolveCaseHandler  from './resolveCase';
+// import newCfStatusHandler  from './newcfstatus';
 import recuseHandler       from './recuse';
-import newJoinderHandler   from './newjoinder';
-import joinCasesHandler    from './joincases';
+// import newJoinderHandler   from './newjoinder';
+// import joinCasesHandler    from './joincases';
 import newArbStatusHandler from './newArbStatus';
 
 export default [
@@ -37,6 +38,10 @@ export default [
         apply:      readyCaseHandler
     },
     {
+        actionType: `${process.env.ARB_CONTRACT}::addarbs`,
+        apply:      addArbsHandler
+    },
+    {
         actionType: `${process.env.ARB_CONTRACT}::assigntocase`,
         apply:      assignToCaseHandler
     },
@@ -56,26 +61,26 @@ export default [
         actionType: `${process.env.ARB_CONTRACT}::dismisscase`,
         apply:      dismissCaseHandler
     },
-    {
-        actionType: `${process.env.ARB_CONTRACT}::resolvecase`,
-        apply:      resolveCaseHandler
-    },
-    {
-        actionType: `${process.env.ARB_CONTRACT}::newcfstatus`,
-        apply:      newCfStatusHandler
-    },
+    // {
+    //     actionType: `${process.env.ARB_CONTRACT}::resolvecase`,
+    //     apply:      resolveCaseHandler
+    // },
+    // {
+    //     actionType: `${process.env.ARB_CONTRACT}::newcfstatus`,
+    //     apply:      newCfStatusHandler
+    // },
     {
         actionType: `${process.env.ARB_CONTRACT}::recuse`,
         apply:      recuseHandler
     },
-    {
-        actionType: `${process.env.ARB_CONTRACT}::newjoinder`,
-        apply:      newJoinderHandler
-    },
-    {
-        actionType: `${process.env.ARB_CONTRACT}::joincases`,
-        apply:      joinCasesHandler
-    },
+    // {
+    //     actionType: `${process.env.ARB_CONTRACT}::newjoinder`,
+    //     apply:      newJoinderHandler
+    // },
+    // {
+    //     actionType: `${process.env.ARB_CONTRACT}::joincases`,
+    //     apply:      joinCasesHandler
+    // },
     {
         actionType: `${process.env.ARB_CONTRACT}::newarbstatus`,
         apply:      newArbStatusHandler

@@ -24,6 +24,9 @@ import { Transfer } from '../../models';
             } else if (to) {
                 const confirmedTransfers = await Transfer.find({ to: to }).exec();
                 res.send(confirmedTransfers);
+            } else {
+                const confirmedTransfers = await Transfer.find({}).exec();
+                res.send(confirmedTransfers);
             }
         }
     } catch (err) {

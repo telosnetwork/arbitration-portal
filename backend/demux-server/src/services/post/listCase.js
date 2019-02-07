@@ -19,6 +19,9 @@ import { Case } from '../../models';
         } else if (case_status) {
             const confirmedCases = await Case.find({ case_status: case_status }).exec();
             res.send(confirmedCases);
+        } else {
+            const confirmedCases = await Case.find({}).exec();
+            res.send(confirmedCases);
         }
     } catch (err) {
         console.error(err);
