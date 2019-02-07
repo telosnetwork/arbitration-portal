@@ -1,6 +1,6 @@
 import { AbstractActionHandler } from 'demux'
 import models from '../../models';
-import io from '../../utils/io';
+import io     from '../../utils/io';
 
 const stateHist = {};
 const stateHistMaxLength = 20;

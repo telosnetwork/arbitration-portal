@@ -10,9 +10,9 @@ async function shredCaseHandler (state, payload, blockInfo, context) {
         if (stateCase) {
             ({ unread_claims } = caseState)
             // Delete All Claims
-            // for ( let claim of unread_claims ) {
-            //     claim = null;
-            // }
+            for ( let claim of unread_claims ) {
+                claim = null;
+            }
             // Delete|Remove CaseFile
             await state.case.findOneAndDelete({ case_id: case_id }).exec();
         }

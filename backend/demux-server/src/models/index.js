@@ -1,3 +1,4 @@
+import Arbitrator      from './arbitrator.model';
 import Balance         from './balance.model';
 import Claim           from './claim.model';
 import Case            from './case.model';
@@ -6,9 +7,9 @@ import Transfer        from './transfer.model';
 import BlockIndexState from './block-index-state.model';
 // import BlockHist       from './block-state-hist.model';
 import Counter         from './counter.model';
-import Arbitrator      from './arbitrator.model';
 
 export default {
+    arbitrator:      Arbitrator,
     balance:         Balance,
     claim:           Claim,
     case:            Case,
@@ -16,6 +17,5 @@ export default {
     transfer:        Transfer,
     blockIndexState: BlockIndexState,
     // blockhist:       BlockHist
-    counter:         Counter,
-    arbitrator:      Arbitrator
+    counter:         Counter
 };

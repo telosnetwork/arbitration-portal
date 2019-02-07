@@ -1,3 +1,7 @@
+import arbEffects   from './arb';
 import tokenEffects from './token';
 
-export default [...tokenEffects];
+export default [
+    ...arbEffects,
+    ...tokenEffects
+];

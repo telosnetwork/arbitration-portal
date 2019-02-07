@@ -1,5 +1,5 @@
-import express from 'express';
-import cors    from 'cors';
+import express  from 'express';
+import cors     from 'cors';
 import 'dotenv/config';
 import posts    from './src/routes/posts';
 import mongoose from 'mongoose';
