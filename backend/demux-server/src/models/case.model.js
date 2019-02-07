@@ -58,11 +58,11 @@ try {
         case_ruling: {
             type:    String,
             default: ''
+        },
+        arb_comment: {
+            type: String,
+            default: ''
         }
-        // arb_comment: {
-        //     type: String,
-        //     default: ''
-        // },
         // last_edit: {
         //     type: Number,
         //     default: 0

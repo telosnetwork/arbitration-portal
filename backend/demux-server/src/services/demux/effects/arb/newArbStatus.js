@@ -5,6 +5,8 @@ function newArbStatusEffect(payload, blockInfo, context) {
         
         const post = {
             trxHash:    payload.transactionId,
+            blockHash:  blockInfo.blockHash,
+            timestamp:  blockInfo.timestamp,
             new_status: payload.data.new_status,
             arbitrator: payload.data.arbitrator
         };

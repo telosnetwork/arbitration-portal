@@ -5,6 +5,8 @@ function fileCaseEffect(payload, blockInfo, context) {
         
         const post = {
             trxHash:    payload.transactionId,
+            blockHash:  blockInfo.blockHash,
+            timestamp:  blockInfo.timestamp,
             claimant:   payload.data.claimant,
             claim_link: payload.data.claim_link
         };

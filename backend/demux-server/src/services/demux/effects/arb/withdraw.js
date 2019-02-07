@@ -4,8 +4,10 @@ function withdrawEffect(payload, blockInfo, context) {
         console.log('Withdraw effect BlockInfo: ', blockInfo);
 
         const post = {
-            trxHash: payload.transactionId,
-            owner:   payload.data.owner
+            trxHash:   payload.transactionId,
+            blockHash: blockInfo.blockHash,
+            timestamp: blockInfo.timestamp,
+            owner:     payload.data.owner
         };
         context.socket.emit('WithdrawAction', post);
     } catch (err) {

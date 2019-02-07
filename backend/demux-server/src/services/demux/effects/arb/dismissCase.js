@@ -5,6 +5,8 @@ function dismissCaseEffect(payload, blockInfo, context) {
 
         const post = {
             trxHash:      payload.transactionId,
+            blockHash:    blockInfo.blockHash,
+            timestamp:    blockInfo.timestamp,
             case_id:      payload.data.case_id,
             assigned_arb: payload.data.assigned_arb,
             ruling_link:  payload.data.ruling_link

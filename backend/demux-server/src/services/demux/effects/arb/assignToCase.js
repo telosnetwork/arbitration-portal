@@ -5,6 +5,8 @@ function assignToCaseEffect(payload, blockInfo, context) {
 
         const post = {
             trxHash:       payload.transactionId,
+            blockHash:     blockInfo.blockHash,
+            timestamp:     blockInfo.timestamp,
             case_id:       payload.data.case_id,
             arb_to_assign: payload.data.arb_to_assign
         };
