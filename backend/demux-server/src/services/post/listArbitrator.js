@@ -6,18 +6,11 @@ import { Arbitrator } from '../../models';
  */
 
  export const listArbitrator = async (req, res) => {
-    let arb        = req.query.arb;
-    let arb_status = req.query.arb_status; 
+    let arb = req.query.arb;
 
     try {
-        if (arb && arb_status) {
-            const confirmedArbitrators = await Arbitrator.find({ arb: arb, arb_status: arb_status }).exec();
-            res.send(confirmedArbitrators);
-        } else if (arb) {
+        if (arb) {
             const confirmedArbitrators = await Arbitrator.find({ arb: arb }).exec();
-            res.send(confirmedArbitrators);
-        } else if (arb_status) {
-            const confirmedArbitrators = await Arbitrator.find({ arb_status: arb_status }).exec();
             res.send(confirmedArbitrators);
         } else {
             const confirmedArbitrators = await Arbitrator.find({}).exec();

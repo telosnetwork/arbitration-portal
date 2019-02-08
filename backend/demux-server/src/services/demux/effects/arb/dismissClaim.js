@@ -4,13 +4,7 @@ function dismissClaimEffect(payload, blockInfo, context) {
         console.log('DismissClaim effect BlockInfo: ', blockInfo);   
 
         const post = {
-            trxHash:      payload.transactionId,
-            blockHash:    blockInfo.blockHash,
-            timestamp:    blockInfo.timestamp,
-            case_id:      payload.data.case_id,
-            assigned_arb: payload.data.assigned_arb,
-            claim_hash:   payload.data.claim_hash,
-            memo:         payload.data.memo
+            trxHash: payload.transactionId
         };
         context.socket.emit('dismissClaimAction', post);
     } catch (err) {

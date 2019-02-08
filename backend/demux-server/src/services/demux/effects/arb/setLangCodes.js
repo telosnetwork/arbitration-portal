@@ -5,10 +5,7 @@ function setLangCodesEffect(payload, blockInfo, context) {
 
         const post = {
             trxHash:    payload.transactionId,
-            blockHash:  blockInfo.blockHash,
-            timestamp:  blockInfo.timestamp,
-            arbitrator: payload.data.arbitrator,
-            lang_codes: payload.data.lang_codes
+            arbitrator: payload.data.arbitrator
         };
         context.socket.emit('setLangCodesAction', post);
     } catch (err) {

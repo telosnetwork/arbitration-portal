@@ -4,13 +4,7 @@ function fileCaseEffect(payload, blockInfo, context) {
         console.log('FileCase effect BlockInfo: ', blockInfo);
         
         const post = {
-            trxHash:    payload.transactionId,
-            blockHash:  blockInfo.blockHash,
-            timestamp:  blockInfo.timestamp,
-            claimant:   payload.data.claimant,
-            claim_link: payload.data.claim_link,
-            lang_codes: payload.data.lang_codes,
-            respondant: payload.data.respondant
+            trxHash: payload.transactionId,
         };
         context.socket.emit('fileCaseAction', post);
     } catch (err) {

@@ -22,7 +22,7 @@ async function transferHandler (state, payload, blockInfo, context) {
             if ( to === 'eosio.arb' ) {
                 console.log(`Decrementing Balance of from:${from} account_name`);
                 await state.balance.updateOne({ owner: from }, {
-                    id:       blockInfo.blockNumber,
+                    id:       payload.transactionId,
                     owner:    from,
                     $inc:   { escrow: value }
                 }, { upsert: true }).exec();
@@ -32,7 +32,7 @@ async function transferHandler (state, payload, blockInfo, context) {
                 console.log(`Upserting Balance of to:${to} account_name`);
                 value *= -1 // Decrement
                 await state.balance.updateOne({ owner: to }, {
-                    id:       blockInfo.blockNumber,
+                    id:       payload.transactionId,
                     owner:    to,
                     $inc:   { escrow: value }
                 }, { upsert: true }).exec();

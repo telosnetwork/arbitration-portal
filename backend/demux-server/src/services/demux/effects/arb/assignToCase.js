@@ -4,11 +4,8 @@ function assignToCaseEffect(payload, blockInfo, context) {
         console.log('AssignToCase effect BlockInfo: ', blockInfo);   
 
         const post = {
-            trxHash:       payload.transactionId,
-            blockHash:     blockInfo.blockHash,
-            timestamp:     blockInfo.timestamp,
-            case_id:       payload.data.case_id,
-            arbitrator:    payload.data.arb_to_assign
+            trxHash:    payload.transactionId,
+            arbitrator: payload.data.arb_to_assign
         };
         context.socket.emit('assignToCaseAction', post);
     } catch (err) {

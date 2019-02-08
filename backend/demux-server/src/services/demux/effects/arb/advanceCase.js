@@ -4,11 +4,7 @@ function advanceCaseEffect(payload, blockInfo, context) {
         console.log('AdvanceCase effect BlockInfo: ', blockInfo);   
 
         const post = {
-            trxHash:      payload.transactionId,
-            blockHash:    blockInfo.blockHash,
-            timestamp:    blockInfo.timestamp,
-            case_id:      payload.data.case_id,
-            assigned_arb: payload.data.assigned_arb
+            trxHash: payload.transactionId
         };
         context.socket.emit('advanceCaseAction', post);
     } catch (err) {

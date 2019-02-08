@@ -4,11 +4,7 @@ function readyCaseEffect(payload, blockInfo, context) {
         console.log('ReadyCase effect BlockInfo: ', blockInfo);
 
         const post = {
-            trxHash:   payload.transactionId,
-            blockHash: blockInfo.blockHash,
-            timestamp: blockInfo.timestamp,
-            case_id:   payload.data.case_id,
-            claimant:  payload.data.claimant
+            trxHash: payload.transactionId
         };
         context.socket.emit('readyCaseAction', post);
     } catch (err) {

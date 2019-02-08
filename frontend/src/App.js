@@ -53,6 +53,7 @@ class App extends Component {
         this.io.onMessage('transferAction',     (transfer) => {
             this.setState((prevState) => (
                 {
+                    balances:  updateBalances(prevState, transfer),
                     transfers: updateTransfers(prevState, transfer)
                 }
             ));

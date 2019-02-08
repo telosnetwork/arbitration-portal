@@ -4,12 +4,7 @@ function dismissCaseEffect(payload, blockInfo, context) {
         console.log('DismissCase effect BlockInfo: ', blockInfo);   
 
         const post = {
-            trxHash:      payload.transactionId,
-            blockHash:    blockInfo.blockHash,
-            timestamp:    blockInfo.timestamp,
-            case_id:      payload.data.case_id,
-            assigned_arb: payload.data.assigned_arb,
-            ruling_link:  payload.data.ruling_link
+            trxHash: payload.transactionId
         };
         context.socket.emit('dismissCaseAction', post);
     } catch (err) {
