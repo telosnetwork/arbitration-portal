@@ -12,7 +12,7 @@ class App extends Component {
         cases: [],
         balances: [],
         claims: [],
-        // joinedcases: [],
+        joinedcases: [],
         transfers: []
     }
 
@@ -36,7 +36,7 @@ class App extends Component {
         this.loadCases();
         this.loadBalances();
         this.loadClaims();
-        // this.loadJoinedCases();
+        this.loadJoinedCases();
         this.loadTransfers();
 
         /**
@@ -76,11 +76,11 @@ class App extends Component {
         this.setState({ claims: response.data.reverse() })
     }
 
-    // loadJoinedCases = async () => {
-    //     const response = await axios.get(`${process.env.REACT_APP_API_URL}/posts/joinedcases`);
-    //     console.log('LoadJoinedCases: ', response);
-    //     this.setState({ joinedcases: response.data.reverse() })
-    // }
+    loadJoinedCases = async () => {
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}/posts/joinedcases`);
+        console.log('LoadJoinedCases: ', response);
+        this.setState({ joinedcases: response.data.reverse() })
+    }
 
     loadTransfers = async () => {
         const response = await axios.get(`${process.env.REACT_APP_API_URL}/posts/transfers`);
@@ -94,10 +94,10 @@ class App extends Component {
     transfer = async () => {
         let actions = await this.eosio.makeAction(process.env.REACT_APP_EOSIO_TOKEN_ACCOUNT, 'transfer', 
             {
-              from:      this.eosio.currentAccount.name,
-              to:       'emanateissue',
-              quantity: '1.0000 EOS',
-              memo:     'Transfer Memo'
+            from:      this.eosio.currentAccount.name,
+            to:       'emanateissue',
+            quantity: '1.0000 EOS',
+            memo:     'Transfer Memo'
             }
         );
         let result = await this.eosio.sendTx(actions);
@@ -107,12 +107,23 @@ class App extends Component {
     /**
      * Case_Setup Actions
      */
+    withdraw = async() => {
+        let actions = await this.eosio.makeAction(process.env.REACT_APP_CONTRACT_ACCOUNT, 'withdraw',
+            {
+                owner: ''
+            }
+        );
+        let result = await this.eosio.sendTx(actions);
+        console.log('Results: ', result);
+    }
+
     filecase = async() => {
         let actions = await this.eosio.makeAction(process.env.REACT_APP_CONTRACT_ACCOUNT, 'filecase',
             {
                 claimant:   '',
                 claim_link: '',
-                lang_codes: ''
+                lang_codes: '',
+                respondant: ''
             }
         );
         let result = await this.eosio.sendTx(actions);
@@ -169,9 +180,155 @@ class App extends Component {
      * Case_Progression Actions
      */
 
+     addarbs = async() => {
+        let actions = await this.eosio.makeAction(process.env.REACT_APP_CONTRACT_ACCOUNT, 'addarbs',
+            {
+                case_id:            '',
+                assigned_arb:       '',
+                num_arbs_to_assign: ''
+            }
+        );
+        let result = await this.eosio.sendTx(actions);
+        console.log('Results: ', result);
+     }
+
+     assigntocase = async() => {
+         let actions = await this.eosio.makeAction(process.env.REACT_APP_CONTRACT_ACCOUNT, 'assigntocase',
+            {
+                case_id:       '',
+                arb_to_assign: ''
+            }
+        );
+        let result = await this.eosio.sendTx(actions);
+        console.log('Results: ', result);
+     }
+
+     dismissclaim = async() => {
+        let actions = await this.eosio.makeAction(process.env.REACT_APP_CONTRACT_ACCOUNT, 'dismissclaim',
+            {
+                case_id:      '',
+                assigned_arb: '',
+                claim_hash:   '',
+                memo:         ''
+            }
+        );
+        let result = await this.eosio.sendTx(actions);
+        console.log('Results: ', result);
+     }
+
+     acceptclaim = async() => {
+        let actions = await this.eosio.makeAction(process.env.REACT_APP_CONTRACT_ACCOUNT, 'acceptclaim',
+            {
+                case_id:        '',
+                assigned_arb:   '',
+                claim_hash:     '',
+                decision_link:  '',
+                decision_class: ''
+            }
+        );
+        let result = await this.eosio.sendTx(actions);
+        console.log('Results: ', result);
+     }
+
+     advancecase = async() => {
+        let actions = await this.eosio.makeAction(process.env.REACT_APP_CONTRACT_ACCOUNT, 'advancecase',
+            {
+                case_id:      '',
+                assigned_arb: '',
+            }
+        );
+        let result = await this.eosio.sendTx(actions);
+        console.log('Results: ', result);
+     }
+
+     dismisscase = async() => {
+        let actions = await this.eosio.makeAction(process.env.REACT_APP_CONTRACT_ACCOUNT, 'dismisscase',
+            {
+                case_id:      '',
+                assigned_arb: '',
+                ruling_link:  '',
+            }
+        );
+        let result = await this.eosio.sendTx(actions);
+        console.log('Results: ', result);
+     }
+
+     recuse = async() => {
+         let actions = await this.eosio.sendTx(process.env.REACT_APP_CONTRACT_ACCOUNT, 'recuse',
+            {
+                case_id:      '',
+                rationale:    '',
+                assigned_arb: ''
+            }
+        );
+        let result = await this.eosio.sendTx(actions);
+        console.log('Results: ', result);
+     }
+
+     newjoinder = async() => {
+         let actions = await this.eosio.makeAction(process.env.REACT_APP_CONTRACT_ACCOUNT, 'newjoinder',
+            {
+                base_case_id:    '',
+                joining_case_id: '',
+                arb:             ''
+            }
+        );
+        let result = await this.eosio.sendTx(actions);
+        console.log('Results: ', result);
+     }
+
+     joincases = async() => {
+         let actions = await this.eosio.makeAction(process.env.REACT_APP_CONTRACT_ACCOUNT, 'joincases',
+            {
+                joinder_id:  '',
+                new_case_id: '',
+                arb:         ''
+            }
+        );
+        let result = await this.eosio.sendTx(actions);
+        console.log('Results: ', result);
+     }
+
     /**
      * Arb_Actions 
      */
+
+     newarbstatus = async() => {
+         let actions = await this.eosio.makeAction(process.env.REACT_APP_CONTRACT_ACCOUNT, 'newarbstatus',
+            {
+                new_status: '',
+                arbitrator: ''
+            }
+        );
+        let result = await this.eosio.sendTx(actions);
+        console.log('Results: ', result);
+     }
+
+     setlangcodes = async() => {
+         let actions = await this.eosio.makeAction(process.env.REACT_APP_CONTRACT_ACCOUNT, 'setlangcodes',
+            {
+                arbitrator: '',
+                lang_codes: ''
+            }
+        );
+        let result = await this.eosio.sendTx(actions);
+        console.log('Results: ', result);
+     }
+
+    
+    /**
+     * Scatter Bridge
+     */
+
+     deltecase = async() => {
+         let actions = await this.eosio.makeAction(process.env.REACT_APP_CONTRACT_ACCOUNT, 'deletecase',
+            {
+                case_id: ''
+            }
+        );
+        let result = await this.eosio.sendTx(actions);
+        console.log('Results: ', result);
+     }
 
     handleLogin = async () => {
         await this.eosio.connect();
