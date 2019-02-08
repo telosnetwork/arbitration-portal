@@ -8,7 +8,7 @@ function assignToCaseEffect(payload, blockInfo, context) {
             blockHash:     blockInfo.blockHash,
             timestamp:     blockInfo.timestamp,
             case_id:       payload.data.case_id,
-            arb_to_assign: payload.data.arb_to_assign
+            arbitrator:    payload.data.arb_to_assign
         };
         context.socket.emit('assignToCaseAction', post);
     } catch (err) {

@@ -8,7 +8,9 @@ function fileCaseEffect(payload, blockInfo, context) {
             blockHash:  blockInfo.blockHash,
             timestamp:  blockInfo.timestamp,
             claimant:   payload.data.claimant,
-            claim_link: payload.data.claim_link
+            claim_link: payload.data.claim_link,
+            lang_codes: payload.data.lang_codes,
+            respondant: payload.data.respondant
         };
         context.socket.emit('fileCaseAction', post);
     } catch (err) {

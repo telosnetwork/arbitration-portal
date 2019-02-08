@@ -2,6 +2,14 @@ import React, { Component } from 'react';
 import axios                from 'axios';
 import ScatterBridge        from './utils/scatterBridge';
 import IOClient             from './utils/io-client';
+
+import { updateTransfers }   from './utils/updateTransfers';
+import { updateArbitrators } from './utils/updateArbitrators';
+import { updateBalances }    from './utils/updateBalances';
+import { updateCases, updatedCases }       from './utils/updateCases';
+import { updateClaims }      from './utils/updateClaims';
+import { updateJoinedCases } from './utils/updateJoinedCases';
+
 import './styles/App.css';
 import Button               from '@material-ui/core/Button'
 
@@ -42,14 +50,152 @@ class App extends Component {
         /**
          * Transfer Action Listeners
          */
-        this.io.onMessage('transferAction', (transfer) => {
-            this.loadTransfers();
-            console.log('TransferAction Executed');
+        this.io.onMessage('transferAction',     (transfer) => {
+            this.setState((prevState) => (
+                {
+                    transfers: updateTransfers(prevState, transfer)
+                }
+            ));
         });
 
         /**
          * Arbitration (Member and Arbitrator) Action Listeners
          */
+
+        // Case_Setup Actions
+
+        this.io.onMessage('withdraw',           (balance) => {
+            this.setState((prevState) => (
+                {
+                    balances: updateBalances(prevState, balance)
+                } 
+            ));
+        });
+
+        this.io.onMessage('fileCaseAction',      (postCase) => {
+            this.setState((prevState) => (
+                {
+                    cases: updateCases(prevState, postCase)
+                } 
+            ));    
+        });
+
+        this.io.onMessage('addClaimAction',     (postCase) => {
+            this.setState((prevState) => (
+                {
+                    cases: updateCases(prevState, postCase)
+                } 
+            ));    
+        });
+
+        this.io.onMessage('removeClaimAction',  (postCase) => {
+            this.setState((prevState) => (
+                {
+                    cases: updateCases(prevState, postCase)
+                } 
+            ));    
+        });
+
+        this.io.onMessage('shredCaseAction',    (postCase) => {
+            this.setState((prevState) => (
+                {
+                    cases: updateCases(prevState, postCase)
+                } 
+            ));    
+        });
+
+        this.io.onMessage('readyCaseAction',    (postCase) => {
+            this.setState((prevState) => (
+                {
+                    cases: updateCases(prevState, postCase)
+                } 
+            ));    
+        });
+
+        // Case_Progression Actions
+
+        this.io.onMessage('addArbsAction',      (post) => {
+        });
+
+        this.io.onMessage('assignToCaseAction', (post) => {
+            this.setState((prevState) => (
+                {
+                    arbitrators: updateArbitrators(prevState, post),
+                    cases:       updatedCases(prevState, post) 
+                } 
+            ));  
+        });
+
+        this.io.onMessage('dismissClaimAction', (postCase) => {
+            this.setState((prevState) => (
+                {
+                    cases: updateCases(prevState, postCase)
+                } 
+            ));  
+        });
+
+        this.io.onMessage('acceptClaimAction',  (post) => {
+            this.setState((prevState) => (
+                {
+                    cases:  updateCases(prevState, post),
+                    claims: updateClaims(prevState, post)
+                } 
+            ));  
+        });
+
+        this.io.onMessage('advanceCaseAction',  (postCase) => {
+            this.setState((prevState) => (
+                {
+                    cases: updateCases(prevState, postCase)
+                } 
+            ));  
+        });
+
+        this.io.onMessage('dismissCaseAction',  (postCase) => {
+            this.setState((prevState) => (
+                {
+                    cases: updateCases(prevState, postCase)
+                } 
+            ));  
+        });
+
+        this.io.onMessage('resolveCaseAction',  (post) => {
+        });
+
+        this.io.onMessage('recuseAction',       (postCase) => {
+            this.setState((prevState) => (
+                {
+                    cases: updateCases(prevState, postCase)
+                } 
+            ));  
+        });
+
+        this.io.onMessage('newJoinderAction',   (post) => {
+        });
+
+        this.io.onMessage('joinCasesAction',    (post) => {
+        });
+
+        // Arb_Actions
+        
+        this.io.onMessage('newArbStatusAction', (arbitrator) => {
+            this.setState((prevState) => (
+                {
+                    arbitrators: updateArbitrators(prevState, arbitrator)
+                } 
+            ));    
+        });
+
+        this.io.onMessage('setLangCodesAction', (arbitrator) => {
+            this.setState((prevState) => (
+                {
+                    arbitrators: updateArbitrators(prevState, arbitrator)
+                } 
+            )); 
+        });
+
+        this.io.onMessage('deleteCaseAction',   (post) => {
+        });
     }
 
     loadArbitrators = async () => {
@@ -92,16 +238,20 @@ class App extends Component {
      * Transfer Actions
      */
     transfer = async () => {
-        let actions = await this.eosio.makeAction(process.env.REACT_APP_EOSIO_TOKEN_ACCOUNT, 'transfer', 
-            {
-            from:      this.eosio.currentAccount.name,
-            to:       'emanateissue',
-            quantity: '1.0000 EOS',
-            memo:     'Transfer Memo'
-            }
-        );
-        let result = await this.eosio.sendTx(actions);
+        try {
+            let actions = await this.eosio.makeAction(process.env.REACT_APP_EOSIO_TOKEN_ACCOUNT, 'transfer', 
+                {
+                from:      this.eosio.currentAccount.name,
+                to:       'emanateissue',
+                quantity: '1.0000 EOS',
+                memo:     'Transfer Memo'
+                }
+            );
+            let result = await this.eosio.sendTx(actions);
         console.log('Results: ', result);
+        } catch (err) {
+            console.error(err);
+        }
     }
 
     /**
