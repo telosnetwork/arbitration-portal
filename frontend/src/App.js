@@ -6,9 +6,9 @@ import IOClient             from './utils/io-client';
 import { updateTransfers }   from './utils/updateTransfers';
 import { updateArbitrators } from './utils/updateArbitrators';
 import { updateBalances }    from './utils/updateBalances';
-import { updateCases, updatedCases }       from './utils/updateCases';
+import { updateCases }       from './utils/updateCases';
 import { updateClaims }      from './utils/updateClaims';
-import { updateJoinedCases } from './utils/updateJoinedCases';
+// import { updateJoinedCases } from './utils/updateJoinedCases';
 
 import './styles/App.css';
 import Button               from '@material-ui/core/Button'
@@ -122,7 +122,7 @@ class App extends Component {
             this.setState((prevState) => (
                 {
                     arbitrators: updateArbitrators(prevState, post),
-                    cases:       updatedCases(prevState, post) 
+                    cases:       updateCases(prevState, post) 
                 } 
             ));  
         });

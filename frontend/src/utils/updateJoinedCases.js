@@ -1,5 +1,5 @@
-import axios from  "axios";
+// import axios from  "axios";
 
-export const updatedJoinedCases = async (prevState, updatedJoinCase) => {
+export const updateJoinedCases = async (prevState, updatedJoinCase) => {
 
 };

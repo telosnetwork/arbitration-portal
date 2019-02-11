@@ -3,9 +3,12 @@ import axios from "axios";
 export const updateBalances = async (prevState, updatedBalance) => {
 
     let isFound  = false;
-    let updatedOwner = updateBalance.owner;
+    let updatedOwner = updatedBalance.owner;
 
-    const updatedBalance = await axios.get(`${process.env.REACT_APP_API_URL}/posts/balance` + `?owner=${updatedOwner}`);
+    let url = `${process.env.REACT_APP_API_URL}/posts/balance`;
+    let qs  = `?owner=${updatedOwner}`;
+
+    updatedBalance = await axios.get(url + qs);
 
     let updatedBalances = prevState.balances.map(balance => {
         if ((balance.id === updatedBalance.id) && (balance.owner === updatedBalance.owner)) {

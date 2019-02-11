@@ -1,13 +1,16 @@
 import axios from  "axios";
 
-export const updatedCases = async (prevState, updatedCase) => {
+export const updateCases = async (prevState, updatedCase) => {
 
     let isFound = false;
 
     let counters = await axios.get(`${process.env.REACT_APP_API_URL}/posts/counter`);
     let updatedCaseId = counters.case_counter;
 
-    let updatedCase = await axios.get(`${process.env.REACT_APP_API_URL}/posts/case` + `?case_id=${updatedCaseId}`);
+    let url = `${process.env.REACT_APP_API_URL}/posts/case`;
+    let qs  = `?case_id=${updatedCaseId}`;
+
+    updatedCase = await axios.get(url + qs);
 
     let updatedCases = prevState.cases.map(postCase => {
         if (postCase.case_id === updatedCase.case_id) {
