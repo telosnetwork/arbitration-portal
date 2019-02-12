@@ -10,6 +10,14 @@ import { updateCases }       from './utils/updateCases';
 import { updateClaims }      from './utils/updateClaims';
 // import { updateJoinedCases } from './utils/updateJoinedCases';
 
+import { connect } from 'react-redux';
+import { ArbitratorsAction,
+         BalancesAction,
+         CasesAction,
+         ClaimsAction,
+        //  JoinedCasesAction,
+         TransfersAction } from 'actions';
+
 import './styles/App.css';
 import { Button } from 'reactstrap';
 
@@ -510,4 +518,20 @@ class App extends Component {
       }
   }
 
-export default App;
+// export default App;
+
+// Map all state to component props (for redux to connect)
+const mapStateToProps = state => state;
+
+// Map the following actio to component props
+const mapDispatchToProps = {
+    setArbitrators: ArbitratorsAction.setArbitrators,
+    setBalances:    BalancesAction.setBalances,
+    setCases:       CasesAction.setCases,
+    setClaims:      ClaimsAction.setClaims,
+    // setJoinedCasesAction: JoinedCasesAction.setJoinedCasesAction,
+    setTransfers:   TransfersAction.setTransfers
+};
+
+// Export a redux connected component
+export default connect(mapStateToProps, mapDispatchToProps)(App);
