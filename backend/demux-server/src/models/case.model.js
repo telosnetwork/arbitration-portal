@@ -8,14 +8,17 @@ try {
     const ClaimSchema = new Schema({
         claim_id: {
             type:     Number,
-            required: true
+            required: true,
+            default:  0
         },
         claim_summary: {
             type:     String,
-            required: true
+            required: true,
+            default:  ''
         },
         decision_link: {
-            type:    String
+            type:    String,
+            default: ''
         },
         decision_class: {
             type:    Number
@@ -25,17 +28,21 @@ try {
     const CaseSchema = new Schema({
         case_id: {
             type:     Number,
-            required: true
+            required: true,
+            default:  0
         },
         case_status: {
             type:     Number,
-            required: true
+            required: true,
+            default:  0
         },
         claimant: {
-            type:    String
+            type:    String,
+            default: ''
         },
         respondant: {
-            type:    String
+            type:    String,
+            default: ''
         },
         arbitrators: [{
             type:    String,

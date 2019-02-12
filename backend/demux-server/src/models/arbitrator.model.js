@@ -7,28 +7,35 @@ let Arbitrator = null;
 try {
     const ArbitratorSchema = new Schema({
         arb: {
-            type: String
+            type:    String,
+            default: ''
         },
         arb_status: {
-            type: Number
+            type:    Number,
+            default: 0
         },
         open_case_ids: [{
-            type: Number
+            type:    Number,
+            default: 0
         }],
         closed_case_ids: [{
-            type: Number
+            type:    Number,
+            default: 0
         }],
         credentials_link: {
-            type: String
+            type:    String,
+            default: ''
         },
         elected_time: {
-            type: Number
+            type:    Number,
+            default: 0
         },
         term_expiration: {
-            type: Number
+            type:    Number,
+            default: 0
         },
         languages: [{
-            type: Number
+            type:    Number
         }]
     });
     Arbitrator = mongoose.model('Arbitrator', ArbitratorSchema);

@@ -8,15 +8,18 @@ try {
     const BalanceSchema = new Schema({
         id: {
             type:     Number,
-            required: true
+            required: true,
+            default:  0
         },
         owner: {
             type:     String,
-            required: true
+            required: true,
+            default:  ''
         },
         escrow: { // Amount held from the Contract Account
             type:     Number,
-            required: true
+            required: true,
+            default:  0
         }
     });
     Balance = mongoose.model('Balance', BalanceSchema);

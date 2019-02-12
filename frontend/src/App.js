@@ -11,7 +11,7 @@ import { updateClaims }      from './utils/updateClaims';
 // import { updateJoinedCases } from './utils/updateJoinedCases';
 
 import './styles/App.css';
-import Button               from '@material-ui/core/Button'
+import { Button } from 'reactstrap';
 
 class App extends Component {
 
@@ -471,7 +471,7 @@ class App extends Component {
      * Scatter Bridge
      */
 
-     deltecase = async() => {
+     deletecase = async() => {
          let actions = await this.eosio.makeAction(process.env.REACT_APP_CONTRACT_ACCOUNT, 'deletecase',
             {
                 case_id: ''
@@ -496,13 +496,13 @@ class App extends Component {
               <div className='App'>
                   <div className='BtnDiv'>
                       <div className='Btn'>
-                          <Button variant='contained' color='primary' onClick={this.handleLogin.bind(this)}>LOGIN</Button>
+                         <Button variant='contained' color='primary' onClick={this.handleLogin.bind(this)}>LOGIN</Button>
                       </div>
                       <div className='Btn'>
-                          <Button variant='contained' color="primary" onClick={this.transfer.bind(this)}>TRANSFER</Button>
+                            <Button variant='contained' color='primary' onClick={this.transfer.bind(this)}>TRANSFER</Button>
                       </div>
                       <div className='Btn'>
-                          <Button variant='contained' color="primary" onClick={this.logout.bind(this)}>LOGOUT</Button>
+                            <Button variant='contained' color='danger' onClick={this.logout.bind(this)}>LOGOUT</Button>
                       </div>
                   </div>
               </div>
