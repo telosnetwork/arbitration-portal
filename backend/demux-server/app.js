@@ -23,11 +23,11 @@ mongoose.connect(process.env.MONGODB_URL, { useNewUrlParser: true }).then(() => 
    const db = mongoose.connection;
 
    db.on('connected', () => {
-      console.info(`Mongoose default connection open to ${process.env.MONGO_URL}`);
+      console.info(`Mongoose default connection open to ${process.env.MONGODB_URL}`);
    });
 
    db.on('disconnected', () => {
-      console.info(`Mongoose default connection disconnected from ${process.env.MONGO_URL}`);
+      console.info(`Mongoose default connection disconnected from ${process.env.MONGODB_URL}`);
    });
 
    db.on('error', console.error.bind(console, 'Mongoose connection error:'));
