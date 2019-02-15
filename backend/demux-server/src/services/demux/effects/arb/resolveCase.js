@@ -4,12 +4,7 @@ function resolveCaseEffect(payload, blockInfo, context) {
         console.log('ResolveCase effect BlockInfo: ', blockInfo);   
 
         const post = {
-            trxHash:      payload.transactionId,
-            blockHash:    blockInfo.blockHash,
-            timestamp:    blockInfo.timestamp,
-            case_id:      payload.data.case_id,
-            assigned_arb: payload.data.assigned_arb,
-            case_ruling:  payload.data.case_ruling
+            trxHash: payload.transactionId
         };
         context.socket.emit('resolveCaseAction', post);
     } catch (err) {

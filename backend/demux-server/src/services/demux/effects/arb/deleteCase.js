@@ -4,10 +4,7 @@ function deleteCaseEffect(payload, blockInfo, context) {
         console.log('DeleteCase effect BlockInfo: ', blockInfo);   
 
         const post = {
-            trxHash:   payload.transactionId,
-            blockHash: blockInfo.blockHash,
-            timestamp: blockInfo.timestamp,
-            case_id:   payload.data.case_id
+            trxHash: payload.transactionId
         };
         context.socket.emit('deleteCaseAction', post);
     } catch (err) {

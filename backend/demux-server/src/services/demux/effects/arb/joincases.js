@@ -4,12 +4,7 @@ function joinCasesEffect(payload, blockInfo, context) {
         console.log('JoinCases effect BlockInfo: ', blockInfo);   
 
         const post = {
-            trxHash:     payload.transactionId,
-            blockHash:   blockInfo.blockHash,
-            timestamp:   blockInfo.timestamp,
-            joinder_id:  payload.data.joinder_id,
-            new_case_id: payload.data.new_case_id,
-            arb:         payload.data.arb
+            trxHash: payload.transactionId
         };
         context.socket.emti('joinCasesAction', post);
     } catch (err) {

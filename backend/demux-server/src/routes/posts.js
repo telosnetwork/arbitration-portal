@@ -3,7 +3,7 @@ import { listArbitrator }  from '../services/post/listArbitrator';
 import { listCase }        from '../services/post/listCase';
 import { listBalance }     from '../services/post/listBalance';
 import { listClaim }       from '../services/post/listClaim';
-import { listJoinedCases } from '../services/post/listJoinedCases';
+// import { listJoinedCases } from '../services/post/listJoinedCases';
 import { listTransfers }   from '../services/post/listTransfers';
 import { listCounters }    from '../services/post/listCounters';
 
@@ -23,7 +23,7 @@ export default () => {
     api.get('/case',        listCase);
     api.get('/balance',     listBalance);
     api.get('/claim',       listClaim);
-    api.get('/joinedcases', listJoinedCases);
+    // api.get('/joinedcases', listJoinedCases);
     api.get('/transfers',   listTransfers);
     api.get('/counter',     listCounters);
 

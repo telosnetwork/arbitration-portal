@@ -20,6 +20,10 @@ try {
             type:    String,
             default: ''
         },
+        response_link: {
+            type:    String,
+            default: ''
+        },
         decision_class: {
             type:    Number
         }
@@ -48,16 +52,16 @@ try {
             type:    String,
             default: ''
         }],
+        approvals: [{
+            type:    String,
+            default: ''
+        }],
         required_langs: [{
             type:    Number
         }],
         unread_claims: [{
             type: ClaimSchema
         }],
-        // unread_claims: [{
-        //     type: mongoose.ObjectId,
-        //     ref: 'Claim' // Schema Reference
-        // }],
         accepted_claims: [{
             type:    Number,
             default: 0

@@ -5,6 +5,9 @@ async function deleteCaseHandler (state, payload, blockInfo, context) {
 
         let case_id = payload.data.case_id;
 
+        // Delete|Remove CaseFile
+        await state.case.findOneAndDelete({ case_id: case_id }).exec();
+
     } catch (err) {
         console.error('DeleteCase updater error: ', err);
     }

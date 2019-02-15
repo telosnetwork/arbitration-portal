@@ -4,12 +4,7 @@ function newJoinderEffect(payload, blockInfo, context) {
         console.log('NewJoinder effect BlockInfo: ', blockInfo);
 
         const post = {
-            trxHash:         payload.transactionId,
-            blockHash:       blockInfo.blockHash,
-            timestamp:       blockInfo.timestamp,
-            base_case_id:    payload.data.base_case_id,
-            joining_case_id: payload.data.joining_case_id,
-            arb:             payload.data.arb
+            trxHash: payload.transactionId
         };
         context.socket.emit('newJoinderAction', post);
     } catch (err) {

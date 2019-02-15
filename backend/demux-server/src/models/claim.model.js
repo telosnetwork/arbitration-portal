@@ -20,6 +20,10 @@ try {
             type:    String,
             default: ''
         },
+        response_link: {
+            type:    String,
+            default: ''
+        },
         decision_class: {
             type:    Number
         }

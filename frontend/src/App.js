@@ -28,7 +28,7 @@ class App extends Component {
         cases: [],
         balances: [],
         claims: [],
-        joinedcases: [],
+        // joinedcases: [],
         transfers: []
     }
 
@@ -52,7 +52,7 @@ class App extends Component {
         this.loadCases();
         this.loadBalances();
         this.loadClaims();
-        this.loadJoinedCases();
+        // this.loadJoinedCases();
         this.loadTransfers();
 
         /**
@@ -123,6 +123,14 @@ class App extends Component {
 
         // Case_Progression Actions
 
+        this.io.onMessage('respondAction',      (postCase) => {
+            this.setState((prevState) => (
+                {
+                    cases: updateCases(prevState, postCase)
+                }
+            ));
+        });
+
         this.io.onMessage('addArbsAction',      (post) => {
         });
 
@@ -168,21 +176,12 @@ class App extends Component {
             ));  
         });
 
-        this.io.onMessage('resolveCaseAction',  (post) => {
-        });
-
         this.io.onMessage('recuseAction',       (postCase) => {
             this.setState((prevState) => (
                 {
                     cases: updateCases(prevState, postCase)
                 } 
             ));  
-        });
-
-        this.io.onMessage('newJoinderAction',   (post) => {
-        });
-
-        this.io.onMessage('joinCasesAction',    (post) => {
         });
 
         // Arb_Actions
@@ -203,7 +202,12 @@ class App extends Component {
             )); 
         });
 
-        this.io.onMessage('deleteCaseAction',   (post) => {
+        this.io.onMessage('deleteCaseAction',   (postCase) => {
+            this.setState((prevState) => (
+                {
+                    cases: updateCases(prevState, postCase)
+                }
+            ));
         });
     }
 
@@ -231,11 +235,11 @@ class App extends Component {
         this.setState({ claims: response.data.reverse() })
     }
 
-    loadJoinedCases = async () => {
-        const response = await axios.get(`${process.env.REACT_APP_API_URL}/posts/joinedcases`);
-        console.log('LoadJoinedCases: ', response);
-        this.setState({ joinedcases: response.data.reverse() })
-    }
+    // loadJoinedCases = async () => {
+    //     const response = await axios.get(`${process.env.REACT_APP_API_URL}/posts/joinedcases`);
+    //     console.log('LoadJoinedCases: ', response);
+    //     this.setState({ joinedcases: response.data.reverse() })
+    // }
 
     loadTransfers = async () => {
         const response = await axios.get(`${process.env.REACT_APP_API_URL}/posts/transfers`);
@@ -339,6 +343,19 @@ class App extends Component {
      * Case_Progression Actions
      */
 
+     respond = async() => {
+        let actions = await this.eosio.makeAction(process.env.REACT_APP_CONTRACT_ACCOUNT, 'respond',
+            {
+                case_id:       '',
+                claim_hash:    '',
+                respondant:    '',
+                response_link: ''
+            }
+        );
+        let result = await this.eosio.sendTx(actions);
+        console.log('Results: ', result);
+     }
+
      addarbs = async() => {
         let actions = await this.eosio.makeAction(process.env.REACT_APP_CONTRACT_ACCOUNT, 'addarbs',
             {
@@ -424,30 +441,6 @@ class App extends Component {
         console.log('Results: ', result);
      }
 
-     newjoinder = async() => {
-         let actions = await this.eosio.makeAction(process.env.REACT_APP_CONTRACT_ACCOUNT, 'newjoinder',
-            {
-                base_case_id:    '',
-                joining_case_id: '',
-                arb:             ''
-            }
-        );
-        let result = await this.eosio.sendTx(actions);
-        console.log('Results: ', result);
-     }
-
-     joincases = async() => {
-         let actions = await this.eosio.makeAction(process.env.REACT_APP_CONTRACT_ACCOUNT, 'joincases',
-            {
-                joinder_id:  '',
-                new_case_id: '',
-                arb:         ''
-            }
-        );
-        let result = await this.eosio.sendTx(actions);
-        console.log('Results: ', result);
-     }
-
     /**
      * Arb_Actions 
      */
@@ -474,20 +467,19 @@ class App extends Component {
         console.log('Results: ', result);
      }
 
+     deltecase = async() => {
+        let actions = await this.eosio.makeAction(process.env.REACT_APP_CONTRACT_ACCOUNT, 'deletecase',
+           {
+               case_id: ''
+           }
+       );
+       let result = await this.eosio.sendTx(actions);
+       console.log('Results: ', result);
+     }
     
     /**
      * Scatter Bridge
      */
-
-     deletecase = async() => {
-         let actions = await this.eosio.makeAction(process.env.REACT_APP_CONTRACT_ACCOUNT, 'deletecase',
-            {
-                case_id: ''
-            }
-        );
-        let result = await this.eosio.sendTx(actions);
-        console.log('Results: ', result);
-     }
 
     handleLogin = async () => {
         await this.eosio.connect();
