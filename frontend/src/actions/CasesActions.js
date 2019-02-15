@@ -10,10 +10,11 @@ class CasesAction {
             claimant,
             respondant,
             arbitrators,
-            required_langs,
+            approvals,      // Arbitrators that approved to AdvanceCase
+            required_langs, // Required List of Language Codes
             unread_claims,
             accepted_claims,
-            case_ruling,
+            case_ruling,    // IPFS Link to Ruling Doc
             arb_comment
         }        
     }

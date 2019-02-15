@@ -6,6 +6,7 @@ const initialState = {
     claimant:          '',
     respondant:        '',
     arbitrators:       [0],
+    approvals:         [0],
     required_langs:    null,
     unread_claims:  {
         claim_id:      0,
@@ -26,6 +27,7 @@ export default function(state = initialState, action) {
                 claimant: action.claimant               || initialState.claimant,
                 respondant: action.respondant           || initialState.respondant,
                 arbitrators: action.arbitrators         || initialState.arbitrators,
+                approvals: action.approvals             || initialState.approvals,
                 required_langs: action.required_langs   || initialState.required_langs,
                 unread_claims: action.unread_claims     || initialState.unread_claims,
                 accepted_claims: action.accepted_claims || initialState.accepted_claims,

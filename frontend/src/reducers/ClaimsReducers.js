@@ -14,6 +14,7 @@ export default function(state = initialState, action) {
                 claim_id: typeof action.claim_id === "undefined" ? state.claim_id : action.claim_id,
                 claim_summary: action.claim_summary   || initialState.claim_summary,
                 decision_link: action.decision_link   || initialState.decision_link,
+                response_link: action.response_link   || initialState.response_link,
                 decision_class: action.decision_class || initialState.decision_class
             });
         }

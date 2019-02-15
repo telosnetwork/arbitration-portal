@@ -8,18 +8,22 @@ try {
     const JoinedSchema = new Schema({
         join_id: {
             type:     Number,
-            required: true
+            required: true,
+            default:  0
         },
         cases: [{
-            type:     Number
+            type:    Number,
+            default: 0
         }],
         join_time: {
             type:     Number,
-            required: true
+            required: true,
+            default:  0
         },
         joined_by: {
             type:     String,
-            required: true
+            required: true,
+            default:  0
         }
     });
     Joined = mongoose.model('Joined', JoinedSchema);
