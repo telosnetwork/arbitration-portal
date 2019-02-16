@@ -1,13 +1,18 @@
 import React, { Component } from 'react';
 import axios                from 'axios';
-import ScatterBridge        from './utils/scatterBridge';
-import IOClient             from './utils/io-client';
+import ScatterBridge        from '../utils/scatterBridge';
+import IOClient             from '../utils/io-client';
 
-import { updateTransfers }   from './utils/updateTransfers';
-import { updateArbitrators } from './utils/updateArbitrators';
-import { updateBalances }    from './utils/updateBalances';
-import { updateCases }       from './utils/updateCases';
-import { updateClaims }      from './utils/updateClaims';
+// Components
+import { Arbitrators }      from '../components/Arbitrators/Arbitrators';
+import { Members }          from '../components/Members/Members';
+
+// Utilities
+import { updateTransfers }   from '../utils/updateTransfers';
+import { updateArbitrators } from '../utils/updateArbitrators';
+import { updateBalances }    from '../utils/updateBalances';
+import { updateCases }       from '../utils/updateCases';
+import { updateClaims }      from '../utils/updateClaims';
 // import { updateJoinedCases } from './utils/updateJoinedCases';
 
 import { connect } from 'react-redux';
@@ -18,7 +23,6 @@ import { ArbitratorsAction,
         //  JoinedCasesAction,
          TransfersAction } from 'actions';
 
-import './styles/App.css';
 import { Button } from 'reactstrap';
 
 class App extends Component {
@@ -515,7 +519,7 @@ class App extends Component {
 // Map all state to component props (for redux to connect)
 const mapStateToProps = state => state;
 
-// Map the following actio to component props
+// Map the following actions to component props
 const mapDispatchToProps = {
     setArbitrators: ArbitratorsAction.setArbitrators,
     setBalances:    BalancesAction.setBalances,
