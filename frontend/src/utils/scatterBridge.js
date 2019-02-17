@@ -56,7 +56,6 @@ export default class ScatterBridge {
         if (this.isConnected) {
             await this.scatter.login(this.reqFields);
             this.currentAccount = this.scatter.identity.accounts.find(x => x.blockchain === `eos`);
-            alert('Login Successful to Scatter');
         } else {
             alert('Login Fail - Please Login to Scatter');
         }

@@ -1,43 +1,23 @@
-import React, { Component } from 'react';
-import axios                from 'axios';
-import ScatterBridge        from '../utils/scatterBridge';
-import IOClient             from '../utils/io-client';
-
-// Components
-import { Arbitrators }      from '../components/Arbitrators/Arbitrators';
-import { Members }          from '../components/Members/Members';
+import React, { Component }    from 'react';
+import { Route, Link, Switch } from 'react-router-dom';
 
 // Utilities
-import { updateTransfers }   from '../utils/updateTransfers';
-import { updateArbitrators } from '../utils/updateArbitrators';
-import { updateBalances }    from '../utils/updateBalances';
-import { updateCases }       from '../utils/updateCases';
-import { updateClaims }      from '../utils/updateClaims';
-// import { updateJoinedCases } from './utils/updateJoinedCases';
+import ScatterBridge from '../utils/scatterBridge';
 
-import { connect } from 'react-redux';
-import { ArbitratorsAction,
-         BalancesAction,
-         CasesAction,
-         ClaimsAction,
-        //  JoinedCasesAction,
-         TransfersAction } from 'actions';
+// Components
+import Transfers     from '../containers/Transfers';
+import Arbitrators   from '../containers/Arbitrators';
+import Members       from '../containers/Members';
 
-import { Button } from 'reactstrap';
+// Reactstrap Components
+import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
+import { Collapse, Navbar, NavbarToggler, NavbarBrand, Nav, NavItem, NavLink } from 'reactstrap';
 
 class App extends Component {
 
-    state = {
-        arbitrators: [],
-        cases: [],
-        balances: [],
-        claims: [],
-        // joinedcases: [],
-        transfers: []
-    }
-
     constructor (props) {
         super(props);
+
         this.appName = process.env.REACT_APP_NAME;
         this.network = {
           blockchain: `${process.env.REACT_APP_BLOCKCHAIN}`,
@@ -47,440 +27,39 @@ class App extends Component {
           chainId:    `${process.env.REACT_APP_CHAINID}`
         };
         this.eosio = new ScatterBridge(this.network, this.appName);
-        this.io    = new IOClient();
+
+        this.state = {
+            isLogin: false,
+            modal:   false,
+            isOpen:  false
+        };
+
+        this.toggleModal  = this.toggleModal.bind(this);
+        this.toggleNavBar = this.toggleNavBar.bind(this);
+        this.handleLogin  = this.handleLogin.bind(this);
+        this.toggleLogin  = this.toggleLogin.bind(this);
+
+        this.logout       = this.logout.bind(this);
     }
 
-    // Real-Time Updates via Socket.io
-    componentDidMount = async() => {
-        this.loadArbitrators();
-        this.loadCases();
-        this.loadBalances();
-        this.loadClaims();
-        // this.loadJoinedCases();
-        this.loadTransfers();
-
-        /**
-         * Transfer Action Listeners
-         */
-        this.io.onMessage('transferAction',     (transfer) => {
-            this.setState((prevState) => (
-                {
-                    balances:  updateBalances(prevState, transfer),
-                    transfers: updateTransfers(prevState, transfer)
-                }
-            ));
-        });
-
-        /**
-         * Arbitration (Member and Arbitrator) Action Listeners
-         */
-
-        // Case_Setup Actions
-
-        this.io.onMessage('withdraw',           (balance) => {
-            this.setState((prevState) => (
-                {
-                    balances: updateBalances(prevState, balance)
-                } 
-            ));
-        });
-
-        this.io.onMessage('fileCaseAction',      (postCase) => {
-            this.setState((prevState) => (
-                {
-                    cases: updateCases(prevState, postCase)
-                } 
-            ));    
-        });
-
-        this.io.onMessage('addClaimAction',     (postCase) => {
-            this.setState((prevState) => (
-                {
-                    cases: updateCases(prevState, postCase)
-                } 
-            ));    
-        });
-
-        this.io.onMessage('removeClaimAction',  (postCase) => {
-            this.setState((prevState) => (
-                {
-                    cases: updateCases(prevState, postCase)
-                } 
-            ));    
-        });
-
-        this.io.onMessage('shredCaseAction',    (postCase) => {
-            this.setState((prevState) => (
-                {
-                    cases: updateCases(prevState, postCase)
-                } 
-            ));    
-        });
-
-        this.io.onMessage('readyCaseAction',    (postCase) => {
-            this.setState((prevState) => (
-                {
-                    cases: updateCases(prevState, postCase)
-                } 
-            ));    
-        });
-
-        // Case_Progression Actions
-
-        this.io.onMessage('respondAction',      (postCase) => {
-            this.setState((prevState) => (
-                {
-                    cases: updateCases(prevState, postCase)
-                }
-            ));
-        });
-
-        this.io.onMessage('addArbsAction',      (post) => {
-        });
-
-        this.io.onMessage('assignToCaseAction', (post) => {
-            this.setState((prevState) => (
-                {
-                    arbitrators: updateArbitrators(prevState, post),
-                    cases:       updateCases(prevState, post) 
-                } 
-            ));  
-        });
-
-        this.io.onMessage('dismissClaimAction', (postCase) => {
-            this.setState((prevState) => (
-                {
-                    cases: updateCases(prevState, postCase)
-                } 
-            ));  
-        });
-
-        this.io.onMessage('acceptClaimAction',  (post) => {
-            this.setState((prevState) => (
-                {
-                    cases:  updateCases(prevState, post),
-                    claims: updateClaims(prevState, post)
-                } 
-            ));  
-        });
-
-        this.io.onMessage('advanceCaseAction',  (postCase) => {
-            this.setState((prevState) => (
-                {
-                    cases: updateCases(prevState, postCase)
-                } 
-            ));  
-        });
-
-        this.io.onMessage('dismissCaseAction',  (postCase) => {
-            this.setState((prevState) => (
-                {
-                    cases: updateCases(prevState, postCase)
-                } 
-            ));  
-        });
-
-        this.io.onMessage('recuseAction',       (postCase) => {
-            this.setState((prevState) => (
-                {
-                    cases: updateCases(prevState, postCase)
-                } 
-            ));  
-        });
-
-        // Arb_Actions
-        
-        this.io.onMessage('newArbStatusAction', (arbitrator) => {
-            this.setState((prevState) => (
-                {
-                    arbitrators: updateArbitrators(prevState, arbitrator)
-                } 
-            ));    
-        });
-
-        this.io.onMessage('setLangCodesAction', (arbitrator) => {
-            this.setState((prevState) => (
-                {
-                    arbitrators: updateArbitrators(prevState, arbitrator)
-                } 
-            )); 
-        });
-
-        this.io.onMessage('deleteCaseAction',   (postCase) => {
-            this.setState((prevState) => (
-                {
-                    cases: updateCases(prevState, postCase)
-                }
-            ));
-        });
+    toggleModal() {
+        this.setState(prevState => ({
+            modal: !prevState.modal
+        }));
     }
 
-    loadArbitrators = async () => {
-        const response = await axios.get(`${process.env.REACT_APP_API_URL}/posts/arbitrator`);
-        console.log('LoadArbitrators: ', response);
-        this.setState({ arbitrators: response.data.reverse() })
+    toggleNavBar() {
+        this.setState(prevState => ({
+            isOpen: !prevState.isOpen
+        }));
     }
 
-    loadCases = async () => {
-        const response = await axios.get(`${process.env.REACT_APP_API_URL}/posts/case`);
-        console.log('LoadCases: ', response);
-        this.setState({ cases: response.data.reverse() })
+    toggleLogin() {
+        this.setState(prevState => ({
+            isLogin: !prevState.isLogin
+        }));
     }
 
-    loadBalances = async () => {
-        const response = await axios.get(`${process.env.REACT_APP_API_URL}/posts/balance`);
-        console.log('LoadBalances: ', response);
-        this.setState({ balances: response.data.reverse() })
-    }
-
-    loadClaims = async () => {
-        const response = await axios.get(`${process.env.REACT_APP_API_URL}/posts/claim`);
-        console.log('LoadClaims: ', response);
-        this.setState({ claims: response.data.reverse() })
-    }
-
-    // loadJoinedCases = async () => {
-    //     const response = await axios.get(`${process.env.REACT_APP_API_URL}/posts/joinedcases`);
-    //     console.log('LoadJoinedCases: ', response);
-    //     this.setState({ joinedcases: response.data.reverse() })
-    // }
-
-    loadTransfers = async () => {
-        const response = await axios.get(`${process.env.REACT_APP_API_URL}/posts/transfers`);
-        console.log('LoadTransfers: ', response);
-        this.setState({ transfers: response.data.reverse() })
-    }
-
-    /**
-     * Transfer Actions
-     */
-    transfer = async () => {
-        try {
-            let actions = await this.eosio.makeAction(process.env.REACT_APP_EOSIO_TOKEN_ACCOUNT, 'transfer', 
-                {
-                from:      this.eosio.currentAccount.name,
-                to:       'emanateissue',
-                quantity: '1.0000 EOS',
-                memo:     'Transfer Memo'
-                }
-            );
-            let result = await this.eosio.sendTx(actions);
-        console.log('Results: ', result);
-        } catch (err) {
-            console.error(err);
-        }
-    }
-
-    /**
-     * Case_Setup Actions
-     */
-    withdraw = async() => {
-        let actions = await this.eosio.makeAction(process.env.REACT_APP_CONTRACT_ACCOUNT, 'withdraw',
-            {
-                owner: ''
-            }
-        );
-        let result = await this.eosio.sendTx(actions);
-        console.log('Results: ', result);
-    }
-
-    filecase = async() => {
-        let actions = await this.eosio.makeAction(process.env.REACT_APP_CONTRACT_ACCOUNT, 'filecase',
-            {
-                claimant:   '',
-                claim_link: '',
-                lang_codes: '',
-                respondant: ''
-            }
-        );
-        let result = await this.eosio.sendTx(actions);
-        console.log('Results: ', result);
-    }
-
-    addclaim = async() => {
-        let actions = await this.eosio.makeAction(process.env.REACT_APP_CONTRACT_ACCOUNT, 'addclaim',
-            {
-                case_id:    '',
-                claim_link: '',
-                claimant:   ''
-            }
-        );
-        let result = await this.eosio.sendTx(actions);
-        console.log('Results: ', result);
-    }
-
-    removeclaim = async() => {
-        let actions = await this.eosio.makeAction(process.env.REACT_APP_CONTRACT_ACCOUNT, 'removeclaim',
-            {
-                case_id:    '',
-                claim_hash: '',
-                claimant:   ''
-            }
-        );
-        let result = await this.eosio.sendTx(actions);
-        console.log('Results: ', result);
-    }
-
-    shredcase = async() => {
-        let actions = await this.eosio.makeAction(process.env.REACT_APP_CONTRACT_ACCOUNT, 'shredcase',
-            {
-                case_id:  '',
-                claimant: ''
-            }
-        );
-        let result = await this.eosio.sendTx(actions);
-        console.log('Results: ', result);
-    }
-
-    readycase = async() => {
-        let actions = await this.eosio.makeAction(process.env.REACT_APP_CONTRACT_ACCOUNT, 'readycase',
-            {
-                case_id:  '',
-                claimant: ''
-            }
-        );
-        let result = await this.eosio.sendTx(actions);
-        console.log('Results: ', result);
-    }
-
-    /**
-     * Case_Progression Actions
-     */
-
-     respond = async() => {
-        let actions = await this.eosio.makeAction(process.env.REACT_APP_CONTRACT_ACCOUNT, 'respond',
-            {
-                case_id:       '',
-                claim_hash:    '',
-                respondant:    '',
-                response_link: ''
-            }
-        );
-        let result = await this.eosio.sendTx(actions);
-        console.log('Results: ', result);
-     }
-
-     addarbs = async() => {
-        let actions = await this.eosio.makeAction(process.env.REACT_APP_CONTRACT_ACCOUNT, 'addarbs',
-            {
-                case_id:            '',
-                assigned_arb:       '',
-                num_arbs_to_assign: ''
-            }
-        );
-        let result = await this.eosio.sendTx(actions);
-        console.log('Results: ', result);
-     }
-
-     assigntocase = async() => {
-         let actions = await this.eosio.makeAction(process.env.REACT_APP_CONTRACT_ACCOUNT, 'assigntocase',
-            {
-                case_id:       '',
-                arb_to_assign: ''
-            }
-        );
-        let result = await this.eosio.sendTx(actions);
-        console.log('Results: ', result);
-     }
-
-     dismissclaim = async() => {
-        let actions = await this.eosio.makeAction(process.env.REACT_APP_CONTRACT_ACCOUNT, 'dismissclaim',
-            {
-                case_id:      '',
-                assigned_arb: '',
-                claim_hash:   '',
-                memo:         ''
-            }
-        );
-        let result = await this.eosio.sendTx(actions);
-        console.log('Results: ', result);
-     }
-
-     acceptclaim = async() => {
-        let actions = await this.eosio.makeAction(process.env.REACT_APP_CONTRACT_ACCOUNT, 'acceptclaim',
-            {
-                case_id:        '',
-                assigned_arb:   '',
-                claim_hash:     '',
-                decision_link:  '',
-                decision_class: ''
-            }
-        );
-        let result = await this.eosio.sendTx(actions);
-        console.log('Results: ', result);
-     }
-
-     advancecase = async() => {
-        let actions = await this.eosio.makeAction(process.env.REACT_APP_CONTRACT_ACCOUNT, 'advancecase',
-            {
-                case_id:      '',
-                assigned_arb: '',
-            }
-        );
-        let result = await this.eosio.sendTx(actions);
-        console.log('Results: ', result);
-     }
-
-     dismisscase = async() => {
-        let actions = await this.eosio.makeAction(process.env.REACT_APP_CONTRACT_ACCOUNT, 'dismisscase',
-            {
-                case_id:      '',
-                assigned_arb: '',
-                ruling_link:  '',
-            }
-        );
-        let result = await this.eosio.sendTx(actions);
-        console.log('Results: ', result);
-     }
-
-     recuse = async() => {
-         let actions = await this.eosio.sendTx(process.env.REACT_APP_CONTRACT_ACCOUNT, 'recuse',
-            {
-                case_id:      '',
-                rationale:    '',
-                assigned_arb: ''
-            }
-        );
-        let result = await this.eosio.sendTx(actions);
-        console.log('Results: ', result);
-     }
-
-    /**
-     * Arb_Actions 
-     */
-
-     newarbstatus = async() => {
-         let actions = await this.eosio.makeAction(process.env.REACT_APP_CONTRACT_ACCOUNT, 'newarbstatus',
-            {
-                new_status: '',
-                arbitrator: ''
-            }
-        );
-        let result = await this.eosio.sendTx(actions);
-        console.log('Results: ', result);
-     }
-
-     setlangcodes = async() => {
-         let actions = await this.eosio.makeAction(process.env.REACT_APP_CONTRACT_ACCOUNT, 'setlangcodes',
-            {
-                arbitrator: '',
-                lang_codes: ''
-            }
-        );
-        let result = await this.eosio.sendTx(actions);
-        console.log('Results: ', result);
-     }
-
-     deltecase = async() => {
-        let actions = await this.eosio.makeAction(process.env.REACT_APP_CONTRACT_ACCOUNT, 'deletecase',
-           {
-               case_id: ''
-           }
-       );
-       let result = await this.eosio.sendTx(actions);
-       console.log('Results: ', result);
-     }
-    
     /**
      * Scatter Bridge
      */
@@ -488,46 +67,84 @@ class App extends Component {
     handleLogin = async () => {
         await this.eosio.connect();
         await this.eosio.login();
+        this.toggleLogin();
+        this.toggleModal();
     }
 
     logout = async () => {
         await this.eosio.logout();
+        this.toggleModal();
     }
 
     render() {
         document.title='Telos Portal'
           return (
               <div className='App'>
-                  <div className='BtnDiv'>
-                      <div className='Btn'>
-                         <Button variant='contained' color='primary' onClick={this.handleLogin.bind(this)}>LOGIN</Button>
-                      </div>
-                      <div className='Btn'>
-                            <Button variant='contained' color='primary' onClick={this.transfer.bind(this)}>TRANSFER</Button>
-                      </div>
-                      <div className='Btn'>
-                            <Button variant='contained' color='danger' onClick={this.logout.bind(this)}>LOGOUT</Button>
-                      </div>
-                  </div>
+                <Navbar color='light' light expand='md'>
+                    <NavbarBrand>
+                        <Link to='/'>
+                            Arbitration Portal
+                        </Link>
+                    </NavbarBrand>
+                    <NavbarToggler onClick={this.toggleNavBar}/>
+                    <Collapse isOpen={this.state.isOpen} navbar>
+                        <Nav className='ml-auto' navbar>
+                            <NavItem>
+                                <NavLink disabled={!this.state.isLogin}>
+                                    <Link to='/arbitrators'>
+                                        Arbitrator
+                                    </Link>
+                                </NavLink>
+                            </NavItem>
+                            <NavItem>
+                                <NavLink disabled={!this.state.isLogin}>
+                                    <Link to='/members'>
+                                        Members
+                                    </Link>
+                                </NavLink>
+                            </NavItem>
+                            <NavItem>
+                                <NavLink disabled={!this.state.isLogin}>
+                                    <Link to='/transfers'>
+                                        Transfers
+                                    </Link>
+                                </NavLink>
+                            </NavItem>
+                            <NavItem>
+                                <Button color='primary' onClick={this.toggleModal}>Sign in</Button>
+                                <Modal isOpen={this.state.modal} toggle={this.toggleModal} className={this.props.className}>
+                                    <ModalHeader toggle={this.toggleModal} className={this.props.className}>
+                                    <ModalBody>
+                                        Welcome to the Arbitration Portal! To use this portal, please sign in with Scatter first.
+                                    </ModalBody>
+                                    <ModalFooter>
+                                        <Button color='primary'onClick={this.handleLogin}>Login</Button>
+                                        <Button color='danger' onClick={this.logout}>Logout</Button>
+                                    </ModalFooter>
+                                    </ModalHeader>
+                                </Modal>
+                            </NavItem>
+                        </Nav>
+                    </Collapse>
+                </Navbar>  
+                <Switch>
+                   <Route exact path='/' render={() => <div style={{ padding: '20px' }}>
+                                                            <h1>
+                                                                Welcome to the Telos Arbitration Portal!
+                                                            </h1>
+                                                       </div>} />
+                   <Route exact path='/arbitrators' component={Arbitrators} />
+                   <Route exact path='/members' component={Members} />
+                   <Route exact path='/transfers' component={Transfers} />
+                   <Route render={() => <div style={{ padding: '20px' }}>
+                                            <h1>
+                                                Page not found...
+                                            </h1>
+                                        </div>}/>
+                </Switch>    
               </div>
           );
       }
   }
 
-// export default App;
-
-// Map all state to component props (for redux to connect)
-const mapStateToProps = state => state;
-
-// Map the following actions to component props
-const mapDispatchToProps = {
-    setArbitrators: ArbitratorsAction.setArbitrators,
-    setBalances:    BalancesAction.setBalances,
-    setCases:       CasesAction.setCases,
-    setClaims:      ClaimsAction.setClaims,
-    // setJoinedCasesAction: JoinedCasesAction.setJoinedCasesAction,
-    setTransfers:   TransfersAction.setTransfers
-};
-
-// Export a redux connected component
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+export default App;

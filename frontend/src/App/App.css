@@ -1,11 +1,18 @@
-.App {
-  text-align: center;
+.TabBar {
+    margin-top:   20px;
+    margin-left:  20px;
+    margin-right: 20px;
 }
 
-.BtnDiv {
-  margin-top: 100px
+.TabContent {
+    margin-top:   20px;
+    width:        75%;
 }
 
-.Btn {
-  margin-top: 20px
+.formgroup {
+    margin-left:  10px;
+}
+
+.submitButton {
+    float:        right;
 }
