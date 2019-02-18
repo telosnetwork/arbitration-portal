@@ -8,6 +8,11 @@ async function deleteCaseHandler (state, payload, blockInfo, context) {
         // Delete|Remove CaseFile
         await state.case.findOneAndDelete({ case_id: case_id }).exec();
 
+        // Add Removed Case_ID to Counter
+        await state.counter.create({
+            case_removed_counter: case_id
+        }).exec();
+
     } catch (err) {
         console.error('DeleteCase updater error: ', err);
     }

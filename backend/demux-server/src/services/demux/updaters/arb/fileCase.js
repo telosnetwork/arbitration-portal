@@ -5,13 +5,20 @@ async function fileCaseHandler (state, payload, blockInfo, context) {
 
         // Case_Id
         let case_counter = 0;
-        let counters = await state.counter.findOne({}).exec();
-        if (counters) {
-            ({ case_counter } = counters)
-            case_counter += 1;
-            await state.counter.updateOne({}, {
-                $inc: { case_counter: 1 }
-            }, { upsert: true }).exec();
+        // Check if there exists a case_id in case_removed_counter before setting a new case_id
+        let removed_counters = await state.counter.findOne({ case_removed_counter: { $exists: true } });
+        if (removed_counters) {
+            ({ case_removed_counter } = removed_counters)
+            case_counter = case_removed_counter;
+        } else {
+            let counters = await state.counter.findOne({}).exec();
+            if (counters) {
+                ({ case_counter } = counters)
+                case_counter += 1;
+                await state.counter.updateOne({}, {
+                    $inc: { case_counter: 1 }
+                }, { upsert: true }).exec();
+            }
         }
 
         // Case_Status

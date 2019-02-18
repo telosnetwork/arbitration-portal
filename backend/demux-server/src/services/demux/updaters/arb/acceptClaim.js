@@ -9,13 +9,20 @@ async function acceptClaimHandler (state, payload, blockInfo, context) {
         if (caseState) {
             // Claim_Id
             let claim_counter = 0;
-            let counters = await state.counter.findOne({}).exec();
-            if (counters) {
-                ({ claim_counter } = counters)
-                claim_counter += 1;
-                await state.counter.updateOne({}, {
-                    $inc: { claim_counter: 1 }
-                }, { upsert: true }).exec();
+            // Check if there exists a claim_id in claim_removed_counter before setting a new claim_id
+            let removed_counters = await state.counter.findOne({ claim_removed_counter: { $exists: true } }).exec();
+            if (removed_counters) {
+                ({ claim_removed_counter } = removed_counters)
+                claim_counter = claim_removed_counter;
+            } else {
+                let counters = await state.counter.findOne({}).exec();
+                if (counters) {
+                    ({ claim_counter } = counters)
+                    claim_counter += 1;
+                    await state.counter.updateOne({}, {
+                        $inc: { claim_counter: 1 }
+                    }, { upsert: true }).exec();
+                }
             }
 
             let accepted_claim;
