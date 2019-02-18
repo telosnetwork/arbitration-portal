@@ -1,3 +1,9 @@
 .MemberContent {
     padding: 20px;
+    width:   90%;
+}
+
+.checkboxClass {
+    margin-left: 20px;
+    padding: 2px;
 }

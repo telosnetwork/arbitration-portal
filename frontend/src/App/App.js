@@ -133,7 +133,7 @@ class App extends Component {
                     </Collapse>
                 </Navbar>  
                 <Switch>
-                   <Route exact path='/' render={() => <div style={{ padding: '20px' }}>
+                   <Route exact path='/' render={() => <div style={{ padding: '20px', textAlign: 'center' }}>
                                                             <h1>
                                                                 Welcome to the Telos Arbitration Portal!
                                                             </h1>
@@ -141,7 +141,7 @@ class App extends Component {
                    <Route exact path='/arbitrators' component={Arbitrators} />
                    <Route exact path='/members' component={Members} />
                    <Route exact path='/transfers' component={Transfers} />
-                   <Route render={() => <div style={{ padding: '20px' }}>
+                   <Route render={() => <div style={{ padding: '20px', textAlign: 'center' }}>
                                             <h1>
                                                 Page not found...
                                             </h1>

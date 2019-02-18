@@ -34,28 +34,28 @@ class Transfers extends Component {
             transfers: [],
             transferForm: {
                 from: {
-                    label: 'From',
+                    label: 'From:',
                     value: '',
                     type:  'text',
                     placeholder: 'account_name',
                     text: 'Please input a valid TELOS account name'
                 },
                 to: {
-                    label: 'To',
+                    label: 'To:',
                     value: '',
                     type:  'text',
                     placeholder: 'account_name',
                     text: 'Please input a valid TELOS account name'
                 },
                 quantity: {
-                    label: 'Quantity',
+                    label: 'Value:',
                     value: '',
                     type:  'number',
                     placeholder: '0',
                     text: 'Please input a valid value'
                 },
                 memo: {
-                    label: 'Memo',
+                    label: 'Memo:',
                     value: '',
                     type:  'text',
                     placeholder: '...',
@@ -64,11 +64,12 @@ class Transfers extends Component {
             }
         };
 
-        this.handleSubmit = this.handleSubmit.bind(this);
-        this.handleSearch = this.handleSearch.bind(this);
-        this.toggleLogin  = this.toggleLogin.bind(this);
+        this.handleSubmit        = this.handleSubmit.bind(this);
+        this.handleSearch        = this.handleSearch.bind(this);
+        this.inputChangedHandler = this.inputChangedHandler.bind(this);
+        this.toggleLogin         = this.toggleLogin.bind(this);
 
-        this.transfer     = this.transfer.bind(this);
+        this.transfer            = this.transfer.bind(this);
     }
 
     handleSubmit = async(event) => {
@@ -76,7 +77,7 @@ class Transfers extends Component {
         await this.handleSearch(event);
     }
 
-    handleSearch = async(event) =>{
+    handleSearch = async(event) => {
         event.preventDefault();
         this.setState({ loading: true });
         const formData = {};
@@ -148,19 +149,19 @@ class Transfers extends Component {
         try {
             let actions = await this.eosio.makeAction(process.env.REACT_APP_EOSIO_TOKEN_ACCOUNT, 'transfer', 
                 {
-                from:      this.eosio.currentAccount.name,
-                to:        `${to}`,
-                quantity:  `${quantity}${precision}`,
-                memo:      `${memo}`
+                    from:      this.eosio.currentAccount.name,
+                    to:        `${to}`,
+                    quantity:  `${quantity}${precision}`,
+                    memo:      `${memo}`
                 }
             );
             let result = await this.eosio.sendTx(actions);
-        console.log('Results: ', result);
-        if (result) {
-            alert(`Transfer Successful - From: ${this.eosio.currentAccount.name} To: emanateissue`);
-        } else {
-            alert(`Transfer Unsuccessful`);
-        }
+            console.log('Results: ', result);
+            if (result) {
+                alert(`Transfer Successful - From: ${this.eosio.currentAccount.name} To: emanateissue`);
+            } else {
+                alert(`Transfer Unsuccessful`);
+            }
         } catch (err) {
             console.error(err);
         }
