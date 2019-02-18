@@ -1,8 +1,17 @@
 .ArbitratorContent {
     padding: 20px;
-    width:   90%;
+    width:   100%;
 }
 
 .tabContent {
     margin-top: 20px;
+}
+
+a {
+    transition: 0.25s;
+}
+
+a:hover {
+    font-size:  120%;
+    cursor:     pointer;
 }

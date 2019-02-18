@@ -12,6 +12,7 @@ import IOClient              from '../../utils/io-client';
 import { TabContent, TabPane, Nav, NavItem, NavLink, Row, Col } from 'reactstrap';
 import classnames from 'classnames';
 import { Button, Spinner, Form, FormGroup, Label, CustomInput, Input, FormText, FormFeedback } from 'reactstrap';
+import { Jumbotron } from 'reactstrap';
 
 class Arbitrators extends Component {
 
@@ -302,7 +303,7 @@ class Arbitrators extends Component {
                 },
                 newarbstatus: {
                     arbitrator: {
-                        label: 'Arbitrator',
+                        label: 'Arbitrator:',
                         value: '',
                         type:  'text',
                         placeholder: 'account_name',
@@ -318,7 +319,7 @@ class Arbitrators extends Component {
                 },
                 setlangcodes: {
                     arbitrator: {
-                        label: 'Arbitrator',
+                        label: 'Arbitrator:',
                         value: '',
                         type:  'text',
                         placeholder: 'account_name',
@@ -440,8 +441,9 @@ class Arbitrators extends Component {
     componentDidMount = async() => {
         await this.eosio.connect();
         await this.eosio.login();
-        this.toggleLogin();
-
+        if (this.eosio.isConnected && this.eosio.currentAccount) {
+            this.toggleLogin();
+        }
         // this.loadArbitrators();
         // this.loadCases();
         // this.loadBalances();
@@ -965,7 +967,7 @@ class Arbitrators extends Component {
         let tabBar = (
             <Nav tabs>
                 {tabElementsArr.map(tabElement => (
-                    <NavItem>
+                    <NavItem key={tabElement.name}>
                         <NavLink
                             className={classnames({ active: this.state.activeTab === tabElement.activeTab })}
                             onClick={() => { this.toggleTab(tabElement.activeTab) }}>
@@ -979,13 +981,13 @@ class Arbitrators extends Component {
         let tabContent = (
             <TabContent className='tabContent' activeTab={this.state.activeTab}>
                 {tabElementsArr.map(tabElement => (
-                    <TabPane tabId={tabElement.activeTab}>
+                    <TabPane tabId={tabElement.activeTab} key={tabElement.activeTab}>
                         <Row>
                             <Col sm='12'>
                                 {tabElement.id === 'respond' ? 
                                     <Form onSubmit={(event) => this.handleSubmit(event, tabElement.id)}>
                                         {respondFormArr.map(formElement => (
-                                            <FormGroup className='formgroup' row>
+                                            <FormGroup className='formgroup' key={formElement.id} row>
                                                 <Label for={formElement.id} sm={2}>{formElement.label}</Label>
                                                 <Col sm={10}>
                                                     <Input type={formElement.type} value={formElement.value} placeholder={formElement.placeholder} onChange={(event) => this.inputChangedHandler(event, tabElement.id, formElement.id)} />
@@ -998,7 +1000,7 @@ class Arbitrators extends Component {
                                     {tabElement.id === 'addarbs' ? 
                                     <Form onSubmit={(event) => this.handleSubmit(event, tabElement.id)}>
                                         {addArbsArr.map(formElement => (
-                                            <FormGroup className='formgroup' row>
+                                            <FormGroup className='formgroup' key={formElement.id} row>
                                                 <Label for={formElement.id} sm={2}>{formElement.label}</Label>
                                                 <Col sm={10}>
                                                     <Input type={formElement.type} value={formElement.value} placeholder={formElement.placeholder} onChange={(event) => this.inputChangedHandler(event, tabElement.id, formElement.id)} />
@@ -1011,7 +1013,7 @@ class Arbitrators extends Component {
                                     {tabElement.id === 'assigntocase' ? 
                                     <Form onSubmit={(event) => this.handleSubmit(event, tabElement.id)}>
                                         {assignToCaseArr.map(formElement => (
-                                            <FormGroup className='formgroup' row>
+                                            <FormGroup className='formgroup' key={formElement.id} row>
                                                 <Label for={formElement.id} sm={2}>{formElement.label}</Label>
                                                 <Col sm={10}>
                                                     <Input type={formElement.type} value={formElement.value} placeholder={formElement.placeholder} onChange={(event) => this.inputChangedHandler(event, tabElement.id, formElement.id)} />
@@ -1024,7 +1026,7 @@ class Arbitrators extends Component {
                                     {tabElement.id === 'dismissclaim' ? 
                                     <Form onSubmit={(event) => this.handleSubmit(event, tabElement.id)}>
                                         {dismissClaimArr.map(formElement => (
-                                            <FormGroup className='formgroup' row>
+                                            <FormGroup className='formgroup' key={formElement.id} row>
                                                 <Label for={formElement.id} sm={2}>{formElement.label}</Label>
                                                 <Col sm={10}>
                                                     <Input type={formElement.type} value={formElement.value} placeholder={formElement.placeholder} onChange={(event) => this.inputChangedHandler(event, tabElement.id, formElement.id)} />
@@ -1037,7 +1039,7 @@ class Arbitrators extends Component {
                                     {tabElement.id === 'acceptclaim' ? 
                                     <Form onSubmit={(event) => this.handleSubmit(event, tabElement.id)}>
                                         {acceptClaimArr.map(formElement => (
-                                            <FormGroup className='formgroup' row>
+                                            <FormGroup className='formgroup' key={formElement.id} row>
                                                 <Label for={formElement.id} sm={2}>{formElement.label}</Label>
                                                 <Col sm={10}>
                                                     <Input type={formElement.type} value={formElement.value} placeholder={formElement.placeholder} onChange={(event) => this.inputChangedHandler(event, tabElement.id, formElement.id)} />
@@ -1050,7 +1052,7 @@ class Arbitrators extends Component {
                                     {tabElement.id === 'advancecase' ? 
                                     <Form onSubmit={(event) => this.handleSubmit(event, tabElement.id)}>
                                         {advanceCaseArr.map(formElement => (
-                                            <FormGroup className='formgroup' row>
+                                            <FormGroup className='formgroup' key={formElement.id} row>
                                                 <Label for={formElement.id} sm={2}>{formElement.label}</Label>
                                                 <Col sm={10}>
                                                     <Input type={formElement.type} value={formElement.value} placeholder={formElement.placeholder} onChange={(event) => this.inputChangedHandler(event, tabElement.id, formElement.id)} />
@@ -1063,7 +1065,7 @@ class Arbitrators extends Component {
                                     {tabElement.id === 'dismisscase' ? 
                                     <Form onSubmit={(event) => this.handleSubmit(event, tabElement.id)}>
                                         {dismissCaseArr.map(formElement => (
-                                            <FormGroup className='formgroup' row>
+                                            <FormGroup className='formgroup' key={formElement.id} row>
                                                 <Label for={formElement.id} sm={2}>{formElement.label}</Label>
                                                 <Col sm={10}>
                                                     <Input type={formElement.type} value={formElement.value} placeholder={formElement.placeholder} onChange={(event) => this.inputChangedHandler(event, tabElement.id, formElement.id)} />
@@ -1076,7 +1078,7 @@ class Arbitrators extends Component {
                                     {tabElement.id === 'recuse' ? 
                                     <Form onSubmit={(event) => this.handleSubmit(event, tabElement.id)}>
                                         {recuseFormArr.map(formElement => (
-                                            <FormGroup className='formgroup' row>
+                                            <FormGroup className='formgroup' key={formElement.id} row>
                                                 <Label for={formElement.id} sm={2}>{formElement.label}</Label>
                                                 <Col sm={10}>
                                                     <Input type={formElement.type} value={formElement.value} placeholder={formElement.placeholder} onChange={(event) => this.inputChangedHandler(event, tabElement.id, formElement.id)} />
@@ -1089,12 +1091,12 @@ class Arbitrators extends Component {
                                     {tabElement.id === 'newarbstatus' ? 
                                     <Form onSubmit={(event) => this.handleSubmit(event, tabElement.id)}>
                                         {newArbStatusArr.map(formElement => (
-                                            <FormGroup className='formgroup' row>
+                                            <FormGroup className='formgroup' key={formElement.id} row>
                                                 <Label for={formElement.id} sm={2}>{formElement.label}</Label>
                                                 <Col sm={10}>
                                                     {formElement.id === 'new_status' ? 
                                                         arbstatuses.map(status => (
-                                                            <CustomInput className='checkboxClass' type={formElement.type} id={status} label={status} />
+                                                            <CustomInput className='checkboxClass' key={status} type={formElement.type} id={status} label={status} />
                                                         ))
                                                     : null }
                                                     {formElement.id !== 'new_status' ? 
@@ -1108,12 +1110,12 @@ class Arbitrators extends Component {
                                     {tabElement.id === 'setlangcodes' ? 
                                     <Form onSubmit={(event) => this.handleSubmit(event, tabElement.id)}>
                                         {setLangCodesArr.map(formElement => (
-                                            <FormGroup className='formgroup' row>
+                                            <FormGroup className='formgroup' key={formElement.id} row>
                                                 <Label for={formElement.id} sm={2}>{formElement.label}</Label>
                                                 <Col sm={10}>
                                                     {formElement.id === 'lang_codes' ? 
                                                         languages.map(language => (
-                                                            <CustomInput className='checkboxClass' type={formElement.type} id={language} label={language} />
+                                                            <CustomInput className='checkboxClass' key={language} type={formElement.type} id={language} label={language} />
                                                         ))
                                                     : null }
                                                     {formElement.id !== 'lang_codes' ? 
@@ -1127,7 +1129,7 @@ class Arbitrators extends Component {
                                     {tabElement.id === 'deletecase' ? 
                                     <Form onSubmit={(event) => this.handleSubmit(event, tabElement.id)}>
                                         {deleteCaseArr.map(formElement => (
-                                            <FormGroup className='formgroup' row>
+                                            <FormGroup className='formgroup' key={formElement.id} row>
                                                 <Label for={formElement.id} sm={2}>{formElement.label}</Label>
                                                 <Col sm={10}>
                                                     <Input type={formElement.type} value={formElement.value} placeholder={formElement.placeholder} onChange={(event) => this.inputChangedHandler(event, tabElement.id, formElement.id)} />
@@ -1149,9 +1151,11 @@ class Arbitrators extends Component {
 
         return (
             <div className='ArbitratorContent'>
-                <p>Arbitration for arbitrators coming soon...</p>
-                {tabBar}
-                {tabContent}
+            <p>Arbitration for arbitrators coming soon...</p>
+                <Jumbotron>
+                    {tabBar}
+                    {tabContent}
+                </Jumbotron>
             </div>
         )
     }

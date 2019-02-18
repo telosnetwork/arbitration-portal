@@ -9,9 +9,12 @@ import Transfers     from '../containers/Transfers';
 import Arbitrators   from '../containers/Arbitrators';
 import Members       from '../containers/Members';
 
+// Resources
+import mainLogo      from '../resources/telosLogo.png'
+
 // Reactstrap Components
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
-import { Collapse, Navbar, NavbarToggler, NavbarBrand, Nav, NavItem, NavLink } from 'reactstrap';
+import { Collapse, Navbar, NavbarToggler, Nav, NavItem } from 'reactstrap';
 
 class App extends Component {
 
@@ -75,7 +78,7 @@ class App extends Component {
 
     logout = async () => {
         await this.eosio.logout();
-        if (!(this.eosio.isConnected && this.eosio.currentAccount)) {
+        if (!this.eosio.isConnected) {
             this.toggleLogin();
         }
         this.toggleModal();
@@ -86,34 +89,26 @@ class App extends Component {
           return (
               <div className='App'>
                 <Navbar color='light' light expand='md'>
-                    <NavbarBrand>
-                        <Link to='/'>
-                            Arbitration Portal
-                        </Link>
-                    </NavbarBrand>
+                    <Link to='/' style={{ color: 'black', textDecoration: 'none' }}>
+                        <img src={mainLogo} alt='mainLogo' height="40" width="40"/> Arbitration Portal
+                    </Link>
                     <NavbarToggler onClick={this.toggleNavBar}/>
                     <Collapse isOpen={this.state.isOpen} navbar>
                         <Nav className='ml-auto' navbar>
                             <NavItem>
-                                <NavLink disabled={!this.state.isLogin}>
-                                    <Link to='/arbitrators' disabled={!this.state.isLogin}>
-                                        Arbitrator
-                                    </Link>
-                                </NavLink>
+                                <Link to='/arbitrators' style={ !this.state.isLogin ? {pointerEvents: 'none', color: 'black', textDecoration: 'none', marginRight: '10px'} : {color: 'black', textDecoration: 'none', marginRight: '10px'}}  >
+                                    Arbitrator
+                                </Link>
                             </NavItem>
                             <NavItem>
-                                <NavLink disabled={!this.state.isLogin}>
-                                    <Link to='/members'>
-                                        Members
-                                    </Link>
-                                </NavLink>
+                                <Link to='/members' style={ !this.state.isLogin ? {pointerEvents: 'none', color: 'black', textDecoration: 'none', marginRight: '10px'} : {color: 'black', textDecoration: 'none', marginRight: '10px'}}  >
+                                    Members
+                                </Link>
                             </NavItem>
                             <NavItem>
-                                <NavLink disabled={!this.state.isLogin}>
-                                    <Link to='/transfers'>
-                                        Transfers
-                                    </Link>
-                                </NavLink>
+                                <Link to='/transfers' style={ !this.state.isLogin ? {pointerEvents: 'none', color: 'black', textDecoration: 'none', marginRight: '10px'} : {color: 'black', textDecoration: 'none', marginRight: '10px'}}  >
+                                    Transfers
+                                </Link>
                             </NavItem>
                             <NavItem>
                                 <Button color='primary' onClick={this.toggleModal}>Sign in</Button>
@@ -133,10 +128,12 @@ class App extends Component {
                     </Collapse>
                 </Navbar>  
                 <Switch>
-                   <Route exact path='/' render={() => <div style={{ padding: '20px', textAlign: 'center' }}>
+                   <Route exact path='/' render={() => <div style={{ textAlign: 'center', marginTop: '150px' }}>
                                                             <h1>
                                                                 Welcome to the Telos Arbitration Portal!
                                                             </h1>
+                                                            <h3>In order to use the portal, please sign in with the button at the top right corner.</h3>
+                                                            <img src={mainLogo} alt='mainLogo' />
                                                        </div>} />
                    <Route exact path='/arbitrators' component={Arbitrators} />
                    <Route exact path='/members' component={Members} />

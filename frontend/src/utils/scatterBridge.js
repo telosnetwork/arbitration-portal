@@ -62,7 +62,7 @@ export default class ScatterBridge {
     }
 
     logout = async () => {
-        this.scatter.logout();
+        this.isConnected = !(await this.scatter.logout());
         alert('Logout Successful');
     }
 

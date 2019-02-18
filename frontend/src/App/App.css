@@ -16,3 +16,12 @@
 .submitButton {
     float:        right;
 }
+
+a {
+    transition:   0.25s;
+}
+
+a:hover {
+    font-size:    120%;
+    cursor:       pointer;
+}

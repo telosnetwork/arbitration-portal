@@ -10,6 +10,7 @@ import IOClient             from '../../utils/io-client';
 // Reactstrap Components
 import { InputGroup, InputGroupAddon } from 'reactstrap';
 import { Button, Spinner, Col, Form, FormGroup, Label, Input, FormText, FormFeedback } from 'reactstrap';
+import { Jumbotron } from 'reactstrap';
 
 class Transfers extends Component {
 
@@ -111,8 +112,9 @@ class Transfers extends Component {
     componentDidMount = async() => {
         await this.eosio.connect();
         await this.eosio.login();
-        this.toggleLogin();
-
+        if (this.eosio.isConnected && this.eosio.currentAccount) {
+            this.toggleLogin();
+        }
         // this.loadBalances();
         // this.loadTransfers();
 
@@ -194,7 +196,7 @@ class Transfers extends Component {
         let formContent = (
             <Form onSubmit={this.handleSubmit}>
                 {formElementsArr.map(formElement => (
-                    <FormGroup className='formgroup' row>
+                    <FormGroup className='formgroup' key={formElement.id} row>
                         <Label for={formElement.id} sm={1}>{formElement.label}</Label>
                         <Col sm={11}>
                             {formElement.id === 'from'     ? account : formElement.id === 'quantity' ? null : <Input type={formElement.type} value={formElement.value} placeholder={formElement.placeholder} onChange={(event) => this.inputChangedHandler(event, formElement.id)} /> }
@@ -210,7 +212,6 @@ class Transfers extends Component {
             </Form>
         )
         
-
         let submission = null;
 
         if (this.state.loading) {
@@ -221,8 +222,10 @@ class Transfers extends Component {
 
         return (
             <div className='TransferContent'>
-                {formContent}
-                {submission}
+                <Jumbotron>
+                    {formContent}
+                    {submission}
+                </Jumbotron>
             </div>
         );
     }

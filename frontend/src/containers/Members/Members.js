@@ -10,6 +10,7 @@ import IOClient           from '../../utils/io-client';
 import { TabContent, TabPane, Nav, NavItem, NavLink, Row, Col } from 'reactstrap';
 import classnames from 'classnames';
 import { Button, Spinner, Form, FormGroup, Label, CustomInput, Input, FormText, FormFeedback } from 'reactstrap';
+import { Jumbotron } from 'reactstrap';
 
 class Members extends Component {
 
@@ -271,8 +272,9 @@ class Members extends Component {
     componentDidMount = async() => {
         await this.eosio.connect();
         await this.eosio.login();
-        this.toggleLogin();
-
+        if (this.eosio.isConnected && this.eosio.currentAccount) {
+            this.toggleLogin();
+        }
         // this.loadBalances();
         // this.loadCases();
         
@@ -564,7 +566,7 @@ class Members extends Component {
         let tabBar = (
             <Nav tabs>
                 {tabElementsArr.map(tabElement => (
-                    <NavItem>
+                    <NavItem key={tabElement.name}>
                         <NavLink
                             className={classnames({ active: this.state.activeTab === tabElement.activeTab })}
                             onClick={() => { this.toggleTab(tabElement.activeTab) }}>
@@ -578,13 +580,13 @@ class Members extends Component {
         let tabContent = (
             <TabContent className='tabContent' activeTab={this.state.activeTab}>
                 {tabElementsArr.map(tabElement => (
-                    <TabPane tabId={tabElement.activeTab}>
+                    <TabPane tabId={tabElement.activeTab} key={tabElement.activeTab}>
                         <Row>
                             <Col sm='12'>
                                 {tabElement.id === 'withdraw' ? 
                                     <Form onSubmit={(event) => this.handleSubmit(event, tabElement.id)}>
                                         {withdrawFormArr.map(formElement => (
-                                            <FormGroup className='formgroup' row>
+                                            <FormGroup className='formgroup' key={formElement.id} row>
                                                 <Label for={formElement.id} sm={2}>{formElement.label}</Label>
                                                 <Col sm={10}>
                                                     <Input type={formElement.type} value={formElement.value} placeholder={formElement.placeholder} onChange={(event) => this.inputChangedHandler(event, tabElement.id, formElement.id)} />
@@ -597,12 +599,12 @@ class Members extends Component {
                                 {tabElement.id === 'filecase' ? 
                                     <Form onSubmit={(event) => this.handleSubmit(event, tabElement.id)}>
                                         {fileCaseArr.map(formElement => (
-                                            <FormGroup className='formgroup' row>
+                                            <FormGroup className='formgroup' key={formElement.id} row>
                                                 <Label for={formElement.id} sm={2}>{formElement.label}</Label>
                                                 <Col sm={10}>
                                                     {formElement.id === 'lang_codes' ? 
                                                         languages.map(language => (
-                                                            <CustomInput className='checkboxClass' type={formElement.type} id={language} label={language} />
+                                                            <CustomInput className='checkboxClass' key={language} type={formElement.type} id={language} label={language} />
                                                         ))
                                                     : null }
                                                     {formElement.id !== 'lang_codes' ? 
@@ -617,7 +619,7 @@ class Members extends Component {
                                 {tabElement.id === 'addclaim' ? 
                                     <Form onSubmit={(event) => this.handleSubmit(event, tabElement.id)}>
                                         {addClaimArr.map(formElement => (
-                                            <FormGroup className='formgroup' row>
+                                            <FormGroup className='formgroup' key={formElement.id} row>
                                                 <Label for={formElement.id} sm={2}>{formElement.label}</Label>
                                                 <Col sm={10}>
                                                     <Input type={formElement.type} value={formElement.value} placeholder={formElement.placeholder} onChange={(event) => this.inputChangedHandler(event, tabElement.id, formElement.id)} />
@@ -630,7 +632,7 @@ class Members extends Component {
                                 {tabElement.id === 'removeclaim' ? 
                                     <Form onSubmit={(event) => this.handleSubmit(event, tabElement.id)}>
                                         {removeClaimArr.map(formElement => (
-                                            <FormGroup className='formgroup' row>
+                                            <FormGroup className='formgroup' key={formElement.id} row>
                                                 <Label for={formElement.id} sm={2}>{formElement.label}</Label>
                                                 <Col sm={10}>
                                                     <Input type={formElement.type} value={formElement.value} placeholder={formElement.placeholder} onChange={(event) => this.inputChangedHandler(event, tabElement.id, formElement.id)} />
@@ -643,7 +645,7 @@ class Members extends Component {
                                 {tabElement.id === 'shredcase' ? 
                                     <Form onSubmit={(event) => this.handleSubmit(event, tabElement.id)}>
                                         {shredCaseArr.map(formElement => (
-                                            <FormGroup className='formgroup' row>
+                                            <FormGroup className='formgroup' key={formElement.id} row>
                                                 <Label for={formElement.id} sm={2}>{formElement.label}</Label>
                                                 <Col sm={10}>
                                                     <Input type={formElement.type} value={formElement.value} placeholder={formElement.placeholder} onChange={(event) => this.inputChangedHandler(event, tabElement.id, formElement.id)} />
@@ -656,7 +658,7 @@ class Members extends Component {
                                 {tabElement.id === 'readycase' ? 
                                     <Form onSubmit={(event) => this.handleSubmit(event, tabElement.id)}>
                                         {readyCaseArr.map(formElement => (
-                                            <FormGroup className='formgroup' row>
+                                            <FormGroup className='formgroup' key={formElement.id} row>
                                                 <Label for={formElement.id} sm={2}>{formElement.label}</Label>
                                                 <Col sm={10}>
                                                     <Input type={formElement.type} value={formElement.value} placeholder={formElement.placeholder} onChange={(event) => this.inputChangedHandler(event, tabElement.id, formElement.id)} />
@@ -679,8 +681,10 @@ class Members extends Component {
         return (
             <div className='MemberContent'>
                 <p>Arbitration for members coming soon...</p>
-                {tabBar}
-                {tabContent}
+                <Jumbotron>
+                    {tabBar}
+                    {tabContent}
+                </Jumbotron>
             </div>
         )
     }
