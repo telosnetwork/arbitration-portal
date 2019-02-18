@@ -1,4 +1,4 @@
-import { Claim } from '../../models';
+import Claim from '../../models/claim.model';
 
 /**
  * Get list of all claims confirmed from the blockchain

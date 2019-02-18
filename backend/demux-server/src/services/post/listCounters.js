@@ -1,4 +1,4 @@
-import { Counter } from '../../models';
+import Counter from '../../models/counter.model';
 
 /**
  * Get list of all counters confirmed from the blockchain

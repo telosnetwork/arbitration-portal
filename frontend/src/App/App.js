@@ -67,12 +67,17 @@ class App extends Component {
     handleLogin = async () => {
         await this.eosio.connect();
         await this.eosio.login();
-        this.toggleLogin();
+        if (this.eosio.isConnected && this.eosio.currentAccount) {
+            this.toggleLogin();
+        }
         this.toggleModal();
     }
 
     logout = async () => {
         await this.eosio.logout();
+        if (!(this.eosio.isConnected && this.eosio.currentAccount)) {
+            this.toggleLogin();
+        }
         this.toggleModal();
     }
 
@@ -91,7 +96,7 @@ class App extends Component {
                         <Nav className='ml-auto' navbar>
                             <NavItem>
                                 <NavLink disabled={!this.state.isLogin}>
-                                    <Link to='/arbitrators'>
+                                    <Link to='/arbitrators' disabled={!this.state.isLogin}>
                                         Arbitrator
                                     </Link>
                                 </NavLink>

@@ -9,6 +9,9 @@ import { updateBalances }    from '../../utils/updateBalances';
 import { updateCases }       from '../../utils/updateCases';
 import { updateClaims }      from '../../utils/updateClaims';
 
+import { TabContent, TabPane, Nav, NavItem, NavLink, Row, Col } from 'reactstrap';
+import classnames from 'classnames';
+
 class Arbitrators extends Component {
 
     constructor (props) {
@@ -27,19 +30,110 @@ class Arbitrators extends Component {
         
         this.state = {
             isLogin:     false,
+            activeTab:   '1',
             arbitrators: [],
             cases:       [],
             balances:    [],
             claims:      [],
+            tabs: {
+                respond: {
+                    name:      'Respond',
+                    activeTab: '1'
+                },
+                addarbs: {
+                    name:      'Add Arbitrators',
+                    activeTab: '2'
+                },
+                assigntocase: {
+                    name:      'Assign To Case',
+                    activeTab: '3'
+                },
+                dismissclaim: {
+                    name:      'Dismiss Claim',
+                    activeTab: '4'
+                },
+                acceptclaim: {
+                    name:      'Accept Claim',
+                    activeTab: '5'
+                },
+                advancecase: {
+                    name:      'Advance Case',
+                    activeTab: '6'
+                },
+                dismisscase: {
+                    name:      'Dismiss Case',
+                    activeTab: '7'
+                },
+                recuse: {
+                    name:      'Recuse',
+                    activeTab: '8'
+                },
+                newarbstatus: {
+                    name:      'New Arbitrator Status',
+                    activeTab: '9'
+                },
+                setlangcodes: {
+                    name:      'Set Language Codes',
+                    activeTab: '10'
+                },
+                deletecase: {
+                    name:      'Delete Case',
+                    activeTab: '11'
+                }                
+            },
+            arbitratorForm: {
+                respond: {
+
+                },
+                addarbs: {
+
+                },
+                assigntocase: {
+
+                },
+                dismissclaim: {
+
+                },
+                acceptclaim: {
+
+                },
+                advancecase: {
+
+                },
+                dismisscase: {
+   
+                },
+                recuse: {
+
+                },
+                newarbstatus: {
+
+                },
+                setlangcodes: {
+
+                },
+                deletecase: {
+
+                }   
+            }
         };
 
         this.toggleLogin  = this.toggleLogin.bind(this);
+        this.toggleTab    = this.toggleTab.bind(this);
     }
 
     toggleLogin() {
         this.setState(prevState => ({
             isLogin: !prevState.isLogin
         }));
+    }
+
+    toggleTab(tab) {
+        if (this.state.activeTab !== tab) {
+            this.setState({
+                activeTab: tab
+            });
+        }
     }
 
     componentDidMount = async() => {
@@ -55,56 +149,6 @@ class Arbitrators extends Component {
         /**
              * Arbitration (Member and Arbitrator) Action Listeners
          */
-
-        // Case_Setup Actions
-
-        this.io.onMessage('withdraw',           (balance) => {
-            this.setState((prevState) => (
-                {
-                    balances: updateBalances(prevState, balance)
-                } 
-            ));
-        });
-
-        this.io.onMessage('fileCaseAction',      (postCase) => {
-            this.setState((prevState) => (
-                {
-                    cases: updateCases(prevState, postCase)
-                } 
-            ));    
-        });
-
-        this.io.onMessage('addClaimAction',     (postCase) => {
-            this.setState((prevState) => (
-                {
-                    cases: updateCases(prevState, postCase)
-                } 
-            ));    
-        });
-
-        this.io.onMessage('removeClaimAction',  (postCase) => {
-            this.setState((prevState) => (
-                {
-                    cases: updateCases(prevState, postCase)
-                } 
-            ));    
-        });
-
-        this.io.onMessage('shredCaseAction',    (postCase) => {
-            this.setState((prevState) => (
-                {
-                    cases: updateCases(prevState, postCase)
-                } 
-            ));    
-        });
-
-        this.io.onMessage('readyCaseAction',    (postCase) => {
-            this.setState((prevState) => (
-                {
-                    cases: updateCases(prevState, postCase)
-                } 
-            ));    
-        });
 
         // Case_Progression Actions
 
@@ -360,9 +404,47 @@ class Arbitrators extends Component {
      }
 
     render() {
+        const tabElementsArr = [];
+        for (let key in this.state.tabs) {
+            tabElementsArr.push({
+                name:      this.state.tabs[key].name,
+                activeTab: this.state.tabs[key].activeTab
+            });
+        }
+
+        let tabBar = (
+            <Nav tabs>
+                {tabElementsArr.map(tabElement => (
+                    <NavItem>
+                        <NavLink
+                            className={classnames({ active: this.state.activeTab === tabElement.activeTab })}
+                            onClick={() => { this.toggleTab(tabElement.activeTab) }}>
+                            {tabElement.name}
+                        </NavLink>
+                    </NavItem>
+                ))}
+            </Nav>
+        );
+
+        let tabContent = (
+            <TabContent className='tabContent' activeTab={this.state.activeTab}>
+                {tabElementsArr.map(tabElement => (
+                    <TabPane tabId={tabElement.activeTab}>
+                        <Row>
+                            <Col sm='12'>
+                                <p>{tabElement.name} Tab Content coming soon...</p>
+                            </Col>
+                        </Row>
+                    </TabPane>
+                ))}
+            </TabContent>
+        );
+
         return (
             <div className='ArbitratorContent'>
                 <p>Arbitration for arbitrators coming soon...</p>
+                {tabBar}
+                {tabContent}
             </div>
         )
     }

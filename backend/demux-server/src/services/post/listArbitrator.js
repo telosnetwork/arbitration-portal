@@ -1,4 +1,4 @@
-import { Arbitrator } from '../../models';
+import Arbitrator from '../../models/arbitrator.model';
 
 /**
  * Get list of all arbitrators confirmed from the blockchain

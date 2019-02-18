@@ -1,4 +1,4 @@
-import { Case } from '../../models';
+import Case from '../../models/case.model';
 
 /**
  * Get list of all cases confirmed from the blockchain

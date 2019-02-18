@@ -1,4 +1,4 @@
-import { Joined } from '../../models';
+import Joined from '../../models/joinedCase.model';
 
 /**
  * Get list of all joined cases confirmed from the blockchain

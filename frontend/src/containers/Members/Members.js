@@ -7,6 +7,9 @@ import IOClient           from '../../utils/io-client';
 import { updateBalances } from '../../utils/updateBalances';
 import { updateCases }    from '../../utils/updateCases';
 
+import { TabContent, TabPane, Nav, NavItem, NavLink, Row, Col } from 'reactstrap';
+import classnames from 'classnames';
+
 class Members extends Component {
 
     constructor(props) {
@@ -25,17 +28,73 @@ class Members extends Component {
 
         this.state = {
             isLogin:   false,
-            cases:    [],
-            balances: []
+            activeTab: '1',
+            cases:     [],
+            balances:  [],
+            tabs: {
+                withdraw: {
+                    name:      'Withdraw',
+                    activeTab: '1'
+                },
+                filecase: {
+                    name:      'File Case',
+                    activeTab: '2'
+                },
+                addclaim: {
+                    name:      'Add Claim',
+                    activeTab: '3'
+                },
+                removeclaim: {
+                    name:      'Remove Claim',
+                    activeTab: '4'
+                },
+                shredcase: {
+                    name:      'Shred Case',
+                    activeTab: '5'
+                },
+                readycase: {
+                    name:      'Ready Case',
+                    activeTab: '6'
+                }
+            },
+            memberForm: {
+                withdraw: {
+
+                },
+                filecase: {
+
+                },
+                addclaim: {
+
+                },
+                removeclaim: {
+
+                },
+                shredcase: {
+
+                },
+                readycase: {
+                    
+                }
+            }
         };
 
         this.toggleLogin  = this.toggleLogin.bind(this);
+        this.toggleTab    = this.toggleTab.bind(this);
     }
 
     toggleLogin() {
         this.setState(prevState => ({
             isLogin: !prevState.isLogin
         }));
+    }
+
+    toggleTab(tab) {
+        if (this.state.activeTab !== tab) {
+            this.setState({
+                activeTab: tab
+            });
+        }
     }
 
     componentDidMount = async() => {
@@ -114,9 +173,47 @@ class Members extends Component {
     }
 
     render() {
+        const tabElementsArr = [];
+        for (let key in this.state.tabs) {
+            tabElementsArr.push({
+                name:      this.state.tabs[key].name,
+                activeTab: this.state.tabs[key].activeTab
+            });
+        }
+
+        let tabBar = (
+            <Nav tabs>
+                {tabElementsArr.map(tabElement => (
+                    <NavItem>
+                        <NavLink
+                            className={classnames({ active: this.state.activeTab === tabElement.activeTab })}
+                            onClick={() => { this.toggleTab(tabElement.activeTab) }}>
+                            {tabElement.name}
+                        </NavLink>
+                    </NavItem>
+                ))}
+            </Nav>
+        );
+
+        let tabContent = (
+            <TabContent className='tabContent' activeTab={this.state.activeTab}>
+                {tabElementsArr.map(tabElement => (
+                    <TabPane tabId={tabElement.activeTab}>
+                        <Row>
+                            <Col sm='12'>
+                                <p>{tabElement.name} Tab Content coming soon...</p>
+                            </Col>
+                        </Row>
+                    </TabPane>
+                ))}
+            </TabContent>
+        );
+
         return (
             <div className='MemberContent'>
                 <p>Arbitration for members coming soon...</p>
+                {tabBar}
+                {tabContent}
             </div>
         )
     }

@@ -1,4 +1,4 @@
-import { Balance } from '../../models';
+import Balance from '../../models/balance.model';
 
 /**
  * Get list of all balances confirmed from the blockchain

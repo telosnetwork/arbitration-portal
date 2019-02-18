@@ -1,4 +1,4 @@
-import { Transfer } from '../../models';
+import Transfer from '../../models/transfer.model';
 
 /**
  * Get list of all transfers confirmed from the blockchain
