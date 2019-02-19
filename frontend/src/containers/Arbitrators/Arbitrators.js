@@ -3,6 +3,7 @@ import axios                 from 'axios';
 
 // Components
 import Uploader              from '../Uploader';
+import BlockConsole          from '../BlockConsole';
 
 // Utilities
 import ScatterBridge         from '../../utils/scatterBridge';
@@ -15,7 +16,7 @@ import ScatterBridge         from '../../utils/scatterBridge';
 import { TabContent, TabPane, Nav, NavItem, NavLink, Row, Col } from 'reactstrap';
 import classnames from 'classnames';
 import { Button, Spinner, Form, FormGroup, Label, CustomInput, Input, FormText, FormFeedback } from 'reactstrap';
-import { Collapse, Jumbotron } from 'reactstrap';
+import { Jumbotron } from 'reactstrap';
 
 class Arbitrators extends Component {
 
@@ -54,7 +55,6 @@ class Arbitrators extends Component {
 
         this.state = {
             isLogin:     false,
-            collapse:    false,
             activeTab:   '1',
             arbitrators: [],
             cases:       [],
@@ -355,7 +355,6 @@ class Arbitrators extends Component {
         this.checkBoxChangedHandler = this.checkBoxChangedHandler.bind(this);
         this.toggleLogin            = this.toggleLogin.bind(this);
         this.toggleTab              = this.toggleTab.bind(this);
-        this.toggleCollapse         = this.toggleCollapse.bind(this);
     }
 
     handleSubmit = async(event, tab_id) => {
@@ -475,10 +474,6 @@ class Arbitrators extends Component {
                 activeTab: tab
             });
         }
-    }
-
-    toggleCollapse() {
-        this.setState({ collapse: !this.state.collapse });
     }
 
     componentDidMount = async() => {
@@ -1036,7 +1031,7 @@ class Arbitrators extends Component {
                                                     {formElement.id === 'claim_hash' || formElement.id === 'response_link' ?
                                                         <div>
                                                             <Input type={formElement.type} value={formElement.value} placeholder={formElement.placeholder} onChange={(event) => this.inputChangedHandler(event, tabElement.id, formElement.id)} />
-                                                            <Uploader />
+                                                            <Uploader  />
                                                         </div>
                                                     : null}
                                                     {formElement.id !== 'claim_hash' && formElement.id !== 'response_link' ?
@@ -1226,24 +1221,13 @@ class Arbitrators extends Component {
             </TabContent>
         );
 
-        let consoleOutput = (
-            <div>
-                <Button className='collapseButton' color='info' onClick={this.toggleCollapse}>Console Output</Button>
-                <Collapse isOpen={this.state.collapse}>
-                    <Jumbotron className='jumbo'>
-                        <p>Arbitrators Console Output Coming Soon...</p>
-                    </Jumbotron>
-                </Collapse>
-            </div>
-        );
-
         return (
             <div className='ArbitratorContent'>
                 <Jumbotron className='jumbo'>
                     {tabBar}
                     {tabContent}
                 </Jumbotron>
-                {consoleOutput}
+                <BlockConsole />
             </div>
         )
     }

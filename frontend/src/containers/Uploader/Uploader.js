@@ -1,10 +1,10 @@
-import React, { Component }  from 'react';
-import ipfsClient            from 'ipfs-http-client';
+import React, { Component }        from 'react';
+import ipfsClient                  from 'ipfs-http-client';
 
 // Create a Stream from a File which enables uploads of large files without allocation mem multiple times
-import fileReaderPullStream  from 'pull-file-reader';
+import fileReaderPullStream        from 'pull-file-reader';
 
-import { Form, Input, Label, FormGroup } from 'reactstrap';
+import { Input, Label, FormGroup } from 'reactstrap';
 
 class Uploader extends Component {
 
