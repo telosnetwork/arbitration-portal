@@ -312,7 +312,7 @@ class Arbitrators extends Component {
                     new_status: {
                         label: 'New Arbitrator Status:',
                         value: '',
-                        type:  'checkbox',
+                        type:  'radio',
                         placeholder: '',
                         text:  'Please select from the following valid arbitrator statuses'
                     }
@@ -345,11 +345,12 @@ class Arbitrators extends Component {
             }
         };
 
-        this.handleSubmit        = this.handleSubmit.bind(this);
-        this.handleSearch        = this.handleSearch.bind(this);
-        this.inputChangedHandler = this.inputChangedHandler.bind(this);
-        this.toggleLogin         = this.toggleLogin.bind(this);
-        this.toggleTab           = this.toggleTab.bind(this);
+        this.handleSubmit           = this.handleSubmit.bind(this);
+        this.handleSearch           = this.handleSearch.bind(this);
+        this.inputChangedHandler    = this.inputChangedHandler.bind(this);
+        this.checkBoxChangedHandler = this.checkBoxChangedHandler.bind(this);
+        this.toggleLogin            = this.toggleLogin.bind(this);
+        this.toggleTab              = this.toggleTab.bind(this);
     }
 
     handleSubmit = async(event, tab_id) => {
@@ -415,14 +416,47 @@ class Arbitrators extends Component {
             ...updatedFormTab[element_id]
         };
 
-        updatedFormElement.value   = event.target.value;
+        if (tab_id === 'newarbstatus' && element_id === 'new_status') {
+            updatedFormElement.value   = this.arbitratorStatus[event.target.id];
+        } else {
+            updatedFormElement.value   = event.target.value;
+        }
+
         updatedFormTab[element_id] = updatedFormElement;
         updatedForm[tab_id]        = updatedFormTab;
 
         this.setState({ memberForm: updatedForm });
     }
 
+    checkBoxChangedHandler = (tab_id, element_id, language) => {
+        
+        let updatedLanguages = [];
 
+        const updatedForm = {
+            ...this.state.arbitratorForm
+        };
+        const updatedFormTab = {
+            ...updatedForm[tab_id]
+        };
+        const updatedFormElement = {
+            ...updatedFormTab[element_id]
+        };
+
+        updatedLanguages = [...updatedFormElement.value];
+
+        if (!updatedLanguages.includes(this.languageCodes[language])) {
+            updatedLanguages.push(this.languageCodes[language]);
+        }  else {
+            let index = updatedLanguages.indexOf(this.languageCodes[language]);
+            updatedLanguages.splice(index, 1);
+        }
+                
+        updatedFormElement.value   = updatedLanguages;
+        updatedFormTab[element_id] = updatedFormElement;
+        updatedForm[tab_id]        = updatedFormTab;
+
+        this.setState({ arbitratorForm: updatedForm });
+    }
 
     toggleLogin() {
         this.setState(prevState => ({
@@ -1096,12 +1130,13 @@ class Arbitrators extends Component {
                                                 <Col sm={10}>
                                                     {formElement.id === 'new_status' ? 
                                                         arbstatuses.map(status => (
-                                                            <CustomInput className='checkboxClass' key={status} type={formElement.type} id={status} label={status} />
+                                                            <CustomInput className='radioClass' key={status} name={formElement.id} type={formElement.type} id={status} label={status} onClick={(event) => this.inputChangedHandler(event, tabElement.id, formElement.id)} />
                                                         ))
                                                     : null }
                                                     {formElement.id !== 'new_status' ? 
                                                         <Input type={formElement.type} value={formElement.value} placeholder={formElement.placeholder} onChange={(event) => this.inputChangedHandler(event, tabElement.id, formElement.id)} />
-                                                    : null}                                                     <FormFeedback>...</FormFeedback>
+                                                    : null}                                                     
+                                                    <FormFeedback>...</FormFeedback>
                                                     <FormText>{formElement.text}</FormText>
                                                 </Col>
                                             </FormGroup>
@@ -1115,12 +1150,13 @@ class Arbitrators extends Component {
                                                 <Col sm={10}>
                                                     {formElement.id === 'lang_codes' ? 
                                                         languages.map(language => (
-                                                            <CustomInput className='checkboxClass' key={language} type={formElement.type} id={language} label={language} />
+                                                            <CustomInput className='checkboxClass' key={language} name={formElement.id} type={formElement.type} id={language} label={language} onClick={() => this.checkBoxChangedHandler(tabElement.id, formElement.id, language)} />
                                                         ))
                                                     : null }
                                                     {formElement.id !== 'lang_codes' ? 
                                                         <Input type={formElement.type} value={formElement.value} placeholder={formElement.placeholder} onChange={(event) => this.inputChangedHandler(event, tabElement.id, formElement.id)} />
-                                                    : null}                                                    <FormFeedback>...</FormFeedback>
+                                                    : null }                                                    
+                                                    <FormFeedback>...</FormFeedback>
                                                     <FormText>{formElement.text}</FormText>
                                                 </Col>
                                             </FormGroup>

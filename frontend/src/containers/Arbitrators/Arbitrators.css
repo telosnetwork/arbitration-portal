@@ -7,6 +7,16 @@
     margin-top: 20px;
 }
 
+.checkboxClass {
+    margin-left: 20px;
+    padding: 2px;
+}
+
+.radioClass {
+    margin-left: 20px;
+    padding: 2px;
+}
+
 a {
     transition: 0.25s;
 }

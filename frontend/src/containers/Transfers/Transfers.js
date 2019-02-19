@@ -16,7 +16,7 @@ class Transfers extends Component {
 
     constructor (props) {
         super(props);
-        
+
         this.appName = process.env.REACT_APP_NAME;
         this.network = {
           blockchain: `${process.env.REACT_APP_BLOCKCHAIN}`,
@@ -147,7 +147,7 @@ class Transfers extends Component {
      * Transfer Actions
      */
     transfer = async (to, quantity, memo) => {
-        const precision = `.0000 EOS`;
+        const precision = `.0000 TLOS`;
         try {
             let actions = await this.eosio.makeAction(process.env.REACT_APP_EOSIO_TOKEN_ACCOUNT, 'transfer', 
                 {
@@ -202,7 +202,7 @@ class Transfers extends Component {
                             {formElement.id === 'from'     ? account : formElement.id === 'quantity' ? null : <Input type={formElement.type} value={formElement.value} placeholder={formElement.placeholder} onChange={(event) => this.inputChangedHandler(event, formElement.id)} /> }
                             {formElement.id === 'quantity' ? <InputGroup>
                                                                 <Input type={formElement.type} value={formElement.value} placeholder={formElement.placeholder} onChange={(event) => this.inputChangedHandler(event, formElement.id)} />
-                                                                <InputGroupAddon addonType='append'>.0000 EOS</InputGroupAddon>
+                                                                <InputGroupAddon addonType='append'>.0000 TLOS</InputGroupAddon>
                                                              </InputGroup> : null }
                             <FormFeedback>...</FormFeedback>
                             <FormText>{formElement.text}</FormText>

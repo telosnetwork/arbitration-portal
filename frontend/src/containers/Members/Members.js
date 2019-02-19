@@ -193,11 +193,12 @@ class Members extends Component {
             }
         };
 
-        this.handleSubmit        = this.handleSubmit.bind(this);
-        this.handleSearch        = this.handleSearch.bind(this);
-        this.inputChangedHandler = this.inputChangedHandler.bind(this);
-        this.toggleLogin         = this.toggleLogin.bind(this);
-        this.toggleTab           = this.toggleTab.bind(this);
+        this.handleSubmit           = this.handleSubmit.bind(this);
+        this.handleSearch           = this.handleSearch.bind(this);
+        this.inputChangedHandler    = this.inputChangedHandler.bind(this);
+        this.checkBoxChangedHandler = this.checkBoxChangedHandler.bind(this);
+        this.toggleLogin            = this.toggleLogin.bind(this);
+        this.toggleTab              = this.toggleTab.bind(this);
     }
 
     handleSubmit = async(event, tab_id) => {
@@ -249,6 +250,36 @@ class Members extends Component {
         };
 
         updatedFormElement.value   = event.target.value;
+        updatedFormTab[element_id] = updatedFormElement;
+        updatedForm[tab_id]        = updatedFormTab;
+
+        this.setState({ memberForm: updatedForm });
+    }
+
+    checkBoxChangedHandler = (tab_id, element_id, language) => {
+        
+        let updatedLanguages = [];
+
+        const updatedForm = {
+            ...this.state.memberForm
+        };
+        const updatedFormTab = {
+            ...updatedForm[tab_id]
+        };
+        const updatedFormElement = {
+            ...updatedFormTab[element_id]
+        };
+
+        updatedLanguages = [...updatedFormElement.value];
+
+        if (!updatedLanguages.includes(this.languageCodes[language])) {
+            updatedLanguages.push(this.languageCodes[language]);
+        }  else {
+            let index = updatedLanguages.indexOf(this.languageCodes[language]);
+            updatedLanguages.splice(index, 1);
+        }
+        
+        updatedFormElement.value   = updatedLanguages;
         updatedFormTab[element_id] = updatedFormElement;
         updatedForm[tab_id]        = updatedFormTab;
 
@@ -604,7 +635,7 @@ class Members extends Component {
                                                 <Col sm={10}>
                                                     {formElement.id === 'lang_codes' ? 
                                                         languages.map(language => (
-                                                            <CustomInput className='checkboxClass' key={language} type={formElement.type} id={language} label={language} />
+                                                            <CustomInput className='checkboxClass' key={language} name={formElement.id} type={formElement.type} id={language} label={language} onClick={() => this.checkBoxChangedHandler(tabElement.id, formElement.id, language)} />
                                                         ))
                                                     : null }
                                                     {formElement.id !== 'lang_codes' ? 
