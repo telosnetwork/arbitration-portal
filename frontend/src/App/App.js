@@ -143,7 +143,7 @@ class App extends Component {
                                                 Page not found...
                                             </h1>
                                         </div>}/>
-                </Switch>    
+                </Switch>
               </div>
           );
       }

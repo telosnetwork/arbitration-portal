@@ -1,9 +1,12 @@
 import React, { Component }  from 'react';
 import axios                 from 'axios';
 
+// Components
+import Uploader              from '../Uploader';
+
 // Utilities
 import ScatterBridge         from '../../utils/scatterBridge';
-import IOClient              from '../../utils/io-client';
+// import IOClient              from '../../utils/io-client';
 // import { updateArbitrators } from '../../utils/updateArbitrators';
 // import { updateBalances }    from '../../utils/updateBalances';
 // import { updateCases }       from '../../utils/updateCases';
@@ -28,7 +31,7 @@ class Arbitrators extends Component {
           chainId:    `${process.env.REACT_APP_CHAINID}`
         };
         this.eosio = new ScatterBridge(this.network, this.appName);
-        this.io    = new IOClient();
+        // this.io    = new IOClient();
         
         this.languageCodes = {
             ENGL: '0',
@@ -1030,7 +1033,15 @@ class Arbitrators extends Component {
                                             <FormGroup className='formgroup' key={formElement.id} row>
                                                 <Label for={formElement.id} sm={2}>{formElement.label}</Label>
                                                 <Col sm={10}>
-                                                    <Input type={formElement.type} value={formElement.value} placeholder={formElement.placeholder} onChange={(event) => this.inputChangedHandler(event, tabElement.id, formElement.id)} />
+                                                    {formElement.id === 'claim_hash' || formElement.id === 'response_link' ?
+                                                        <div>
+                                                            <Input type={formElement.type} value={formElement.value} placeholder={formElement.placeholder} onChange={(event) => this.inputChangedHandler(event, tabElement.id, formElement.id)} />
+                                                            <Uploader />
+                                                        </div>
+                                                    : null}
+                                                    {formElement.id !== 'claim_hash' && formElement.id !== 'response_link' ?
+                                                        <Input type={formElement.type} value={formElement.value} placeholder={formElement.placeholder} onChange={(event) => this.inputChangedHandler(event, tabElement.id, formElement.id)} />
+                                                    : null}
                                                     <FormFeedback>...</FormFeedback>
                                                     <FormText>{formElement.text}</FormText>
                                                 </Col>
@@ -1069,7 +1080,15 @@ class Arbitrators extends Component {
                                             <FormGroup className='formgroup' key={formElement.id} row>
                                                 <Label for={formElement.id} sm={2}>{formElement.label}</Label>
                                                 <Col sm={10}>
-                                                    <Input type={formElement.type} value={formElement.value} placeholder={formElement.placeholder} onChange={(event) => this.inputChangedHandler(event, tabElement.id, formElement.id)} />
+                                                    {formElement.id === 'claim_hash' ? 
+                                                        <div>
+                                                            <Input type={formElement.type} value={formElement.value} placeholder={formElement.placeholder} onChange={(event) => this.inputChangedHandler(event, tabElement.id, formElement.id)} />
+                                                            <Uploader />
+                                                        </div>
+                                                    : null}
+                                                    {formElement.id !== 'claim_hash' ?
+                                                        <Input type={formElement.type} value={formElement.value} placeholder={formElement.placeholder} onChange={(event) => this.inputChangedHandler(event, tabElement.id, formElement.id)} />
+                                                    : null}
                                                     <FormFeedback>...</FormFeedback>
                                                     <FormText>{formElement.text}</FormText>
                                                 </Col>
@@ -1082,7 +1101,15 @@ class Arbitrators extends Component {
                                             <FormGroup className='formgroup' key={formElement.id} row>
                                                 <Label for={formElement.id} sm={2}>{formElement.label}</Label>
                                                 <Col sm={10}>
-                                                    <Input type={formElement.type} value={formElement.value} placeholder={formElement.placeholder} onChange={(event) => this.inputChangedHandler(event, tabElement.id, formElement.id)} />
+                                                    {formElement.id === 'claim_hash' || formElement.id === 'decision_link' ?
+                                                        <div>
+                                                            <Input type={formElement.type} value={formElement.value} placeholder={formElement.placeholder} onChange={(event) => this.inputChangedHandler(event, tabElement.id, formElement.id)} />
+                                                            <Uploader />
+                                                        </div>
+                                                    : null}
+                                                    {formElement.id !== 'claim_hash' && formElement.id !== 'decision_link' ?
+                                                        <Input type={formElement.type} value={formElement.value} placeholder={formElement.placeholder} onChange={(event) => this.inputChangedHandler(event, tabElement.id, formElement.id)} />
+                                                    : null}
                                                     <FormFeedback>...</FormFeedback>
                                                     <FormText>{formElement.text}</FormText>
                                                 </Col>
@@ -1108,7 +1135,15 @@ class Arbitrators extends Component {
                                             <FormGroup className='formgroup' key={formElement.id} row>
                                                 <Label for={formElement.id} sm={2}>{formElement.label}</Label>
                                                 <Col sm={10}>
-                                                    <Input type={formElement.type} value={formElement.value} placeholder={formElement.placeholder} onChange={(event) => this.inputChangedHandler(event, tabElement.id, formElement.id)} />
+                                                    {formElement.id === 'ruling_link' ?
+                                                        <div>
+                                                            <Input type={formElement.type} value={formElement.value} placeholder={formElement.placeholder} onChange={(event) => this.inputChangedHandler(event, tabElement.id, formElement.id)} />
+                                                            <Uploader />
+                                                        </div>
+                                                    : null}
+                                                    {formElement.id !== 'ruling_link' ?
+                                                        <Input type={formElement.type} value={formElement.value} placeholder={formElement.placeholder} onChange={(event) => this.inputChangedHandler(event, tabElement.id, formElement.id)} />
+                                                    : null}
                                                     <FormFeedback>...</FormFeedback>
                                                     <FormText>{formElement.text}</FormText>
                                                 </Col>

@@ -3,7 +3,7 @@ import axios                from 'axios';
 
 // Utilities
 import ScatterBridge        from '../../utils/scatterBridge';
-import IOClient             from '../../utils/io-client';
+// import IOClient             from '../../utils/io-client';
 // import { updateTransfers }  from '../../utils/updateTransfers';
 // import { updateBalances }   from '../../utils/updateBalances';
 
@@ -26,7 +26,7 @@ class Transfers extends Component {
           chainId:    `${process.env.REACT_APP_CHAINID}`
         };
         this.eosio = new ScatterBridge(this.network, this.appName);
-        this.io    = new IOClient();
+        // this.io    = new IOClient();
 
         this.state = {
             isLogin:   false,
