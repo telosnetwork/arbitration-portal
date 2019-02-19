@@ -10,7 +10,7 @@ import IOClient             from '../../utils/io-client';
 // Reactstrap Components
 import { InputGroup, InputGroupAddon } from 'reactstrap';
 import { Button, Spinner, Col, Form, FormGroup, Label, Input, FormText, FormFeedback } from 'reactstrap';
-import { Jumbotron } from 'reactstrap';
+import { Collapse, Jumbotron } from 'reactstrap';
 
 class Transfers extends Component {
 
@@ -31,6 +31,7 @@ class Transfers extends Component {
         this.state = {
             isLogin:   false,
             loading:   false,
+            collapse:  false,
             balances:  [],
             transfers: [],
             transferForm: {
@@ -69,6 +70,7 @@ class Transfers extends Component {
         this.handleSearch        = this.handleSearch.bind(this);
         this.inputChangedHandler = this.inputChangedHandler.bind(this);
         this.toggleLogin         = this.toggleLogin.bind(this);
+        this.toggleCollapse      = this.toggleCollapse.bind(this);
 
         this.transfer            = this.transfer.bind(this);
     }
@@ -106,6 +108,10 @@ class Transfers extends Component {
         this.setState(prevState => ({
             isLogin: !prevState.isLogin
         }));
+    }
+
+    toggleCollapse() {
+        this.setState({ collapse: !this.state.collapse });
     }
 
     // Real-Time Updates via Socket.io
@@ -211,7 +217,7 @@ class Transfers extends Component {
                 ))}
             </Form>
         )
-        
+
         let submission = null;
 
         if (this.state.loading) {
@@ -220,12 +226,24 @@ class Transfers extends Component {
             submission = <Button className='submitButton' color='primary' onClick={this.handleSearch}>Submit</Button>
         }
 
+        let consoleOutput = (
+            <div>
+                <Button className='collapseButton' color='info' onClick={this.toggleCollapse}>Console Output</Button>
+                <Collapse isOpen={this.state.collapse}>
+                    <Jumbotron className='jumbo'>
+                        <p>Transfers Console Output Coming Soon...</p>
+                    </Jumbotron>
+                </Collapse>
+            </div>
+        );
+
         return (
             <div className='TransferContent'>
-                <Jumbotron>
+                <Jumbotron className='jumbo'>
                     {formContent}
                     {submission}
                 </Jumbotron>
+                {consoleOutput}
             </div>
         );
     }

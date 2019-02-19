@@ -12,7 +12,7 @@ import IOClient              from '../../utils/io-client';
 import { TabContent, TabPane, Nav, NavItem, NavLink, Row, Col } from 'reactstrap';
 import classnames from 'classnames';
 import { Button, Spinner, Form, FormGroup, Label, CustomInput, Input, FormText, FormFeedback } from 'reactstrap';
-import { Jumbotron } from 'reactstrap';
+import { Collapse, Jumbotron } from 'reactstrap';
 
 class Arbitrators extends Component {
 
@@ -51,6 +51,7 @@ class Arbitrators extends Component {
 
         this.state = {
             isLogin:     false,
+            collapse:    false,
             activeTab:   '1',
             arbitrators: [],
             cases:       [],
@@ -351,6 +352,7 @@ class Arbitrators extends Component {
         this.checkBoxChangedHandler = this.checkBoxChangedHandler.bind(this);
         this.toggleLogin            = this.toggleLogin.bind(this);
         this.toggleTab              = this.toggleTab.bind(this);
+        this.toggleCollapse         = this.toggleCollapse.bind(this);
     }
 
     handleSubmit = async(event, tab_id) => {
@@ -470,6 +472,10 @@ class Arbitrators extends Component {
                 activeTab: tab
             });
         }
+    }
+
+    toggleCollapse() {
+        this.setState({ collapse: !this.state.collapse });
     }
 
     componentDidMount = async() => {
@@ -1185,13 +1191,24 @@ class Arbitrators extends Component {
             </TabContent>
         );
 
+        let consoleOutput = (
+            <div>
+                <Button className='collapseButton' color='info' onClick={this.toggleCollapse}>Console Output</Button>
+                <Collapse isOpen={this.state.collapse}>
+                    <Jumbotron className='jumbo'>
+                        <p>Arbitrators Console Output Coming Soon...</p>
+                    </Jumbotron>
+                </Collapse>
+            </div>
+        );
+
         return (
             <div className='ArbitratorContent'>
-            <p>Arbitration for arbitrators coming soon...</p>
-                <Jumbotron>
+                <Jumbotron className='jumbo'>
                     {tabBar}
                     {tabContent}
                 </Jumbotron>
+                {consoleOutput}
             </div>
         )
     }

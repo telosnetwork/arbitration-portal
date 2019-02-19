@@ -1,8 +1,17 @@
 .TransferContent {
     margin-top: 20px;
-    width:      100%;
+    width:      95%;
 }
 
 .submitSpinner {
     float:     right;
+}
+
+.jumbo {
+    margin-left: 20px; 
+}
+
+.collapseButton {
+    margin-left:   20px;
+    margin-bottom: 20px;
 }
