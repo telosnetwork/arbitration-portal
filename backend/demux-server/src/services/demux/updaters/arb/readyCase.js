@@ -3,7 +3,7 @@ async function readyCaseHandler (state, payload, blockInfo, context) {
         console.log('ReadyCase updater PAYLOAD:   ', payload);
         console.log('ReadyCase updater BlockInfo: ', blockInfo);
 
-        let case_id = payload.data.case_id;
+        let case_id = parseInt(payload.data.case_id);
 
         // Case_Status
         let case_status = 1; // AWAITING_ARBS (1)

@@ -3,7 +3,7 @@ async function addClaimHandler (state, payload, blockInfo, context) {
         console.log('AddClaim updater PAYLOAD:   ', payload);
         console.log('AddClaim updater BlockInfo: ', blockInfo);
     
-        let case_id = payload.data.case_id;
+        let case_id = parseInt(payload.data.case_id);
 
         let new_claim = {
             claim_id:      0,

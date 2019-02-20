@@ -3,7 +3,7 @@ async function dismissClaimHandler (state, payload, blockInfo, context) {
         console.log('DismissClaim updater PAYLOAD:   ', payload);
         console.log('DismissClaim updater BlockInfo: ', blockInfo);
 
-        let case_id = payload.data.case_id;
+        let case_id = parseInt(payload.data.case_id);
 
         let caseState = await state.case.findOne({ case_id: case_id }).exec();
         let unread_claims;

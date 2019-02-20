@@ -1,7 +1,7 @@
 import { ActionTypes } from 'const';
 
 const initialState = {
-    id:     0,
+    id:     '',
     owner:  '',
     escrow: 0
 };

@@ -3,7 +3,7 @@ async function shredCaseHandler (state, payload, blockInfo, context) {
         console.log('ShredCase updater PAYLOAD:   ', payload);
         console.log('ShredCase updater BlockInfo: ', blockInfo);
 
-        let case_id = payload.data.claim_id;
+        let case_id = parseInt(payload.data.claim_id);
 
         let stateCase = await state.case.findOne({ case_id: case_id }).exec();
         let unread_claims;

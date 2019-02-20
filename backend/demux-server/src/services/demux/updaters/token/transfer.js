@@ -1,5 +1,3 @@
-//NOTE: Balance tracking on eosio.arb is not implemented.
-
 async function transferHandler (state, payload, blockInfo, context) {
     try {
         // Set eosio.token transfer action schema
@@ -20,21 +18,21 @@ async function transferHandler (state, payload, blockInfo, context) {
             });
 
             if ( to === 'eosio.arb' ) {
-                console.log(`Decrementing Balance of from:${from} account_name`);
+                console.log(`Incrementing Balance of from:${from} account_name`);
                 await state.balance.updateOne({ owner: from }, {
                     id:       payload.transactionId,
                     owner:    from,
-                    $inc:   { escrow: value }
+                    $inc:   { escrow: parseFloat(value) }
                 }, { upsert: true }).exec();
             }
 
             if ( from === 'eosio.arb' ) {
-                console.log(`Upserting Balance of to:${to} account_name`);
-                value *= -1 // Decrement
+                console.log(`Decrementing Balance of to:${to} account_name`);
+                let sub_value = parseFloat(val) * -1 // Decrement
                 await state.balance.updateOne({ owner: to }, {
                     id:       payload.transactionId,
                     owner:    to,
-                    $inc:   { escrow: value }
+                    $inc:   { escrow: sub_value }
                 }, { upsert: true }).exec();
             }
         }

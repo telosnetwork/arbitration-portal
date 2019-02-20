@@ -7,9 +7,9 @@ let Balance = null;
 try {
     const BalanceSchema = new Schema({
         id: {
-            type:     Number,
+            type:     String,
             required: true,
-            default:  0
+            default:  ''
         },
         owner: {
             type:     String,

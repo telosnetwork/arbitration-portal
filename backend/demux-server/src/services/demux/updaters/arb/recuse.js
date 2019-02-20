@@ -3,7 +3,7 @@ async function recuseHandler (state, payload, blockInfo, context) {
         console.log('Recuse updater PAYLOAD:   ', payload);
         console.log('Recuse updater BlockInfo: ', blockInfo);
 
-        let case_id = payload.data.case_id;
+        let case_id = parseInt(payload.data.case_id);
 
         let caseState = await state.case.findOne({ case_id: case_id }).exec();
         let arbitrators;

@@ -3,7 +3,7 @@ async function assignToCaseHandler (state, payload, blockInfo, context) {
         console.log('AssignToCase updater PAYLOAD:   ', payload);
         console.log('AssignToCase updater BlockInfo: ', blockInfo);
 
-        let case_id    = payload.data.case_id;
+        let case_id    = parseInt(payload.data.case_id);
 
         let arbitrator = payload.data.arb_to_assign;
 

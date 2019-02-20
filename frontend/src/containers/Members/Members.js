@@ -128,13 +128,6 @@ class Members extends Component {
                         placeholder: '0',
                         text:  'Please input a valid case ID'
                     },
-                    claim_link: {
-                        label: 'Claim Link:',
-                        value: '',
-                        type:  'text',
-                        placeholder: 'ipfs_link',
-                        text:  'Please input a valid IPFS link'
-                    },
                     claimant: {
                         label: 'Claimant:',
                         value: '',
@@ -142,6 +135,13 @@ class Members extends Component {
                         placeholder: 'account_name',
                         text:  'Please input a valid TELOS account name'
                     },
+                    claim_link: {
+                        label: 'Claim Link:',
+                        value: '',
+                        type:  'text',
+                        placeholder: 'ipfs_link',
+                        text:  'Please input a valid IPFS link'
+                    }
                 },
                 removeclaim: {
                     case_id: {
@@ -151,13 +151,6 @@ class Members extends Component {
                         placeholder: '0',
                         text:  'Please input a valid case ID'
                     },
-                    claim_hash: {
-                        label: 'Claim Hash:',
-                        value: '',
-                        type:  'text',
-                        placeholder: 'ipfs_link',
-                        text:  'Please input a valid IPFS link'
-                    },
                     claimant: {
                         label: 'Claimant:',
                         value: '',
@@ -165,6 +158,13 @@ class Members extends Component {
                         placeholder: 'account_name',
                         text:  'Please input a valid TELOS account name'
                     },
+                    claim_hash: {
+                        label: 'Claim Hash:',
+                        value: '',
+                        type:  'text',
+                        placeholder: 'ipfs_link',
+                        text:  'Please input a valid IPFS link'
+                    }
                 },
                 shredcase: {
                     case_id: {
@@ -435,7 +435,7 @@ class Members extends Component {
         try {
             let actions = await this.eosio.makeAction(process.env.REACT_APP_EOSIO_CONTRACT_ACCOUNT, 'addclaim',
                 {
-                    case_id:    `${case_id}`,
+                    case_id:    parseInt(case_id),
                     claim_link: `${claim_link}`,
                     claimant:   `${claimant}`
                 }

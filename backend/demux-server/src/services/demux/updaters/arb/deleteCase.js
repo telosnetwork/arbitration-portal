@@ -3,7 +3,7 @@ async function deleteCaseHandler (state, payload, blockInfo, context) {
         console.log('DeleteCase updater PAYLOAD:   ', payload);
         console.log('DeleteCase updater BlockInfo: ', blockInfo);
 
-        let case_id = payload.data.case_id;
+        let case_id = parseInt(payload.data.case_id);
 
         // Delete|Remove CaseFile
         await state.case.findOneAndDelete({ case_id: case_id }).exec();
