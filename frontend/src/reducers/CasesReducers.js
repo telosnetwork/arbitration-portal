@@ -14,8 +14,7 @@ const initialState = {
         decision_link: ''
     },
     accepted_claims:   [0],
-    case_ruling:       '',
-    arb_comment:       ''
+    case_ruling:       ''
 };
 
 export default function(state = initialState, action) {
@@ -31,8 +30,7 @@ export default function(state = initialState, action) {
                 required_langs: action.required_langs   || initialState.required_langs,
                 unread_claims: action.unread_claims     || initialState.unread_claims,
                 accepted_claims: action.accepted_claims || initialState.accepted_claims,
-                case_ruling: action.case_ruling         || initialState.case_ruling,
-                arb_comment: action.arb_comment         || initialState.arb_comment
+                case_ruling: action.case_ruling         || initialState.case_ruling
             });
         }
         default:

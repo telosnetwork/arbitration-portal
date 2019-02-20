@@ -1,6 +1,6 @@
 .MemberContent {
     padding: 20px;
-    width:   95%;
+    width:   100%;
 }
 
 .checkboxClass {
@@ -15,4 +15,8 @@ a {
 a:hover {
     font-size: 120%;
     cursor:    pointer;
+}
+
+.jumbo {
+    margin-left: 20px; 
 }

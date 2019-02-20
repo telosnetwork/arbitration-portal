@@ -280,10 +280,10 @@ class Members extends Component {
 
         updatedLanguages = [...updatedFormElement.value];
 
-        if (!updatedLanguages.includes(this.languageCodes[language])) {
-            updatedLanguages.push(this.languageCodes[language]);
+        if (!updatedLanguages.includes(parseInt(this.languageCodes[language]))) {
+            updatedLanguages.push(parseInt(this.languageCodes[language]));
         }  else {
-            let index = updatedLanguages.indexOf(this.languageCodes[language]);
+            let index = updatedLanguages.indexOf(parseInt(this.languageCodes[language]));
             updatedLanguages.splice(index, 1);
         }
         
@@ -309,9 +309,9 @@ class Members extends Component {
     }
 
     componentDidMount = async() => {
-        if (!this.props.authentication.isLogin || (this.props.authentication.account === null)) {
-            await this.eosio.connect();
-            await this.eosio.login();
+        await this.eosio.connect();
+        await this.eosio.login();
+        if (!(this.props.authentication.isLogin || this.props.authentication.account)) {
             if (this.eosio.isConnected && this.eosio.currentAccount) {
                 this.toggleLogin();
             }
@@ -388,7 +388,7 @@ class Members extends Component {
 
     withdraw = async(owner) => {
         try {
-            let actions = await this.eosio.makeAction(process.env.REACT_APP_CONTRACT_ACCOUNT, 'withdraw',
+            let actions = await this.eosio.makeAction(process.env.REACT_APP_EOSIO_CONTRACT_ACCOUNT, 'withdraw',
                 {
                     owner: `${owner}`
                 }
@@ -409,11 +409,11 @@ class Members extends Component {
 
     filecase = async(claimant, claim_link, lang_codes, respondant) => {
         try {
-            let actions = await this.eosio.makeAction(process.env.REACT_APP_CONTRACT_ACCOUNT, 'filecase',
+            let actions = await this.eosio.makeAction(process.env.REACT_APP_EOSIO_CONTRACT_ACCOUNT, 'filecase',
                 {
                     claimant:   `${claimant}`,
                     claim_link: `${claim_link}`,
-                    lang_codes: `${lang_codes}`,
+                    lang_codes: lang_codes,
                     respondant: `${respondant}`
                 }
             );
@@ -421,9 +421,9 @@ class Members extends Component {
             console.log('Results: ', result);
             this.setState({ consoleoutput: result });
             if (result) {
-                alert(`File Case Successful`);
+                alert(`FileCase Successful`);
             } else {
-                alert(`File Case Unsuccessful`);
+                alert(`FileCase Unsuccessful`);
             }     
         } catch (err) {
             console.error(err);
@@ -433,7 +433,7 @@ class Members extends Component {
 
     addclaim = async(case_id, claim_link, claimant) => {
         try {
-            let actions = await this.eosio.makeAction(process.env.REACT_APP_CONTRACT_ACCOUNT, 'addclaim',
+            let actions = await this.eosio.makeAction(process.env.REACT_APP_EOSIO_CONTRACT_ACCOUNT, 'addclaim',
                 {
                     case_id:    `${case_id}`,
                     claim_link: `${claim_link}`,
@@ -444,9 +444,9 @@ class Members extends Component {
             console.log('Results: ', result);
             this.setState({ consoleoutput: result });
             if (result) {
-                alert(`Add Claim Successful`);
+                alert(`AddClaim Successful`);
             } else {
-                alert(`Add Claim Unsuccessful`);
+                alert(`AddClaim Unsuccessful`);
             }     
         } catch (err) {
             console.error(err);
@@ -456,9 +456,9 @@ class Members extends Component {
 
     removeclaim = async(case_id, claim_hash, claimant) => {
         try {
-            let actions = await this.eosio.makeAction(process.env.REACT_APP_CONTRACT_ACCOUNT, 'removeclaim',
+            let actions = await this.eosio.makeAction(process.env.REACT_APP_EOSIO_CONTRACT_ACCOUNT, 'removeclaim',
                 {
-                    case_id:    `${case_id}`,
+                    case_id:    parseInt(case_id),
                     claim_hash: `${claim_hash}`,
                     claimant:   `${claimant}`
                 }
@@ -467,9 +467,9 @@ class Members extends Component {
             console.log('Results: ', result);
             this.setState({ consoleoutput: result });
             if (result) {
-                alert(`Remove Claim Successful`);
+                alert(`RemoveClaim Successful`);
             } else {
-                alert(`Remove Claim Unsuccessful`);
+                alert(`RemoveClaim Unsuccessful`);
             }          
         } catch (err) {
             console.error(err);
@@ -479,9 +479,9 @@ class Members extends Component {
 
     shredcase = async(case_id, claimant) => {
         try {
-            let actions = await this.eosio.makeAction(process.env.REACT_APP_CONTRACT_ACCOUNT, 'shredcase',
+            let actions = await this.eosio.makeAction(process.env.REACT_APP_EOSIO_CONTRACT_ACCOUNT, 'shredcase',
                 {
-                    case_id:  `${case_id}`,
+                    case_id:  parseInt(case_id),
                     claimant: `${claimant}`
                 }
             );
@@ -489,9 +489,9 @@ class Members extends Component {
             console.log('Results: ', result);
             this.setState({ consoleoutput: result });
             if (result) {
-                alert(`Shred Case Successful`);
+                alert(`ShredCase Successful`);
             } else {
-                alert(`Shred Case Unsuccessful`);
+                alert(`ShredCase Unsuccessful`);
             }
         } catch (err) {
             console.error(err);
@@ -501,9 +501,9 @@ class Members extends Component {
 
     readycase = async(case_id, claimant) => {
         try {
-            let actions = await this.eosio.makeAction(process.env.REACT_APP_CONTRACT_ACCOUNT, 'readycase',
+            let actions = await this.eosio.makeAction(process.env.REACT_APP_EOSIO_CONTRACT_ACCOUNT, 'readycase',
                 {
-                    case_id:  `${case_id}`,
+                    case_id:  parseInt(case_id),
                     claimant: `${claimant}`
                 }
             );
@@ -511,9 +511,9 @@ class Members extends Component {
             console.log('Results: ', result);
             this.setState({ consoleoutput: result });
             if (result) {
-                alert(`Ready Case Successful`);
+                alert(`ReadyCase Successful`);
             } else {
-                alert(`Ready Case Unsuccessful`);
+                alert(`ReadyCase Unsuccessful`);
             }
         } catch (err) {
             console.error(err);

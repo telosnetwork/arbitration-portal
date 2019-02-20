@@ -452,10 +452,10 @@ class Arbitrators extends Component {
 
         updatedLanguages = [...updatedFormElement.value];
 
-        if (!updatedLanguages.includes(this.languageCodes[language])) {
-            updatedLanguages.push(this.languageCodes[language]);
+        if (!updatedLanguages.includes(parseInt(this.languageCodes[language]))) {
+            updatedLanguages.push(parseInt(this.languageCodes[language]));
         }  else {
-            let index = updatedLanguages.indexOf(this.languageCodes[language]);
+            let index = updatedLanguages.indexOf(parseInt(this.languageCodes[language]));
             updatedLanguages.splice(index, 1);
         }
                 
@@ -481,9 +481,9 @@ class Arbitrators extends Component {
     }
 
     componentDidMount = async() => {
-        if (!this.props.authentication.isLogin || (this.props.authentication.account === null)) {
-            await this.eosio.connect();
-            await this.eosio.login();
+        await this.eosio.connect();
+        await this.eosio.login();
+        if (!(this.props.authentication.isLogin || this.props.authentication.account)) {
             if (this.eosio.isConnected && this.eosio.currentAccount) {
                 this.toggleLogin();
             }
@@ -617,9 +617,9 @@ class Arbitrators extends Component {
 
     respond = async(case_id, claim_hash, respondant, response_link) => {
         try {
-            let actions = await this.eosio.makeAction(process.env.REACT_APP_CONTRACT_ACCOUNT, 'respond',
+            let actions = await this.eosio.makeAction(process.env.REACT_APP_EOSIO_CONTRACT_ACCOUNT, 'respond',
                 {
-                    case_id:       `${case_id}`,
+                    case_id:       parseInt(case_id),
                     claim_hash:    `${claim_hash}`,
                     respondant:    `${respondant}`,
                     response_link: `${response_link}`
@@ -641,20 +641,20 @@ class Arbitrators extends Component {
 
      addarbs = async(case_id, assigned_arb, num_arbs_to_assign) => {
         try {
-            let actions = await this.eosio.makeAction(process.env.REACT_APP_CONTRACT_ACCOUNT, 'addarbs',
+            let actions = await this.eosio.makeAction(process.env.REACT_APP_EOSIO_CONTRACT_ACCOUNT, 'addarbs',
                 {
-                    case_id:            `${case_id}`,
+                    case_id:            parseInt(case_id),
                     assigned_arb:       `${assigned_arb}`,
-                    num_arbs_to_assign: `${num_arbs_to_assign}`
+                    num_arbs_to_assign: parseInt(num_arbs_to_assign)
                 }
             );
             let result = await this.eosio.sendTx(actions);
             console.log('Results: ', result);
             this.setState({ consoleoutput: result });
             if (result) {
-                alert(`Add Arbitrators Successful`);
+                alert(`AddArbitrators Successful`);
             } else {
-                alert(`Add Arbitrators Unsuccessful`);
+                alert(`AddArbitrators Unsuccessful`);
             }
         } catch (err) {
             console.error(err);
@@ -664,9 +664,9 @@ class Arbitrators extends Component {
 
      assigntocase = async(case_id, arb_to_assign) => {
          try {
-            let actions = await this.eosio.makeAction(process.env.REACT_APP_CONTRACT_ACCOUNT, 'assigntocase',
+            let actions = await this.eosio.makeAction(process.env.REACT_APP_EOSIO_CONTRACT_ACCOUNT, 'assigntocase',
                 {
-                    case_id:       `${case_id}`,
+                    case_id:       parseInt(case_id),
                     arb_to_assign: `${arb_to_assign}`
                 }
             );
@@ -674,9 +674,9 @@ class Arbitrators extends Component {
             console.log('Results: ', result);
             this.setState({ consoleoutput: result });
             if (result) {
-                alert(`Assign To Case Successful`);
+                alert(`AssignToCase Successful`);
             } else {
-                alert(`Assign To Case Unsuccessful`);
+                alert(`AssignToCase Unsuccessful`);
             }
          } catch (err) {
              console.error(err);
@@ -686,9 +686,9 @@ class Arbitrators extends Component {
 
      dismissclaim = async(case_id, assigned_arb, claim_hash, memo) => {
          try {
-            let actions = await this.eosio.makeAction(process.env.REACT_APP_CONTRACT_ACCOUNT, 'dismissclaim',
+            let actions = await this.eosio.makeAction(process.env.REACT_APP_EOSIO_CONTRACT_ACCOUNT, 'dismissclaim',
                 {
-                    case_id:      `${case_id}`,
+                    case_id:      parseInt(case_id),
                     assigned_arb: `${assigned_arb}`,
                     claim_hash:   `${claim_hash}`,
                     memo:         `${memo}`
@@ -698,9 +698,9 @@ class Arbitrators extends Component {
             console.log('Results: ', result);
             this.setState({ consoleoutput: result });
             if (result) {
-                alert(`Dismiss Claim Successful`);
+                alert(`DismissClaim Successful`);
             } else {
-                alert(`Dismiss Claim Unsuccessful`);
+                alert(`DismissClaim Unsuccessful`);
             }
          } catch (err) {
              console.error(err);
@@ -710,9 +710,9 @@ class Arbitrators extends Component {
 
      acceptclaim = async(case_id, assigned_arb, claim_hash, decision_link, decision_class) => {
          try {
-            let actions = await this.eosio.makeAction(process.env.REACT_APP_CONTRACT_ACCOUNT, 'acceptclaim',
+            let actions = await this.eosio.makeAction(process.env.REACT_APP_EOSIO_CONTRACT_ACCOUNT, 'acceptclaim',
                 {
-                    case_id:        `${case_id}`,
+                    case_id:        parseInt(case_id),
                     assigned_arb:   `${assigned_arb}`,
                     claim_hash:     `${claim_hash}`,
                     decision_link:  `${decision_link}`,
@@ -723,9 +723,9 @@ class Arbitrators extends Component {
             console.log('Results: ', result);
             this.setState({ consoleoutput: result });
             if (result) {
-                alert(`Accept Claim Successful`);
+                alert(`AcceptClaim Successful`);
             } else {
-                alert(`Accept Claim Unsuccessful`);
+                alert(`AcceptClaim Unsuccessful`);
             }
          } catch (err) {
             console.error(err);
@@ -735,9 +735,9 @@ class Arbitrators extends Component {
 
      advancecase = async(case_id, assigned_arb) => {
          try {
-            let actions = await this.eosio.makeAction(process.env.REACT_APP_CONTRACT_ACCOUNT, 'advancecase',
+            let actions = await this.eosio.makeAction(process.env.REACT_APP_EOSIO_CONTRACT_ACCOUNT, 'advancecase',
                 {
-                    case_id:      `${case_id}`,
+                    case_id:      parseInt(case_id),
                     assigned_arb: `${assigned_arb}`,
                 }
             );
@@ -745,9 +745,9 @@ class Arbitrators extends Component {
             console.log('Results: ', result);
             this.setState({ consoleoutput: result });
             if (result) {
-                alert(`Advance Case Successful`);
+                alert(`AdvanceCase Successful`);
             } else {
-                alert(`Advance Case Unsuccessful`);
+                alert(`AdvanceCase Unsuccessful`);
             }
          } catch (err) {
              console.error(err);
@@ -757,9 +757,9 @@ class Arbitrators extends Component {
 
      dismisscase = async(case_id, assigned_arb, ruling_link) => {
          try {
-            let actions = await this.eosio.makeAction(process.env.REACT_APP_CONTRACT_ACCOUNT, 'dismisscase',
+            let actions = await this.eosio.makeAction(process.env.REACT_APP_EOSIO_CONTRACT_ACCOUNT, 'dismisscase',
                 {
-                    case_id:      `${case_id}`,
+                    case_id:      parseInt(case_id),
                     assigned_arb: `${assigned_arb}`,
                     ruling_link:  `${ruling_link}`,
                 }
@@ -768,9 +768,9 @@ class Arbitrators extends Component {
             console.log('Results: ', result);
             this.setState({ consoleoutput: result });
             if (result) {
-                alert(`Dismiss Case Successful`);
+                alert(`DismissCase Successful`);
             } else {
-                alert(`Dismiss Case Unsuccessful`);
+                alert(`DismissCase Unsuccessful`);
             }
          } catch (err) {
              console.error(err);
@@ -780,9 +780,9 @@ class Arbitrators extends Component {
 
      recuse = async(case_id, rationale, assigned_arb) => {
          try {
-            let actions = await this.eosio.sendTx(process.env.REACT_APP_CONTRACT_ACCOUNT, 'recuse',
+            let actions = await this.eosio.sendTx(process.env.REACT_APP_EOSIO_CONTRACT_ACCOUNT, 'recuse',
                 {
-                    case_id:      `${case_id}`,
+                    case_id:      parseInt(case_id),
                     rationale:    `${rationale}`,
                     assigned_arb: `${assigned_arb}`
                 }
@@ -791,9 +791,9 @@ class Arbitrators extends Component {
             console.log('Results: ', result);
             this.setState({ consoleoutput: result });
             if (result) {
-                alert(`Recuse Successful`);
+                alert(`RecuseSuccessful`);
             } else {
-                alert(`Recuse Unsuccessful`);
+                alert(`RecuseUnsuccessful`);
             }
          } catch (err) {
             console.error(err);
@@ -807,9 +807,9 @@ class Arbitrators extends Component {
 
      newarbstatus = async(new_status, arbitrator) => {
          try {
-            let actions = await this.eosio.makeAction(process.env.REACT_APP_CONTRACT_ACCOUNT, 'newarbstatus',
+            let actions = await this.eosio.makeAction(process.env.REACT_APP_EOSIO_CONTRACT_ACCOUNT, 'newarbstatus',
                 {
-                    new_status: `${new_status}`,
+                    new_status: parseInt(new_status),
                     arbitrator: `${arbitrator}`
                 }
             );
@@ -817,9 +817,9 @@ class Arbitrators extends Component {
             console.log('Results: ', result);
             this.setState({ consoleoutput: result });
             if (result) {
-                alert(`New Arbitrator Status Successful`);
+                alert(`NewArbitratorStatus Successful`);
             } else {
-                alert(`New Arbitrator Status Unsuccessful`);
+                alert(`NewArbitratorStatus Unsuccessful`);
             }
          } catch (err) {
              console.error(err);
@@ -829,19 +829,19 @@ class Arbitrators extends Component {
 
      setlangcodes = async(arbitrator, lang_codes) => {
         try {
-            let actions = await this.eosio.makeAction(process.env.REACT_APP_CONTRACT_ACCOUNT, 'setlangcodes',
+            let actions = await this.eosio.makeAction(process.env.REACT_APP_EOSIO_CONTRACT_ACCOUNT, 'setlangcodes',
                 {
                     arbitrator: `${arbitrator}`,
-                    lang_codes: `${lang_codes}`
+                    lang_codes: lang_codes
                 }
             );
             let result = await this.eosio.sendTx(actions);
             console.log('Results: ', result);
             this.setState({ consoleoutput: result });
             if (result) {
-                alert(`Set Language Codes Successful`);
+                alert(`SetLanguageCodes Successful`);
             } else {
-                alert(`Set Language Codes Unsuccessful`);
+                alert(`SetLanguageCodes Unsuccessful`);
             }
         } catch (err) {
             console.error(err);
@@ -851,18 +851,18 @@ class Arbitrators extends Component {
 
      deletecase = async(case_id) => {
          try {
-            let actions = await this.eosio.makeAction(process.env.REACT_APP_CONTRACT_ACCOUNT, 'deletecase',
+            let actions = await this.eosio.makeAction(process.env.REACT_APP_EOSIO_CONTRACT_ACCOUNT, 'deletecase',
                 {
-                    case_id: `${case_id}`
+                    case_id: parseInt(case_id)
                 }
             );
             let result = await this.eosio.sendTx(actions);
             console.log('Results: ', result);
             this.setState({ consoleoutput: result });
             if (result) {
-                alert(`Delete Case Successful`);
+                alert(`DeleteCase Successful`);
             } else {
-                alert(`Delete Case Unsuccessful`);
+                alert(`DeleteCase Unsuccessful`);
             }
          } catch (err) {
              console.error(err);

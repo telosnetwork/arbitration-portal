@@ -74,8 +74,10 @@ class App extends Component {
     handleLogin = async () => {
         await this.eosio.connect();
         await this.eosio.login();
-        if (this.eosio.isConnected && this.eosio.currentAccount) {
-            this.toggleLogin();
+        if (!(this.props.authentication.isLogin || this.props.authentication.account)) {
+            if (this.eosio.isConnected && this.eosio.currentAccount) {
+                this.toggleLogin();
+            }
         }
         this.toggleModal();
     }
@@ -90,6 +92,43 @@ class App extends Component {
 
     render() {
         document.title='Telos Portal';
+
+        let status = (
+            <div>
+                <Button color='primary' onClick={this.toggleModal}>Login</Button>
+                <Modal isOpen={this.state.modal} toggle={this.toggleModal} className={this.props.className}>
+                    <ModalHeader toggle={this.toggleModal} className={this.props.className}>
+                    <ModalBody>
+                        Welcome to the Arbitration Portal! To use this portal, please login with Scatter first.
+                    </ModalBody>
+                    <ModalFooter>
+                        <Button color='primary'onClick={this.handleLogin}>Login</Button>
+                        <Button color='danger' onClick={this.logout}>Logout</Button>
+                    </ModalFooter>
+                    </ModalHeader>
+                </Modal>
+            </div>
+        );
+
+        if (this.props.authentication.isLogin && this.props.authentication.account) {
+            status = (
+                <div>
+                    <Button color='primary' style={{ fontWeight: 'bold' }} onClick={this.toggleModal} outline>Logged in as: {this.props.authentication.account.name}</Button>
+                    <Modal isOpen={this.state.modal} toggle={this.toggleModal} className={this.props.className}>
+                        <ModalHeader toggle={this.toggleModal} className={this.props.className}>
+                        <ModalBody>
+                            You are now logged in to Scatter on the Arbitration Portal! <br></br>
+                            Please feel free to navigate around. <br></br>
+                            As of the writing of this we have 3 available tools to use, the transfer (eosio.token) action, the actions for both members and elected arbitrators of an arbitration under the eosio.arb contract account. 
+                        </ModalBody>
+                        <ModalFooter>
+                            <Button color='danger' onClick={this.logout}>Logout</Button>
+                        </ModalFooter>
+                        </ModalHeader>
+                    </Modal>     
+                </div>       
+            )
+        }
 
           return (
               <div className='App'>
@@ -116,18 +155,7 @@ class App extends Component {
                                 </Link>
                             </NavItem>
                             <NavItem>
-                                <Button color='primary' onClick={this.toggleModal}>Sign in</Button>
-                                <Modal isOpen={this.state.modal} toggle={this.toggleModal} className={this.props.className}>
-                                    <ModalHeader toggle={this.toggleModal} className={this.props.className}>
-                                    <ModalBody>
-                                        Welcome to the Arbitration Portal! To use this portal, please sign in with Scatter first.
-                                    </ModalBody>
-                                    <ModalFooter>
-                                        <Button color='primary'onClick={this.handleLogin}>Login</Button>
-                                        <Button color='danger' onClick={this.logout}>Logout</Button>
-                                    </ModalFooter>
-                                    </ModalHeader>
-                                </Modal>
+                                {status}
                             </NavItem>
                         </Nav>
                     </Collapse>

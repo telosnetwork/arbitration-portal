@@ -117,9 +117,9 @@ class Transfers extends Component {
 
     // Real-Time Updates via Socket.io
     componentDidMount = async() => {
-        if (!this.props.authentication.isLogin || (this.props.authentication.account === null)) {
-            await this.eosio.connect();
-            await this.eosio.login();
+        await this.eosio.connect();
+        await this.eosio.login();
+        if (!(this.props.authentication.isLogin || this.props.authentication.account)) {
             if (this.eosio.isConnected && this.eosio.currentAccount) {
                 this.toggleLogin();
             }
@@ -160,7 +160,7 @@ class Transfers extends Component {
         try {
             let actions = await this.eosio.makeAction(process.env.REACT_APP_EOSIO_TOKEN_ACCOUNT, 'transfer', 
                 {
-                    from:      this.eosio.currentAccount.name,
+                    from:      `${this.props.authentication.account.name}`,
                     to:        `${to}`,
                     quantity:  `${quantity}${precision}`,
                     memo:      `${memo}`
@@ -170,7 +170,7 @@ class Transfers extends Component {
             console.log('Results: ', result);
             this.setState({ consoleoutput: result });
             if (result) {
-                alert(`Transfer Successful - From: ${this.eosio.currentAccount.name} To: emanateissue`);
+                alert(`Transfer Successful - From: ${this.props.authentication.account.name} To: emanateissue`);
             } else {
                 alert(`Transfer Unsuccessful`);
             }
@@ -185,7 +185,7 @@ class Transfers extends Component {
             <Input disabled></Input>
         );
 
-        if (this.props.authentication.isLogin && (this.props.authentication.account !== null)) {
+        if (this.props.authentication.isLogin && this.props.authentication.account) {
             account = (
                 <Input value={this.props.authentication.account.name} disabled></Input>
             )
