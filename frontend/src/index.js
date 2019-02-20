@@ -11,11 +11,11 @@ import App from './App';
 import * as serviceWorker from './utils/serviceWorker';
 
 ReactDOM.render(
-    <BrowserRouter>
-        <Provider store={store}>
+    <Provider store={store}>
+        <BrowserRouter>
             <App />
-        </Provider>
-    </BrowserRouter>
+        </BrowserRouter>
+    </Provider>
     , document.getElementById('root'))
 ;
 // If you want your app to work offline and load faster, you can change

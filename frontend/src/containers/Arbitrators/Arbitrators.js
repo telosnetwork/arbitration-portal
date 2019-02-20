@@ -1,17 +1,21 @@
-import React, { Component }  from 'react';
-import axios                 from 'axios';
-
-// Components
-import Uploader              from '../Uploader';
-import BlockConsole          from '../BlockConsole';
+import React, { Component }      from 'react';
+import axios                     from 'axios';
 
 // Utilities
-import ScatterBridge         from '../../utils/scatterBridge';
-// import IOClient              from '../../utils/io-client';
-// import { updateArbitrators } from '../../utils/updateArbitrators';
-// import { updateBalances }    from '../../utils/updateBalances';
-// import { updateCases }       from '../../utils/updateCases';
-// import { updateClaims }      from '../../utils/updateClaims';
+import ScatterBridge             from '../../utils/scatterBridge';
+// import IOClient               from '../../utils/io-client';
+// import { updateArbitrators }  from '../../utils/updateArbitrators';
+// import { updateBalances }     from '../../utils/updateBalances';
+// import { updateCases }        from '../../utils/updateCases';
+// import { updateClaims }       from '../../utils/updateClaims';
+
+// Components
+import Uploader                  from '../Uploader';
+import BlockConsole              from '../BlockConsole';
+
+// Redux
+import { connect }               from 'react-redux';
+import { AuthenticationActions } from '../../actions';
 
 import { TabContent, TabPane, Nav, NavItem, NavLink, Row, Col } from 'reactstrap';
 import classnames from 'classnames';
@@ -54,12 +58,12 @@ class Arbitrators extends Component {
         };
 
         this.state = {
-            isLogin:     false,
-            activeTab:   '1',
-            arbitrators: [],
-            cases:       [],
-            balances:    [],
-            claims:      [],
+            activeTab:     '1',
+            consoleoutput: '',
+            arbitrators:   [],
+            cases:         [],
+            balances:      [],
+            claims:        [],
             tabs: {
                 respond: {
                     name:      'Respond',
@@ -462,12 +466,6 @@ class Arbitrators extends Component {
         this.setState({ arbitratorForm: updatedForm });
     }
 
-    toggleLogin() {
-        this.setState(prevState => ({
-            isLogin: !prevState.isLogin
-        }));
-    }
-
     toggleTab(tab) {
         if (this.state.activeTab !== tab) {
             this.setState({
@@ -476,11 +474,19 @@ class Arbitrators extends Component {
         }
     }
 
+    toggleLogin() {
+        const { setAuth } = this.props;
+        const setaccounts = this.eosio.currentAccount ? this.eosio.currentAccount : null;
+        setAuth({ isLogin: !this.props.authentication.isLogin, account: setaccounts });
+    }
+
     componentDidMount = async() => {
-        await this.eosio.connect();
-        await this.eosio.login();
-        if (this.eosio.isConnected && this.eosio.currentAccount) {
-            this.toggleLogin();
+        if (!this.props.authentication.isLogin || (this.props.authentication.account === null)) {
+            await this.eosio.connect();
+            await this.eosio.login();
+            if (this.eosio.isConnected && this.eosio.currentAccount) {
+                this.toggleLogin();
+            }
         }
         // this.loadArbitrators();
         // this.loadCases();
@@ -621,6 +627,7 @@ class Arbitrators extends Component {
             );
             let result = await this.eosio.sendTx(actions);
             console.log('Results: ', result);
+            this.setState({ consoleoutput: result });
             if (result) {
                 alert(`Respond Successful`);
             } else {
@@ -643,6 +650,7 @@ class Arbitrators extends Component {
             );
             let result = await this.eosio.sendTx(actions);
             console.log('Results: ', result);
+            this.setState({ consoleoutput: result });
             if (result) {
                 alert(`Add Arbitrators Successful`);
             } else {
@@ -664,6 +672,7 @@ class Arbitrators extends Component {
             );
             let result = await this.eosio.sendTx(actions);
             console.log('Results: ', result);
+            this.setState({ consoleoutput: result });
             if (result) {
                 alert(`Assign To Case Successful`);
             } else {
@@ -687,6 +696,7 @@ class Arbitrators extends Component {
             );
             let result = await this.eosio.sendTx(actions);
             console.log('Results: ', result);
+            this.setState({ consoleoutput: result });
             if (result) {
                 alert(`Dismiss Claim Successful`);
             } else {
@@ -711,6 +721,7 @@ class Arbitrators extends Component {
             );
             let result = await this.eosio.sendTx(actions);
             console.log('Results: ', result);
+            this.setState({ consoleoutput: result });
             if (result) {
                 alert(`Accept Claim Successful`);
             } else {
@@ -732,6 +743,7 @@ class Arbitrators extends Component {
             );
             let result = await this.eosio.sendTx(actions);
             console.log('Results: ', result);
+            this.setState({ consoleoutput: result });
             if (result) {
                 alert(`Advance Case Successful`);
             } else {
@@ -754,6 +766,7 @@ class Arbitrators extends Component {
             );
             let result = await this.eosio.sendTx(actions);
             console.log('Results: ', result);
+            this.setState({ consoleoutput: result });
             if (result) {
                 alert(`Dismiss Case Successful`);
             } else {
@@ -776,6 +789,7 @@ class Arbitrators extends Component {
             );
             let result = await this.eosio.sendTx(actions);
             console.log('Results: ', result);
+            this.setState({ consoleoutput: result });
             if (result) {
                 alert(`Recuse Successful`);
             } else {
@@ -801,6 +815,7 @@ class Arbitrators extends Component {
             );
             let result = await this.eosio.sendTx(actions);
             console.log('Results: ', result);
+            this.setState({ consoleoutput: result });
             if (result) {
                 alert(`New Arbitrator Status Successful`);
             } else {
@@ -822,6 +837,7 @@ class Arbitrators extends Component {
             );
             let result = await this.eosio.sendTx(actions);
             console.log('Results: ', result);
+            this.setState({ consoleoutput: result });
             if (result) {
                 alert(`Set Language Codes Successful`);
             } else {
@@ -842,6 +858,7 @@ class Arbitrators extends Component {
             );
             let result = await this.eosio.sendTx(actions);
             console.log('Results: ', result);
+            this.setState({ consoleoutput: result });
             if (result) {
                 alert(`Delete Case Successful`);
             } else {
@@ -1026,8 +1043,8 @@ class Arbitrators extends Component {
                                     <Form onSubmit={(event) => this.handleSubmit(event, tabElement.id)}>
                                         {respondFormArr.map(formElement => (
                                             <FormGroup className='formgroup' key={formElement.id} row>
-                                                <Label for={formElement.id} sm={2}>{formElement.label}</Label>
-                                                <Col sm={10}>
+                                                <Label for={formElement.id} sm={1}>{formElement.label}</Label>
+                                                <Col sm={11}>
                                                     {formElement.id === 'claim_hash' || formElement.id === 'response_link' ?
                                                         <div>
                                                             <Input type={formElement.type} value={formElement.value} placeholder={formElement.placeholder} onChange={(event) => this.inputChangedHandler(event, tabElement.id, formElement.id)} />
@@ -1047,8 +1064,8 @@ class Arbitrators extends Component {
                                     <Form onSubmit={(event) => this.handleSubmit(event, tabElement.id)}>
                                         {addArbsArr.map(formElement => (
                                             <FormGroup className='formgroup' key={formElement.id} row>
-                                                <Label for={formElement.id} sm={2}>{formElement.label}</Label>
-                                                <Col sm={10}>
+                                                <Label for={formElement.id} sm={1}>{formElement.label}</Label>
+                                                <Col sm={11}>
                                                     <Input type={formElement.type} value={formElement.value} placeholder={formElement.placeholder} onChange={(event) => this.inputChangedHandler(event, tabElement.id, formElement.id)} />
                                                     <FormFeedback>...</FormFeedback>
                                                     <FormText>{formElement.text}</FormText>
@@ -1060,8 +1077,8 @@ class Arbitrators extends Component {
                                     <Form onSubmit={(event) => this.handleSubmit(event, tabElement.id)}>
                                         {assignToCaseArr.map(formElement => (
                                             <FormGroup className='formgroup' key={formElement.id} row>
-                                                <Label for={formElement.id} sm={2}>{formElement.label}</Label>
-                                                <Col sm={10}>
+                                                <Label for={formElement.id} sm={1}>{formElement.label}</Label>
+                                                <Col sm={11}>
                                                     <Input type={formElement.type} value={formElement.value} placeholder={formElement.placeholder} onChange={(event) => this.inputChangedHandler(event, tabElement.id, formElement.id)} />
                                                     <FormFeedback>...</FormFeedback>
                                                     <FormText>{formElement.text}</FormText>
@@ -1073,8 +1090,8 @@ class Arbitrators extends Component {
                                     <Form onSubmit={(event) => this.handleSubmit(event, tabElement.id)}>
                                         {dismissClaimArr.map(formElement => (
                                             <FormGroup className='formgroup' key={formElement.id} row>
-                                                <Label for={formElement.id} sm={2}>{formElement.label}</Label>
-                                                <Col sm={10}>
+                                                <Label for={formElement.id} sm={1}>{formElement.label}</Label>
+                                                <Col sm={11}>
                                                     {formElement.id === 'claim_hash' ? 
                                                         <div>
                                                             <Input type={formElement.type} value={formElement.value} placeholder={formElement.placeholder} onChange={(event) => this.inputChangedHandler(event, tabElement.id, formElement.id)} />
@@ -1094,8 +1111,8 @@ class Arbitrators extends Component {
                                     <Form onSubmit={(event) => this.handleSubmit(event, tabElement.id)}>
                                         {acceptClaimArr.map(formElement => (
                                             <FormGroup className='formgroup' key={formElement.id} row>
-                                                <Label for={formElement.id} sm={2}>{formElement.label}</Label>
-                                                <Col sm={10}>
+                                                <Label for={formElement.id} sm={1}>{formElement.label}</Label>
+                                                <Col sm={11}>
                                                     {formElement.id === 'claim_hash' || formElement.id === 'decision_link' ?
                                                         <div>
                                                             <Input type={formElement.type} value={formElement.value} placeholder={formElement.placeholder} onChange={(event) => this.inputChangedHandler(event, tabElement.id, formElement.id)} />
@@ -1115,8 +1132,8 @@ class Arbitrators extends Component {
                                     <Form onSubmit={(event) => this.handleSubmit(event, tabElement.id)}>
                                         {advanceCaseArr.map(formElement => (
                                             <FormGroup className='formgroup' key={formElement.id} row>
-                                                <Label for={formElement.id} sm={2}>{formElement.label}</Label>
-                                                <Col sm={10}>
+                                                <Label for={formElement.id} sm={1}>{formElement.label}</Label>
+                                                <Col sm={11}>
                                                     <Input type={formElement.type} value={formElement.value} placeholder={formElement.placeholder} onChange={(event) => this.inputChangedHandler(event, tabElement.id, formElement.id)} />
                                                     <FormFeedback>...</FormFeedback>
                                                     <FormText>{formElement.text}</FormText>
@@ -1128,8 +1145,8 @@ class Arbitrators extends Component {
                                     <Form onSubmit={(event) => this.handleSubmit(event, tabElement.id)}>
                                         {dismissCaseArr.map(formElement => (
                                             <FormGroup className='formgroup' key={formElement.id} row>
-                                                <Label for={formElement.id} sm={2}>{formElement.label}</Label>
-                                                <Col sm={10}>
+                                                <Label for={formElement.id} sm={1}>{formElement.label}</Label>
+                                                <Col sm={11}>
                                                     {formElement.id === 'ruling_link' ?
                                                         <div>
                                                             <Input type={formElement.type} value={formElement.value} placeholder={formElement.placeholder} onChange={(event) => this.inputChangedHandler(event, tabElement.id, formElement.id)} />
@@ -1149,8 +1166,8 @@ class Arbitrators extends Component {
                                     <Form onSubmit={(event) => this.handleSubmit(event, tabElement.id)}>
                                         {recuseFormArr.map(formElement => (
                                             <FormGroup className='formgroup' key={formElement.id} row>
-                                                <Label for={formElement.id} sm={2}>{formElement.label}</Label>
-                                                <Col sm={10}>
+                                                <Label for={formElement.id} sm={1}>{formElement.label}</Label>
+                                                <Col sm={11}>
                                                     <Input type={formElement.type} value={formElement.value} placeholder={formElement.placeholder} onChange={(event) => this.inputChangedHandler(event, tabElement.id, formElement.id)} />
                                                     <FormFeedback>...</FormFeedback>
                                                     <FormText>{formElement.text}</FormText>
@@ -1162,8 +1179,8 @@ class Arbitrators extends Component {
                                     <Form onSubmit={(event) => this.handleSubmit(event, tabElement.id)}>
                                         {newArbStatusArr.map(formElement => (
                                             <FormGroup className='formgroup' key={formElement.id} row>
-                                                <Label for={formElement.id} sm={2}>{formElement.label}</Label>
-                                                <Col sm={10}>
+                                                <Label for={formElement.id} sm={1}>{formElement.label}</Label>
+                                                <Col sm={11}>
                                                     {formElement.id === 'new_status' ? 
                                                         arbstatuses.map(status => (
                                                             <CustomInput className='radioClass' key={status} name={formElement.id} type={formElement.type} id={status} label={status} onClick={(event) => this.inputChangedHandler(event, tabElement.id, formElement.id)} />
@@ -1182,8 +1199,8 @@ class Arbitrators extends Component {
                                     <Form onSubmit={(event) => this.handleSubmit(event, tabElement.id)}>
                                         {setLangCodesArr.map(formElement => (
                                             <FormGroup className='formgroup' key={formElement.id} row>
-                                                <Label for={formElement.id} sm={2}>{formElement.label}</Label>
-                                                <Col sm={10}>
+                                                <Label for={formElement.id} sm={1}>{formElement.label}</Label>
+                                                <Col sm={11}>
                                                     {formElement.id === 'lang_codes' ? 
                                                         languages.map(language => (
                                                             <CustomInput className='checkboxClass' key={language} name={formElement.id} type={formElement.type} id={language} label={language} onClick={() => this.checkBoxChangedHandler(tabElement.id, formElement.id, language)} />
@@ -1202,8 +1219,8 @@ class Arbitrators extends Component {
                                     <Form onSubmit={(event) => this.handleSubmit(event, tabElement.id)}>
                                         {deleteCaseArr.map(formElement => (
                                             <FormGroup className='formgroup' key={formElement.id} row>
-                                                <Label for={formElement.id} sm={2}>{formElement.label}</Label>
-                                                <Col sm={10}>
+                                                <Label for={formElement.id} sm={1}>{formElement.label}</Label>
+                                                <Col sm={11}>
                                                     <Input type={formElement.type} value={formElement.value} placeholder={formElement.placeholder} onChange={(event) => this.inputChangedHandler(event, tabElement.id, formElement.id)} />
                                                     <FormFeedback>...</FormFeedback>
                                                     <FormText>{formElement.text}</FormText>
@@ -1227,11 +1244,19 @@ class Arbitrators extends Component {
                     {tabBar}
                     {tabContent}
                 </Jumbotron>
-                <BlockConsole />
+                <BlockConsole consoleoutput={this.state.consoleoutput} />
             </div>
         )
     }
 
 }
+// Map all state to component props (for redux to connect)
+const mapStateToProps = state => state;
 
-export default Arbitrators;
+// Map the following action to props
+const mapDispatchToProps = {
+  setAuth: AuthenticationActions.setAuthentication,
+};
+
+// Export a redux connected component
+export default connect(mapStateToProps, mapDispatchToProps)(Arbitrators);
