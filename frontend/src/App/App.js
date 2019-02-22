@@ -133,24 +133,24 @@ class App extends Component {
           return (
               <div className='App'>
                 <Navbar color='light' light expand='md'>
-                    <Link to='/' style={{ color: 'black', textDecoration: 'none' }}>
+                    <Link to='/' style={{ color: 'black', textDecoration: 'none', fontSize: '18px' }}>
                         <img src={mainLogo} alt='mainLogo' height="40" width="40"/> Arbitration Portal
                     </Link>
                     <NavbarToggler onClick={this.toggleNavBar}/>
                     <Collapse isOpen={this.state.isOpen} navbar>
                         <Nav className='ml-auto' navbar>
                             <NavItem>
-                                <Link to='/arbitrators' style={ !this.props.authentication.isLogin ? {pointerEvents: 'none', color: 'black', textDecoration: 'none', marginRight: '10px'} : {color: 'black', textDecoration: 'none', marginRight: '10px'}}  >
+                                <Link to='/arbitrators' style={ !this.props.authentication.isLogin ? {pointerEvents: 'none', color: 'black', textDecoration: 'none', marginRight: '10px'} : {color: 'black', textDecoration: 'none', marginRight: '10px'}} >
                                     Arbitrator
                                 </Link>
                             </NavItem>
                             <NavItem>
-                                <Link to='/members' style={ !this.props.authentication.isLogin ? {pointerEvents: 'none', color: 'black', textDecoration: 'none', marginRight: '10px'} : {color: 'black', textDecoration: 'none', marginRight: '10px'}}  >
+                                <Link to='/members' style={ !this.props.authentication.isLogin ? {pointerEvents: 'none', color: 'black', textDecoration: 'none', marginRight: '10px'} : {color: 'black', textDecoration: 'none', marginRight: '10px'}} >
                                     Members
                                 </Link>
                             </NavItem>
                             <NavItem>
-                                <Link to='/transfers' style={ !this.props.authentication.isLogin ? {pointerEvents: 'none', color: 'black', textDecoration: 'none', marginRight: '10px'} : {color: 'black', textDecoration: 'none', marginRight: '10px'}}  >
+                                <Link to='/transfers' style={ !this.props.authentication.isLogin ? {pointerEvents: 'none', color: 'black', textDecoration: 'none', marginRight: '10px'} : {color: 'black', textDecoration: 'none', marginRight: '10px'}} >
                                     Transfers
                                 </Link>
                             </NavItem>

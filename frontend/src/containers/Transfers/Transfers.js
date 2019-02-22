@@ -80,6 +80,12 @@ class Transfers extends Component {
         this.transfer            = this.transfer.bind(this);
     }
 
+    toggleLogin() {
+        const { setAuth } = this.props;
+        const setaccounts = this.eosio.currentAccount ? this.eosio.currentAccount : null;
+        setAuth({ isLogin: !this.props.authentication.isLogin, account: setaccounts });
+    }
+
     handleSubmit = async(event) => {
         event.preventDefault();
         await this.handleSearch(event);
@@ -107,12 +113,6 @@ class Transfers extends Component {
         updatedForm[id]          = updatedFormElement;
 
         this.setState({ transferForm: updatedForm });
-    }
-
-    toggleLogin() {
-        const { setAuth } = this.props;
-        const setaccounts = this.eosio.currentAccount ? this.eosio.currentAccount : null;
-        setAuth({ isLogin: !this.props.authentication.isLogin, account: setaccounts });
     }
 
     // Real-Time Updates via Socket.io

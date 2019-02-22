@@ -361,6 +361,20 @@ class Arbitrators extends Component {
         this.toggleTab              = this.toggleTab.bind(this);
     }
 
+    toggleTab(tab) {
+        if (this.state.activeTab !== tab) {
+            this.setState({
+                activeTab: tab
+            });
+        }
+    }
+
+    toggleLogin() {
+        const { setAuth } = this.props;
+        const setaccounts = this.eosio.currentAccount ? this.eosio.currentAccount : null;
+        setAuth({ isLogin: !this.props.authentication.isLogin, account: setaccounts });
+    }
+
     handleSubmit = async(event, tab_id) => {
         event.preventDefault();
         await this.handleSearch(event, tab_id);
@@ -464,20 +478,6 @@ class Arbitrators extends Component {
         updatedForm[tab_id]        = updatedFormTab;
 
         this.setState({ arbitratorForm: updatedForm });
-    }
-
-    toggleTab(tab) {
-        if (this.state.activeTab !== tab) {
-            this.setState({
-                activeTab: tab
-            });
-        }
-    }
-
-    toggleLogin() {
-        const { setAuth } = this.props;
-        const setaccounts = this.eosio.currentAccount ? this.eosio.currentAccount : null;
-        setAuth({ isLogin: !this.props.authentication.isLogin, account: setaccounts });
     }
 
     componentDidMount = async() => {
@@ -1230,7 +1230,7 @@ class Arbitrators extends Component {
                                     </Form> : null}
                                 {this.state.loading ? 
                                     <Spinner className='submitSpinner' type='grow' color='primary' /> : 
-                                    <Button className='submitButton' color='primary' onClick={(event) => this.handleSearch(event, tabElement.id)}>Submit</Button> }
+                                    <Button className='submitButton' color='primary' onClick={(event) => this.handleSearch(event, tabElement.id)} disabled={!this.props.authentication.isLogin} >Submit</Button> }
                             </Col>
                         </Row>
                     </TabPane>

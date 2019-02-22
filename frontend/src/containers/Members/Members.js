@@ -209,6 +209,20 @@ class Members extends Component {
         this.toggleLogin            = this.toggleLogin.bind(this);
     }
 
+    toggleTab(tab) {
+        if (this.state.activeTab !== tab) {
+            this.setState({
+                activeTab: tab
+            });
+        }
+    }
+
+    toggleLogin() {
+        const { setAuth } = this.props;
+        const setaccounts = this.eosio.currentAccount ? this.eosio.currentAccount : null;
+        setAuth({ isLogin: !this.props.authentication.isLogin, account: setaccounts });
+    }
+
     handleSubmit = async(event, tab_id) => {
         event.preventDefault();
         await this.handleSearch(event, tab_id);
@@ -292,20 +306,6 @@ class Members extends Component {
         updatedForm[tab_id]        = updatedFormTab;
 
         this.setState({ memberForm: updatedForm });
-    }
-
-    toggleTab(tab) {
-        if (this.state.activeTab !== tab) {
-            this.setState({
-                activeTab: tab
-            });
-        }
-    }
-
-    toggleLogin() {
-        const { setAuth } = this.props;
-        const setaccounts = this.eosio.currentAccount ? this.eosio.currentAccount : null;
-        setAuth({ isLogin: !this.props.authentication.isLogin, account: setaccounts });
     }
 
     componentDidMount = async() => {
