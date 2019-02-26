@@ -58,6 +58,7 @@ class Arbitrators extends Component {
         };
 
         this.state = {
+            loading:       false,
             activeTab:     '1',
             consoleoutput: '',
             arbitrators:   [],
@@ -384,8 +385,8 @@ class Arbitrators extends Component {
         event.preventDefault();
         this.setState({ loading: true });
         const formData = {};
-        for (let formElementIdentifier in this.state.memberForm[tab_id]) {
-            formData[formElementIdentifier] = this.state.memberForm[tab_id][formElementIdentifier].value;
+        for (let formElementIdentifier in this.state.arbitratorForm[tab_id]) {
+            formData[formElementIdentifier] = this.state.arbitratorForm[tab_id][formElementIdentifier].value;
         }
         // Send Action to Respective Action Handler
         switch (tab_id) {
@@ -429,7 +430,7 @@ class Arbitrators extends Component {
 
     inputChangedHandler = (event, tab_id, element_id) => {
         const updatedForm = {
-            ...this.state.memberForm
+            ...this.state.arbitratorForm
         };
         const updatedFormTab = {
             ...updatedForm[tab_id]
@@ -447,7 +448,7 @@ class Arbitrators extends Component {
         updatedFormTab[element_id] = updatedFormElement;
         updatedForm[tab_id]        = updatedFormTab;
 
-        this.setState({ memberForm: updatedForm });
+        this.setState({ arbitratorForm: updatedForm });
     }
 
     checkBoxChangedHandler = (tab_id, element_id, language) => {

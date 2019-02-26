@@ -133,7 +133,7 @@ class App extends Component {
           return (
               <div className='App'>
                 <Navbar color='light' light expand='md'>
-                    <Link to='/' style={{ color: 'black', textDecoration: 'none', fontSize: '18px' }}>
+                    <Link to='/' style={{ color: 'black', textDecoration: 'none' }}>
                         <img src={mainLogo} alt='mainLogo' height="40" width="40"/> Arbitration Portal
                     </Link>
                     <NavbarToggler onClick={this.toggleNavBar}/>
