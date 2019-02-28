@@ -669,6 +669,10 @@ class Arbitrators extends Component {
                 {
                     case_id:       parseInt(case_id),
                     arb_to_assign: `${arb_to_assign}`
+                },
+                {
+                    actor: `${process.env.REACT_APP_EOSIO_CONTRACT_ACCOUNT}`,
+                    permission: 'assign'
                 }
             );
             let result = await this.eosio.sendTx(actions);
@@ -781,7 +785,7 @@ class Arbitrators extends Component {
 
      recuse = async(case_id, rationale, assigned_arb) => {
          try {
-            let actions = await this.eosio.sendTx(process.env.REACT_APP_EOSIO_CONTRACT_ACCOUNT, 'recuse',
+            let actions = await this.eosio.makeAction(process.env.REACT_APP_EOSIO_CONTRACT_ACCOUNT, 'recuse',
                 {
                     case_id:      parseInt(case_id),
                     rationale:    `${rationale}`,

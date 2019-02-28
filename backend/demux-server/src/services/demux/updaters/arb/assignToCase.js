@@ -26,12 +26,21 @@ async function assignToCaseHandler (state, payload, blockInfo, context) {
 
         let caseState = await state.case.findOne({ case_id: case_id }).exec();
         let arbitrators;
+        let case_status;
         if (caseState) {
             ({ arbitrators } = caseState)
+            ({ case_status } = caseState)
             arbitrators.push(arbitrator);
             await state.case.findOneAndUpdate({ case_id: case_id }, {
                 arbitrators: arbitrators
             }).exec();
+
+            if ( case_status == 1 ) {
+                case_status += 1;
+                await state.case.findOneAndUpdate({ case_id: case_id }, {
+                    case_status: case_status
+                }).exec();
+            }
         }
     } catch (err) {
         console.error('AssignToCase updater error: ', err);
