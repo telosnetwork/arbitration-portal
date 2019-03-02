@@ -11,7 +11,7 @@ async function acceptClaimHandler (state, payload, blockInfo, context) {
             let claim_counter = 0;
             let counters = await state.counter.findOne({}).exec();
             if (counters) {
-                ({ claim_counter } = counters)
+                ({ claim_counter } = counters);
                 claim_counter += 1;
                 await state.counter.updateOne({}, {
                     $inc: { claim_counter: 1 }
@@ -25,12 +25,12 @@ async function acceptClaimHandler (state, payload, blockInfo, context) {
             let accepted_claim;
             let unread_claims;
             let accepted_claims;
-            ({ unread_claims }   = caseState)
-            ({ accepted_claims } = caseState)
+            ({ unread_claims }   = caseState);
+            ({ accepted_claims } = caseState);
             for ( let claim of unread_claims ) {
                 if (claim.claim_summary === payload.data.claim_hash) {
                     accepted_claim = claim;
-                    claim = null;
+                    unread_claims.splice(unread_claims.indexOf(claim), 1);
                 }
             }
             accepted_claims.push(accepted_claim);

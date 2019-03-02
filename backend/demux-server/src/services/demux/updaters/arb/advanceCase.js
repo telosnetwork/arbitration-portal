@@ -12,9 +12,9 @@ async function advanceCaseHandler (state, payload, blockInfo, context) {
         let approvals;
         let case_status;
         if (caseState) {
-            ({ arbitrators } = caseState)
-            ({ approvals }   = caseState)
-            ({ case_status } = caseState)
+            ({ arbitrators } = caseState);
+            ({ approvals }   = caseState);
+            ({ case_status } = caseState);
             if (approvals.length + 1 < arbitrators.length) {
                 approvals.push(arbitrator);
             } else if (approvals.length + 1 === arbitrators.length) {

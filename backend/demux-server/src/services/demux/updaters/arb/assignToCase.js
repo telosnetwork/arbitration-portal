@@ -13,7 +13,7 @@ async function assignToCaseHandler (state, payload, blockInfo, context) {
         let arbState = await state.arbitrator.findOne({ arb: arbitrator }).exec();
         let open_case_ids;
         if (arbState) {
-            ({ open_case_ids } = arbState)
+            ({ open_case_ids } = arbState);
             open_case_ids.push(case_id);
         } else {
             open_case_ids = [case_id];
@@ -28,8 +28,8 @@ async function assignToCaseHandler (state, payload, blockInfo, context) {
         let arbitrators;
         let case_status;
         if (caseState) {
-            ({ arbitrators } = caseState)
-            ({ case_status } = caseState)
+            ({ arbitrators } = caseState);
+            ({ case_status } = caseState);
             arbitrators.push(arbitrator);
             await state.case.findOneAndUpdate({ case_id: case_id }, {
                 arbitrators: arbitrators

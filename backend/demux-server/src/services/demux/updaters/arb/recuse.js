@@ -8,7 +8,7 @@ async function recuseHandler (state, payload, blockInfo, context) {
         let caseState = await state.case.findOne({ case_id: case_id }).exec();
         let arbitrators;
         if (caseState) {
-            ({ arbitrators } = caseState)
+            ({ arbitrators } = caseState);
             for ( let arbitrator of arbitrators ) {
                 if (arbitrator === payload.data.assigned_arb) {
                     arbitrator = null;

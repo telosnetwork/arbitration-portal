@@ -7,7 +7,7 @@ async function fileCaseHandler (state, payload, blockInfo, context) {
         let case_counter = 0;
         let counters = await state.counter.findOne({}).exec();
         if (counters) {
-            ({ case_counter } = counters)
+            ({ case_counter } = counters);
             case_counter += 1;
             await state.counter.updateOne({}, {
                 $inc: { case_counter: 1 }
