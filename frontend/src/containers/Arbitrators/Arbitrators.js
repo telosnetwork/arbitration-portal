@@ -86,29 +86,33 @@ class Arbitrators extends Component {
                     name:      'Accept Claim',
                     activeTab: '5'
                 },
+                setruling: {
+                    name:      'Set Ruling',
+                    activeTab: '6'
+                },
                 advancecase: {
                     name:      'Advance Case',
-                    activeTab: '6'
+                    activeTab: '7'
                 },
                 dismisscase: {
                     name:      'Dismiss Case',
-                    activeTab: '7'
+                    activeTab: '8'
                 },
                 recuse: {
                     name:      'Recuse',
-                    activeTab: '8'
+                    activeTab: '9'
                 },
                 newarbstatus: {
                     name:      'New Arbitrator Status',
-                    activeTab: '9'
+                    activeTab: '10'
                 },
                 setlangcodes: {
                     name:      'Set Language Codes',
-                    activeTab: '10'
+                    activeTab: '11'
                 },
                 deletecase: {
                     name:      'Delete Case',
-                    activeTab: '11'
+                    activeTab: '12'
                 }                
             },
             arbitratorForm: {
@@ -246,6 +250,29 @@ class Arbitrators extends Component {
                         type:  'number',
                         placeholder: '0',
                         text:  'Please input a valid Decision Class'
+                    }
+                },
+                setruling: {
+                    case_id: {
+                        label: 'Case ID:',
+                        value: '',
+                        type:  'number',
+                        placeholder: '0',
+                        text:  'Please input a valid case ID'
+                    },
+                    assigned_arb: {
+                        label: 'Assigned Arbitrator:',
+                        value: '',
+                        type:  'text',
+                        placeholder: 'account_name',
+                        text:  'Please input a valid TELOS account name'
+                    },
+                    case_ruling: {
+                        label: 'Case Ruling:',
+                        value: '',
+                        type:  'text',
+                        placeholder: 'ipfs_link',
+                        test:  'Please input a valid IPFS link'
                     }
                 },
                 advancecase: {
@@ -405,6 +432,9 @@ class Arbitrators extends Component {
             case 'acceptclaim':
                 await this.acceptclaim(formData.case_id, formData.assigned_arb, formData.claim_hash, formData.decision_link, formData.decision_class);
                 break;
+            case 'setruling':
+                await this.setruling(formData.case_id,  formData.assigned_arb, formData.case_ruling);
+                break;
             case 'advancecase':
                 await this.advancecase(formData.case_id, formData.assigned_arb);
                 break;
@@ -533,6 +563,14 @@ class Arbitrators extends Component {
         //         {
         //             cases:  updateCases(prevState, post),
         //             claims: updateClaims(prevState, post)
+        //         } 
+        //     ));  
+        // });
+
+        // this.io.onMessage('setRulingAction',  (postCase) => {
+        //     this.setState((prevState) => (
+        //         {
+        //             cases: updateCases(prevState, postCase)
         //         } 
         //     ));  
         // });
@@ -736,6 +774,29 @@ class Arbitrators extends Component {
             console.error(err);
          }
          this.setState({ loading: false });
+     }
+
+     setruling = async(case_id, assigned_arb, case_ruling) =>  {
+         try {
+            let actions = await this.eosio.makeAction(process.env.REACT_APP_EOSIO_CONTRACT_ACCOUNT, 'setruling',
+                {
+                    case_id:      parseInt(case_id),
+                    assigned_arb: `${assigned_arb}`,
+                    case_ruling:  `${case_ruling}`
+                }
+            );
+            let result = await this.eosio.sendTx(actions);
+            console.log('Results: ', result);
+            this.setState({ consoleoutput: result });
+            if (result) {
+                alert(`SetRuling Successful`);
+            } else {
+                alert(`SetRuling Unsuccessful`);
+            }
+         } catch (err) {
+             console.error(err);
+         }
+         this.setState({ loading: true });
      }
 
      advancecase = async(case_id, assigned_arb) => {
@@ -946,6 +1007,18 @@ class Arbitrators extends Component {
                 placeholder: this.state.arbitratorForm.acceptclaim[key].placeholder,
                 text:  this.state.arbitratorForm.acceptclaim[key].text
             });
+        } 
+        
+        const setRulingArr = [];
+        for (let key in this.state.arbitratorForm.setruling) {
+            setRulingArr.push({
+                id:    key,
+                label: this.state.arbitratorForm.setruling[key].label,
+                value: this.state.arbitratorForm.setruling[key].value,
+                type:  this.state.arbitratorForm.setruling[key].type,
+                placeholder: this.state.arbitratorForm.setruling[key].placeholder,
+                text:  this.state.arbitratorForm.setruling[key].text
+            });
         }  
 
         const advanceCaseArr = [];
@@ -1125,6 +1198,27 @@ class Arbitrators extends Component {
                                                         </div>
                                                     : null}
                                                     {formElement.id !== 'claim_hash' && formElement.id !== 'decision_link' ?
+                                                        <Input type={formElement.type} value={formElement.value} placeholder={formElement.placeholder} onChange={(event) => this.inputChangedHandler(event, tabElement.id, formElement.id)} />
+                                                    : null}
+                                                    <FormFeedback>...</FormFeedback>
+                                                    <FormText>{formElement.text}</FormText>
+                                                </Col>
+                                            </FormGroup>
+                                        ))}
+                                    </Form> : null}
+                                    {tabElement.id === 'setruling' ? 
+                                    <Form onSubmit={(event) => this.handleSubmit(event, tabElement.id)}>
+                                        {setRulingArr.map(formElement => (
+                                            <FormGroup className='formgroup' key={formElement.id} row>
+                                                <Label for={formElement.id} sm={1}>{formElement.label}</Label>
+                                                <Col sm={11}>
+                                                    {formElement.id === 'case_ruling' ? 
+                                                        <div>
+                                                            <Input type={formElement.type} value={formElement.value} placeholder={formElement.placeholder} onChange={(event) => this.inputChangedHandler(event, tabElement.id, formElement.id)} />
+                                                            <Uploader />
+                                                        </div>
+                                                    : null}
+                                                    {formElement.id !== 'case_ruling' ?
                                                         <Input type={formElement.type} value={formElement.value} placeholder={formElement.placeholder} onChange={(event) => this.inputChangedHandler(event, tabElement.id, formElement.id)} />
                                                     : null}
                                                     <FormFeedback>...</FormFeedback>

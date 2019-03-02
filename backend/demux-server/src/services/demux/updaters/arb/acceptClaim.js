@@ -21,7 +21,6 @@ async function acceptClaimHandler (state, payload, blockInfo, context) {
                     claim_counter: claim_counter
                 });  
             }
-            
 
             let accepted_claim;
             let unread_claims;

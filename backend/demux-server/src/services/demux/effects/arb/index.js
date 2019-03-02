@@ -11,7 +11,7 @@ import dismissClaimEffect from './dismissClaim';
 import acceptClaimEffect  from './acceptClaim';
 import advanceCaseEffect  from './advanceCase';
 import dismissCaseEffect  from './dismissCase';
-// import resolveCaseEffect  from './resolveCase';
+import setRulingEffect    from './setRuling';
 import recuseEffect       from './recuse';
 // import newJoinderEffect   from './newjoinder';
 // import joinCasesEffect    from './joinCases';
@@ -78,10 +78,10 @@ export default [
         actionType: `${process.env.ARB_CONTRACT}::dismisscase`,
         run:        dismissCaseEffect
     },
-    // {
-    //     actionType: `${process.env.ARB_CONTRACT}::resolvecase`,
-    //     run:        resolveCaseEffect
-    // },
+    {
+        actionType: `${process.env.ARB_CONTRACT}::setruling`,
+        run:        setRulingEffect
+    },
     {
         actionType: `${process.env.ARB_CONTRACT}::recuse`,
         run:        recuseEffect
