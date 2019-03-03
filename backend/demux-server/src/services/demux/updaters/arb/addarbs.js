@@ -56,6 +56,10 @@ async function addArbsHandler (state, payload, blockInfo, context) {
 
         console.log('Selected Arbitrators: ', selected_arbitrators);
 
+            let arbState;
+            let arb_status = 0;
+            let open_case_ids;
+            let case_status;
             for ( let arbitrator of selected_arbitrators ) {
                 await eos.transact({
                     actions: [
@@ -78,14 +82,38 @@ async function addArbsHandler (state, payload, blockInfo, context) {
                     blocksBehind:  3,
                     expireSeconds: 30
                 });
-                let caseStateT = await state.case.findOne({ case_id: case_id }).exec();
-                if (caseStateT) {
+
+                //** AssignToCaseHandler **//
+                arbState = await state.arbitrator.findOne({ arb: arbitrator }).exec();
+                if (arbState) {
+                    ({ open_case_ids } = arbState);
+                    open_case_ids.push(case_id);
+                } else {
+                    open_case_ids = [case_id];
+                }
+                await state.arbitrator.findOneAndUpdate({ arb: arbitrator }, {
+                    arb:           arbitrator,
+                    arb_status:    arb_status,
+                    open_case_ids: open_case_ids
+                }, { upsert: true }).exec();
+
+                caseState = await state.case.findOne({ case_id: case_id }).exec();
+                if (caseState) {
                     ({ arbitrators } = caseState);
+                    ({ case_status } = caseState);
                     arbitrators.push(arbitrator);
-                    await state.case.findOneAndUpdate({ case_id }, {
+                    await state.case.findOneAndUpdate({ case_id: case_id }, {
                         arbitrators: arbitrators
                     }).exec();
+
+                    if ( case_status == 1 ) {
+                        case_status += 1;
+                        await state.case.findOneAndUpdate({ case_id: case_id }, {
+                            case_status: case_status
+                        }).exec();
+                    }
                 }
+                //** AssignToCaseHandler **//
             }
         }
     } catch (err) {
