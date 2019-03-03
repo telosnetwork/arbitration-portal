@@ -1,22 +1,8 @@
 // import EOSIOClient from '../../../../utils/eosio-client';
 
-import Eos from 'eosjs';
-
-const config = {
-    chainId:         `${process.env.CHAIN_ID}`,
-    keyProvider:     [`${process.env.ARB_PRIV}`],
-    httpEndpoint:    `${process.env.TELOS_ENDPOINT}`,
-    expireInSeconds: 100,
-    broadcast:       true,
-    verbose:         false,
-    sign:            true
-};
-
-const options = {
-    authorization: `eosio.arb@assign`,
-    broadcast:     true,
-    sign:          true
-};
+import { Api, JsonRpc } from 'eosjs';
+import fetch from 'node-fetch';
+import { JsSignatureProvider } from 'eosjs/dist/eosjs-jssig';
 
 function count_s (arrA, arrB) {
     let matches = 0;
@@ -33,46 +19,73 @@ async function addArbsHandler (state, payload, blockInfo, context) {
         console.log('AddArbs updater PAYLOAD:   ', payload);
         console.log('AddArbs updater BlockInfo: ', blockInfo);
 
-        const eos = Eos(config);
+        const rpc = new JsonRpc(process.env.TELOS_ENDPOINT, { fetch });
+        const signatureProvider = new JsSignatureProvider([process.env.ARB_PRIV]);
+        const eos = new Api({ rpc, signatureProvider });
 
         let case_id      = parseInt(payload.data.case_id);
         let assigned_arb = payload.data.assigned_arb;
         let num_arbs_to_assign = parseInt(payload.data.num_arbs_to_assign);
 
-        let result = await eos.getTableRows({
-            code:  `${process.env.ARB_CONTRACT}`,
-            scope: `${process.env.ARB_CONTRACT}`,
+        let result = await rpc.get_table_rows({
+            code:  process.env.ARB_CONTRACT,
+            scope: process.env.ARB_CONTRACT,
             table: `arbitrators`,
             limit: 21,
-            json:  true 
+            json:  true
         });
-        let arbitrators = result.rows;
+        let arbitratorsT = result.rows;
 
+        let arbitrators;
         let required_langs;
         let caseState = await state.case.findOne({ case_id: case_id }).exec();
         if (caseState) {
+            ({ arbitrators }    = caseState);
             ({ required_langs } = caseState);
             let selected_arbitrators = [];
-
             for ( let i = required_langs.length; i >= 0; i-- ) {
-                for ( let arbitrator of arbitrators ) {
-                    while ( selected_arbitrators.length <= num_arbs_to_assign ) {
-                        if ( arbitrator.arb_status == 0 && arbitrator.arb != assigned_arb ) {
-                            if ( count_s(required_langs, arbitrator.languages) >= i ) {
-                                selected_arbitrators.push(arbitrator.arb);
-                            }
+                for ( let arbitrator of arbitratorsT ) {
+                    if ( count_s(required_langs, arbitrator.languages) >= i ) {
+                        if ( (arbitrator.arb_status == 0) && (arbitrator.arb != assigned_arb) && (arbitrators.indexOf(arbitrator.arb) == -1) && (selected_arbitrators.indexOf(arbitrator.arb) == -1) ) {
+                            if (selected_arbitrators.length >= num_arbs_to_assign) break;
+                            selected_arbitrators.push(arbitrator.arb);
                         }
                     }
                 }
             }
 
-        console.log(selected_arbitrators);
+        console.log('Selected Arbitrators: ', selected_arbitrators);
 
             for ( let arbitrator of selected_arbitrators ) {
-                eos.contract(`${process.env.ARB_CONTRACT}`)
-                    .then(account => {
-                        return account.assigntocase(`${case_id}`, `${arbitrator}`, options);
-                    });
+                await eos.transact({
+                    actions: [
+                        {
+                            account: process.env.ARB_CONTRACT,
+                            name: `assigntocase`,
+                            authorization: [
+                                {
+                                    actor:      `eosio.arb`,
+                                    permission: `assign`,
+                                }
+                            ],
+                            data: {
+                                case_id: case_id,
+                                arb_to_assign: arbitrator
+                            }
+                        }
+                    ]
+                }, {
+                    blocksBehind:  3,
+                    expireSeconds: 30
+                });
+                let caseStateT = await state.case.findOne({ case_id: case_id }).exec();
+                if (caseStateT) {
+                    ({ arbitrators } = caseState);
+                    arbitrators.push(arbitrator);
+                    await state.case.findOneAndUpdate({ case_id }, {
+                        arbitrators: arbitrators
+                    }).exec();
+                }
             }
         }
     } catch (err) {

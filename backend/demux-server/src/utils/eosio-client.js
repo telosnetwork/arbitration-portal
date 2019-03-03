@@ -1,18 +1,19 @@
 import { Api, JsonRpc }    from 'eosjs';
-import JsSignatureProvider from 'eosjs/dist/eosjs-jssig';
+import fetch from 'node-fetch';
+import { JsSignatureProvider } from 'eosjs/dist/eosjs-jssig';
 
 export default class EOSIOClient {
     
     constructor (contractAccount) {
-        const rpc = new JsonRpc(process.env.TELOS_ENDPOINT)
-        const signatureProvider = new JsSignatureProvider([process.env.ARB_PRIV])
+        const rpc = new JsonRpc(process.env.TELOS_ENDPOINT, { fetch });
+        const signatureProvider = new JsSignatureProvider([process.env.ARB_PRIV]);
         this.contractAccount = contractAccount;
         this.eos = new Api({ rpc, signatureProvider });
     }
 
 
     table = (code, scope, table, limit) => {
-        return this.eos.get_table_rows({
+        return rpc.get_table_rows({
             code:  code,
             scope: scope,
             table: table,
