@@ -316,8 +316,8 @@ class Members extends Component {
                 this.toggleLogin();
             }
         }
-        // this.loadBalances();
-        // this.loadCases();
+        this.loadBalances();
+        this.loadCases();
         
         // /**
         //  * Arbitration (Member and Arbitrator) Action Listeners
@@ -325,7 +325,7 @@ class Members extends Component {
 
         // // Case_Setup Actions
 
-        // this.io.onMessage('withdraw',           (balance) => {
+        // this.io.onMessage('withdrawAction',           (balance) => {
         //     this.setState((prevState) => (
         //         {
         //             balances: updateBalances(prevState, balance)
@@ -377,13 +377,13 @@ class Members extends Component {
     loadCases = async () => {
         const response = await axios.get(`${process.env.REACT_APP_API_URL}/posts/case`);
         console.log('LoadCases: ', response);
-        this.setState({ cases: response.data.reverse() })
+        this.setState({ cases: response.data.reverse() });
     }
 
     loadBalances = async () => {
         const response = await axios.get(`${process.env.REACT_APP_API_URL}/posts/balance`);
         console.log('LoadBalances: ', response);
-        this.setState({ balances: response.data.reverse() })
+        this.setState({ balances: response.data.reverse() });
     }
 
     withdraw = async(owner) => {
@@ -753,7 +753,12 @@ class Members extends Component {
                     {tabBar}
                     {tabContent}
                 </Jumbotron>
+                <p>Output:</p>
                 <BlockConsole consoleoutput={this.state.consoleoutput} />
+                <p>Balances:</p>
+                <BlockConsole consoleoutput={this.state.balances} />
+                <p>Cases:</p>
+                <BlockConsole consoleoutput={this.state.cases} />            
             </div>
         )
     }

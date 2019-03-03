@@ -519,10 +519,10 @@ class Arbitrators extends Component {
                 this.toggleLogin();
             }
         }
-        // this.loadArbitrators();
-        // this.loadCases();
-        // this.loadBalances();
-        // this.loadClaims();
+        this.loadArbitrators();
+        this.loadCases();
+        this.loadBalances();
+        this.loadClaims();
 
         // /**
         //      * Arbitration (Member and Arbitrator) Action Listeners
@@ -629,25 +629,25 @@ class Arbitrators extends Component {
     loadArbitrators = async () => {
         const response = await axios.get(`${process.env.REACT_APP_API_URL}/posts/arbitrator`);
         console.log('LoadArbitrators: ', response);
-        this.setState({ arbitrators: response.data.reverse() })
+        this.setState({ arbitrators: response.data.reverse() });
     }
 
     loadCases = async () => {
         const response = await axios.get(`${process.env.REACT_APP_API_URL}/posts/case`);
         console.log('LoadCases: ', response);
-        this.setState({ cases: response.data.reverse() })
+        this.setState({ cases: response.data.reverse() });
     }
 
     loadBalances = async () => {
         const response = await axios.get(`${process.env.REACT_APP_API_URL}/posts/balance`);
         console.log('LoadBalances: ', response);
-        this.setState({ balances: response.data.reverse() })
+        this.setState({ balances: response.data.reverse() });
     }
 
     loadClaims = async () => {
         const response = await axios.get(`${process.env.REACT_APP_API_URL}/posts/claim`);
         console.log('LoadClaims: ', response);
-        this.setState({ claims: response.data.reverse() })
+        this.setState({ claims: response.data.reverse() });
     }
 
     /**
@@ -1343,7 +1343,16 @@ class Arbitrators extends Component {
                     {tabBar}
                     {tabContent}
                 </Jumbotron>
+                <p>Output:</p>
                 <BlockConsole consoleoutput={this.state.consoleoutput} />
+                <p>Balances:</p>
+                <BlockConsole consoleoutput={this.state.balances} />
+                <p>Cases:</p>
+                <BlockConsole consoleoutput={this.state.cases} />
+                <p>Claims:</p>
+                <BlockConsole consoleoutput={this.state.claims} />
+                <p>Arbitrators:</p>
+                <BlockConsole consoleoutput={this.state.arbitrators} />
             </div>
         )
     }

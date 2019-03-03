@@ -3,9 +3,9 @@ import axios                     from 'axios';
 
 // Utilities
 import ScatterBridge             from '../../utils/scatterBridge';
-// import IOClient               from '../../utils/io-client';
-// import { updateTransfers }    from '../../utils/updateTransfers';
-// import { updateBalances }     from '../../utils/updateBalances';
+// import IOClient                  from '../../utils/io-client';
+// import { updateTransfers }       from '../../utils/updateTransfers';
+// import { updateBalances }        from '../../utils/updateBalances';
 
 // Components
 import BlockConsole              from '../BlockConsole';
@@ -124,8 +124,8 @@ class Transfers extends Component {
                 this.toggleLogin();
             }
         }
-        // this.loadBalances();
-        // this.loadTransfers();
+        this.loadBalances();
+        this.loadTransfers();
 
         // /**
         //  * Transfer Action Listeners
@@ -133,7 +133,7 @@ class Transfers extends Component {
         // this.io.onMessage('transferAction',     (transfer) => {
         //     this.setState((prevState) => (
         //         {
-        //             balances:  updateBalances(prevState, transfer),
+        //             balances:  updateBalances (prevState, transfer),
         //             transfers: updateTransfers(prevState, transfer)
         //         }
         //     ));
@@ -143,13 +143,13 @@ class Transfers extends Component {
     loadBalances = async () => {
         const response = await axios.get(`${process.env.REACT_APP_API_URL}/posts/balance`);
         console.log('LoadBalances: ', response);
-        this.setState({ balances: response.data.reverse() })
+        this.setState({ balances: response.data.reverse() });
     }
 
     loadTransfers = async () => {
         const response = await axios.get(`${process.env.REACT_APP_API_URL}/posts/transfers`);
         console.log('LoadTransfers: ', response);
-        this.setState({ transfers: response.data.reverse() })
+        this.setState({ transfers: response.data.reverse() });    
     }
 
     /**
@@ -236,7 +236,12 @@ class Transfers extends Component {
                     {formContent}
                     {submission}
                 </Jumbotron>
+                <p>Output:</p>
                 <BlockConsole consoleoutput={this.state.consoleoutput} />
+                <p>Balances:</p>
+                <BlockConsole consoleoutput={this.state.balances} />
+                <p>Transfers:</p>
+                <BlockConsole consoleoutput={this.state.transfers} />
             </div>
         );
     }

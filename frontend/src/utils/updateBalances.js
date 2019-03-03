@@ -2,7 +2,7 @@ import axios from "axios";
 
 export const updateBalances = async (prevState, updatedBalance) => {
 
-    let isFound  = false;
+    let isFound = false;
     let updatedOwner = updatedBalance.owner;
 
     let url = `${process.env.REACT_APP_API_URL}/posts/balance`;
@@ -22,5 +22,7 @@ export const updateBalances = async (prevState, updatedBalance) => {
         updatedBalances = [{ ...updatedBalance }, ...updatedBalances ];
     }
 
+    console.log(updatedBalances);
+    
     return updatedBalances;
 };

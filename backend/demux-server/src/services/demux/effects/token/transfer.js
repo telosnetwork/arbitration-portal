@@ -4,17 +4,16 @@ function transferEffect(payload, blockInfo, context) {
         console.log('Transfer effect BlockInfo: ', blockInfo);   
 
         let post;
-        if (payload.data.to == 'eosio.arb') {
+
+        let to       = payload.data.to;
+        let quantity = payload.data.quantity;
+        let symbol   = quantity.split(' ')[1];
+
+        if (symbol === 'TLOS' && ( to === 'eosio.arb' )) {
             post = {
                 trxHash:   payload.transactionId,
                 blockHash: blockInfo.blockHash,
-                owner:     payload.data.from,
-            };
-        } else if (payload.data.from == 'eosio.arb') {
-            post = {
-                trxHash:   payload.transactionId,
-                blockHash: blockInfo.blockHash,
-                owner:     payload.data.to,
+                owner:     payload.data.from
             };
         }
         context.socket.emit('transferAction', post);
