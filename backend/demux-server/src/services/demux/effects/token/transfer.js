@@ -16,7 +16,7 @@ function transferEffect(payload, blockInfo, context) {
                 owner:     payload.data.from
             };
         }
-        context.socket.emit('transferAction', post);
+        context.socket.emit('transferaction', post);
     } catch (err) {
         console.error('Transfer effect error: ', err);
     }

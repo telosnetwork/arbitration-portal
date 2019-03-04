@@ -124,13 +124,22 @@ class Transfers extends Component {
                 this.toggleLogin();
             }
         }
+
         this.loadBalances();
         this.loadTransfers();
 
         // /**
         //  * Transfer Action Listeners
         //  */
-        // this.io.onMessage('transferAction',     (transfer) => {
+        // this.io.onMessage('transferaction', () => {
+        //     this.loadBalances();
+        //     this.loadTransfers();
+        // })
+
+        // /**
+        //  * Transfer Action Listeners
+        //  */
+        // this.io.onMessage('transferaction',     (transfer) => {
         //     this.setState((prevState) => (
         //         {
         //             balances:  updateBalances (prevState, transfer),

@@ -8,7 +8,6 @@ import Transfer from '../../models/transfer.model';
  export const listTransfers = async (req, res) => {
     let trxHash = req.query.trxHash;
     let from    = req.query.from;
-    let to      = req.query.to;
 
     try {
         if (trxHash) {

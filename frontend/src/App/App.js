@@ -79,6 +79,7 @@ class App extends Component {
                 this.toggleLogin();
             }
         }
+        console.log(this.eosio);
         this.toggleModal();
     }
 
