@@ -3,8 +3,7 @@ async function dismissCaseHandler (state, payload, blockInfo, context) {
         console.log('DismissCase updater PAYLOAD:   ', payload);
         console.log('DismissCase updater BlockInfo: ', blockInfo);
 
-        let case_id     = payload.data.case_id;
-
+        let case_id     = parseInt(payload.data.case_id);
         let ruling_link = payload.data.ruling_link;
 
         // Case Status

@@ -1,15 +1,24 @@
-import React, { Component } from 'react';
-import axios                from 'axios';
+import React, { Component }      from 'react';
+import axios                     from 'axios';
 
 // Utilities
-import ScatterBridge      from '../../utils/scatterBridge';
-import IOClient           from '../../utils/io-client';
-// import { updateBalances } from '../../utils/updateBalances';
-// import { updateCases }    from '../../utils/updateCases';
+import ScatterBridge             from '../../utils/scatterBridge';
+// import IOClient               from '../../utils/io-client';
+// import { updateBalances }     from '../../utils/updateBalances';
+// import { updateCases }        from '../../utils/updateCases';
+
+// Components
+import Uploader                  from '../Uploader';
+import BlockConsole              from '../BlockConsole';
+
+// Redux
+import { connect }               from 'react-redux';
+import { AuthenticationActions } from '../../actions';
 
 import { TabContent, TabPane, Nav, NavItem, NavLink, Row, Col } from 'reactstrap';
-import classnames from 'classnames';
+import classnames    from 'classnames';
 import { Button, Spinner, Form, FormGroup, Label, CustomInput, Input, FormText, FormFeedback } from 'reactstrap';
+import { Jumbotron } from 'reactstrap';
 
 class Members extends Component {
 
@@ -25,7 +34,7 @@ class Members extends Component {
             chainId:    `${process.env.REACT_APP_CHAINID}`
         };
         this.eosio = new ScatterBridge(this.network, this.appName);
-        this.io    = new IOClient();
+        // this.io    = new IOClient();
 
         this.languageCodes = {
             ENGL: '0',
@@ -40,11 +49,11 @@ class Members extends Component {
         };
 
         this.state = {
-            isLogin:   false,
-            loading:   false,
-            activeTab: '1',
-            cases:     [],
-            balances:  [],
+            loading:       false,
+            activeTab:     '1',
+            consoleoutput: '',
+            cases:         [],
+            balances:      [],
             tabs: {
                 withdraw: {
                     name:      'Withdraw',
@@ -119,13 +128,6 @@ class Members extends Component {
                         placeholder: '0',
                         text:  'Please input a valid case ID'
                     },
-                    claim_link: {
-                        label: 'Claim Link:',
-                        value: '',
-                        type:  'text',
-                        placeholder: 'ipfs_link',
-                        text:  'Please input a valid IPFS link'
-                    },
                     claimant: {
                         label: 'Claimant:',
                         value: '',
@@ -133,6 +135,13 @@ class Members extends Component {
                         placeholder: 'account_name',
                         text:  'Please input a valid TELOS account name'
                     },
+                    claim_link: {
+                        label: 'Claim Link:',
+                        value: '',
+                        type:  'text',
+                        placeholder: 'ipfs_link',
+                        text:  'Please input a valid IPFS link'
+                    }
                 },
                 removeclaim: {
                     case_id: {
@@ -142,13 +151,6 @@ class Members extends Component {
                         placeholder: '0',
                         text:  'Please input a valid case ID'
                     },
-                    claim_hash: {
-                        label: 'Claim Hash:',
-                        value: '',
-                        type:  'text',
-                        placeholder: 'ipfs_link',
-                        text:  'Please input a valid IPFS link'
-                    },
                     claimant: {
                         label: 'Claimant:',
                         value: '',
@@ -156,6 +158,13 @@ class Members extends Component {
                         placeholder: 'account_name',
                         text:  'Please input a valid TELOS account name'
                     },
+                    claim_hash: {
+                        label: 'Claim Hash:',
+                        value: '',
+                        type:  'text',
+                        placeholder: 'ipfs_link',
+                        text:  'Please input a valid IPFS link'
+                    }
                 },
                 shredcase: {
                     case_id: {
@@ -192,11 +201,26 @@ class Members extends Component {
             }
         };
 
-        this.handleSubmit        = this.handleSubmit.bind(this);
-        this.handleSearch        = this.handleSearch.bind(this);
-        this.inputChangedHandler = this.inputChangedHandler.bind(this);
-        this.toggleLogin         = this.toggleLogin.bind(this);
-        this.toggleTab           = this.toggleTab.bind(this);
+        this.handleSubmit           = this.handleSubmit.bind(this);
+        this.handleSearch           = this.handleSearch.bind(this);
+        this.inputChangedHandler    = this.inputChangedHandler.bind(this);
+        this.checkBoxChangedHandler = this.checkBoxChangedHandler.bind(this);
+        this.toggleTab              = this.toggleTab.bind(this);
+        this.toggleLogin            = this.toggleLogin.bind(this);
+    }
+
+    toggleTab(tab) {
+        if (this.state.activeTab !== tab) {
+            this.setState({
+                activeTab: tab
+            });
+        }
+    }
+
+    toggleLogin() {
+        const { setAuth } = this.props;
+        const setaccounts = this.eosio.currentAccount ? this.eosio.currentAccount : null;
+        setAuth({ isLogin: !this.props.authentication.isLogin, account: setaccounts });
     }
 
     handleSubmit = async(event, tab_id) => {
@@ -254,27 +278,46 @@ class Members extends Component {
         this.setState({ memberForm: updatedForm });
     }
 
-    toggleLogin() {
-        this.setState(prevState => ({
-            isLogin: !prevState.isLogin
-        }));
-    }
+    checkBoxChangedHandler = (tab_id, element_id, language) => {
+        
+        let updatedLanguages = [];
 
-    toggleTab(tab) {
-        if (this.state.activeTab !== tab) {
-            this.setState({
-                activeTab: tab
-            });
+        const updatedForm = {
+            ...this.state.memberForm
+        };
+        const updatedFormTab = {
+            ...updatedForm[tab_id]
+        };
+        const updatedFormElement = {
+            ...updatedFormTab[element_id]
+        };
+
+        updatedLanguages = [...updatedFormElement.value];
+
+        if (!updatedLanguages.includes(parseInt(this.languageCodes[language]))) {
+            updatedLanguages.push(parseInt(this.languageCodes[language]));
+        }  else {
+            let index = updatedLanguages.indexOf(parseInt(this.languageCodes[language]));
+            updatedLanguages.splice(index, 1);
         }
+        
+        updatedFormElement.value   = updatedLanguages;
+        updatedFormTab[element_id] = updatedFormElement;
+        updatedForm[tab_id]        = updatedFormTab;
+
+        this.setState({ memberForm: updatedForm });
     }
 
     componentDidMount = async() => {
         await this.eosio.connect();
         await this.eosio.login();
-        this.toggleLogin();
-
-        // this.loadBalances();
-        // this.loadCases();
+        if (!(this.props.authentication.isLogin || this.props.authentication.account)) {
+            if (this.eosio.isConnected && this.eosio.currentAccount) {
+                this.toggleLogin();
+            }
+        }
+        this.loadBalances();
+        this.loadCases();
         
         // /**
         //  * Arbitration (Member and Arbitrator) Action Listeners
@@ -282,7 +325,7 @@ class Members extends Component {
 
         // // Case_Setup Actions
 
-        // this.io.onMessage('withdraw',           (balance) => {
+        // this.io.onMessage('withdrawAction',           (balance) => {
         //     this.setState((prevState) => (
         //         {
         //             balances: updateBalances(prevState, balance)
@@ -334,24 +377,25 @@ class Members extends Component {
     loadCases = async () => {
         const response = await axios.get(`${process.env.REACT_APP_API_URL}/posts/case`);
         console.log('LoadCases: ', response);
-        this.setState({ cases: response.data.reverse() })
+        this.setState({ cases: response.data.reverse() });
     }
 
     loadBalances = async () => {
         const response = await axios.get(`${process.env.REACT_APP_API_URL}/posts/balance`);
         console.log('LoadBalances: ', response);
-        this.setState({ balances: response.data.reverse() })
+        this.setState({ balances: response.data.reverse() });
     }
 
     withdraw = async(owner) => {
         try {
-            let actions = await this.eosio.makeAction(process.env.REACT_APP_CONTRACT_ACCOUNT, 'withdraw',
+            let actions = await this.eosio.makeAction(process.env.REACT_APP_EOSIO_CONTRACT_ACCOUNT, 'withdraw',
                 {
                     owner: `${owner}`
                 }
             );
             let result = await this.eosio.sendTx(actions);
             console.log('Results: ', result);
+            this.setState({ consoleoutput: result });
             if (result) {
                 alert(`Withdraw Successful`);
             } else {
@@ -365,20 +409,21 @@ class Members extends Component {
 
     filecase = async(claimant, claim_link, lang_codes, respondant) => {
         try {
-            let actions = await this.eosio.makeAction(process.env.REACT_APP_CONTRACT_ACCOUNT, 'filecase',
+            let actions = await this.eosio.makeAction(process.env.REACT_APP_EOSIO_CONTRACT_ACCOUNT, 'filecase',
                 {
                     claimant:   `${claimant}`,
                     claim_link: `${claim_link}`,
-                    lang_codes: `${lang_codes}`,
+                    lang_codes: lang_codes,
                     respondant: `${respondant}`
                 }
             );
             let result = await this.eosio.sendTx(actions);
             console.log('Results: ', result);
+            this.setState({ consoleoutput: result });
             if (result) {
-                alert(`File Case Successful`);
+                alert(`FileCase Successful`);
             } else {
-                alert(`File Case Unsuccessful`);
+                alert(`FileCase Unsuccessful`);
             }     
         } catch (err) {
             console.error(err);
@@ -388,19 +433,20 @@ class Members extends Component {
 
     addclaim = async(case_id, claim_link, claimant) => {
         try {
-            let actions = await this.eosio.makeAction(process.env.REACT_APP_CONTRACT_ACCOUNT, 'addclaim',
+            let actions = await this.eosio.makeAction(process.env.REACT_APP_EOSIO_CONTRACT_ACCOUNT, 'addclaim',
                 {
-                    case_id:    `${case_id}`,
+                    case_id:    parseInt(case_id),
                     claim_link: `${claim_link}`,
                     claimant:   `${claimant}`
                 }
             );
             let result = await this.eosio.sendTx(actions);
             console.log('Results: ', result);
+            this.setState({ consoleoutput: result });
             if (result) {
-                alert(`Add Claim Successful`);
+                alert(`AddClaim Successful`);
             } else {
-                alert(`Add Claim Unsuccessful`);
+                alert(`AddClaim Unsuccessful`);
             }     
         } catch (err) {
             console.error(err);
@@ -410,19 +456,20 @@ class Members extends Component {
 
     removeclaim = async(case_id, claim_hash, claimant) => {
         try {
-            let actions = await this.eosio.makeAction(process.env.REACT_APP_CONTRACT_ACCOUNT, 'removeclaim',
+            let actions = await this.eosio.makeAction(process.env.REACT_APP_EOSIO_CONTRACT_ACCOUNT, 'removeclaim',
                 {
-                    case_id:    `${case_id}`,
+                    case_id:    parseInt(case_id),
                     claim_hash: `${claim_hash}`,
                     claimant:   `${claimant}`
                 }
             );
             let result = await this.eosio.sendTx(actions);
             console.log('Results: ', result);
+            this.setState({ consoleoutput: result });
             if (result) {
-                alert(`Remove Claim Successful`);
+                alert(`RemoveClaim Successful`);
             } else {
-                alert(`Remove Claim Unsuccessful`);
+                alert(`RemoveClaim Unsuccessful`);
             }          
         } catch (err) {
             console.error(err);
@@ -432,18 +479,19 @@ class Members extends Component {
 
     shredcase = async(case_id, claimant) => {
         try {
-            let actions = await this.eosio.makeAction(process.env.REACT_APP_CONTRACT_ACCOUNT, 'shredcase',
+            let actions = await this.eosio.makeAction(process.env.REACT_APP_EOSIO_CONTRACT_ACCOUNT, 'shredcase',
                 {
-                    case_id:  `${case_id}`,
+                    case_id:  parseInt(case_id),
                     claimant: `${claimant}`
                 }
             );
             let result = await this.eosio.sendTx(actions);
             console.log('Results: ', result);
+            this.setState({ consoleoutput: result });
             if (result) {
-                alert(`Shred Case Successful`);
+                alert(`ShredCase Successful`);
             } else {
-                alert(`Shred Case Unsuccessful`);
+                alert(`ShredCase Unsuccessful`);
             }
         } catch (err) {
             console.error(err);
@@ -453,18 +501,19 @@ class Members extends Component {
 
     readycase = async(case_id, claimant) => {
         try {
-            let actions = await this.eosio.makeAction(process.env.REACT_APP_CONTRACT_ACCOUNT, 'readycase',
+            let actions = await this.eosio.makeAction(process.env.REACT_APP_EOSIO_CONTRACT_ACCOUNT, 'readycase',
                 {
-                    case_id:  `${case_id}`,
+                    case_id:  parseInt(case_id),
                     claimant: `${claimant}`
                 }
             );
             let result = await this.eosio.sendTx(actions);
             console.log('Results: ', result);
+            this.setState({ consoleoutput: result });
             if (result) {
-                alert(`Ready Case Successful`);
+                alert(`ReadyCase Successful`);
             } else {
-                alert(`Ready Case Unsuccessful`);
+                alert(`ReadyCase Unsuccessful`);
             }
         } catch (err) {
             console.error(err);
@@ -564,7 +613,7 @@ class Members extends Component {
         let tabBar = (
             <Nav tabs>
                 {tabElementsArr.map(tabElement => (
-                    <NavItem>
+                    <NavItem key={tabElement.name}>
                         <NavLink
                             className={classnames({ active: this.state.activeTab === tabElement.activeTab })}
                             onClick={() => { this.toggleTab(tabElement.activeTab) }}>
@@ -578,15 +627,15 @@ class Members extends Component {
         let tabContent = (
             <TabContent className='tabContent' activeTab={this.state.activeTab}>
                 {tabElementsArr.map(tabElement => (
-                    <TabPane tabId={tabElement.activeTab}>
+                    <TabPane tabId={tabElement.activeTab} key={tabElement.activeTab}>
                         <Row>
                             <Col sm='12'>
                                 {tabElement.id === 'withdraw' ? 
                                     <Form onSubmit={(event) => this.handleSubmit(event, tabElement.id)}>
                                         {withdrawFormArr.map(formElement => (
-                                            <FormGroup className='formgroup' row>
-                                                <Label for={formElement.id} sm={2}>{formElement.label}</Label>
-                                                <Col sm={10}>
+                                            <FormGroup className='formgroup' key={formElement.id} row>
+                                                <Label for={formElement.id} sm={1}>{formElement.label}</Label>
+                                                <Col sm={11}>
                                                     <Input type={formElement.type} value={formElement.value} placeholder={formElement.placeholder} onChange={(event) => this.inputChangedHandler(event, tabElement.id, formElement.id)} />
                                                     <FormFeedback>...</FormFeedback>
                                                     <FormText>{formElement.text}</FormText>
@@ -597,15 +646,21 @@ class Members extends Component {
                                 {tabElement.id === 'filecase' ? 
                                     <Form onSubmit={(event) => this.handleSubmit(event, tabElement.id)}>
                                         {fileCaseArr.map(formElement => (
-                                            <FormGroup className='formgroup' row>
-                                                <Label for={formElement.id} sm={2}>{formElement.label}</Label>
-                                                <Col sm={10}>
+                                            <FormGroup className='formgroup' key={formElement.id} row>
+                                                <Label for={formElement.id} sm={1}>{formElement.label}</Label>
+                                                <Col sm={11}>
                                                     {formElement.id === 'lang_codes' ? 
                                                         languages.map(language => (
-                                                            <CustomInput className='checkboxClass' type={formElement.type} id={language} label={language} />
+                                                            <CustomInput className='checkboxClass' key={language} name={formElement.id} type={formElement.type} id={language} label={language} onClick={() => this.checkBoxChangedHandler(tabElement.id, formElement.id, language)} />
                                                         ))
                                                     : null }
-                                                    {formElement.id !== 'lang_codes' ? 
+                                                    {formElement.id === 'claim_link' ?                                                        
+                                                        <div>
+                                                            <Input type={formElement.type} value={formElement.value} placeholder={formElement.placeholder} onChange={(event) => this.inputChangedHandler(event, tabElement.id, formElement.id)} />
+                                                            <Uploader />
+                                                        </div>
+                                                    : null}
+                                                    {formElement.id !== 'lang_codes' && formElement.id !== 'claim_link' ? 
                                                         <Input type={formElement.type} value={formElement.value} placeholder={formElement.placeholder} onChange={(event) => this.inputChangedHandler(event, tabElement.id, formElement.id)} />
                                                     : null}
                                                     <FormFeedback>...</FormFeedback>
@@ -617,10 +672,18 @@ class Members extends Component {
                                 {tabElement.id === 'addclaim' ? 
                                     <Form onSubmit={(event) => this.handleSubmit(event, tabElement.id)}>
                                         {addClaimArr.map(formElement => (
-                                            <FormGroup className='formgroup' row>
-                                                <Label for={formElement.id} sm={2}>{formElement.label}</Label>
-                                                <Col sm={10}>
-                                                    <Input type={formElement.type} value={formElement.value} placeholder={formElement.placeholder} onChange={(event) => this.inputChangedHandler(event, tabElement.id, formElement.id)} />
+                                            <FormGroup className='formgroup' key={formElement.id} row>
+                                                <Label for={formElement.id} sm={1}>{formElement.label}</Label>
+                                                <Col sm={11}>
+                                                     {formElement.id === 'claim_link' ?                                                        
+                                                        <div>
+                                                            <Input type={formElement.type} value={formElement.value} placeholder={formElement.placeholder} onChange={(event) => this.inputChangedHandler(event, tabElement.id, formElement.id)} />
+                                                            <Uploader />
+                                                        </div>
+                                                    : null}
+                                                    {formElement.id !== 'claim_link' ?
+                                                        <Input type={formElement.type} value={formElement.value} placeholder={formElement.placeholder} onChange={(event) => this.inputChangedHandler(event, tabElement.id, formElement.id)} />
+                                                    : null}
                                                     <FormFeedback>...</FormFeedback>
                                                     <FormText>{formElement.text}</FormText>
                                                 </Col>
@@ -630,10 +693,18 @@ class Members extends Component {
                                 {tabElement.id === 'removeclaim' ? 
                                     <Form onSubmit={(event) => this.handleSubmit(event, tabElement.id)}>
                                         {removeClaimArr.map(formElement => (
-                                            <FormGroup className='formgroup' row>
-                                                <Label for={formElement.id} sm={2}>{formElement.label}</Label>
-                                                <Col sm={10}>
-                                                    <Input type={formElement.type} value={formElement.value} placeholder={formElement.placeholder} onChange={(event) => this.inputChangedHandler(event, tabElement.id, formElement.id)} />
+                                            <FormGroup className='formgroup' key={formElement.id} row>
+                                                <Label for={formElement.id} sm={1}>{formElement.label}</Label>
+                                                <Col sm={11}>
+                                                    {formElement.id === 'claim_hash' ?
+                                                        <div>
+                                                            <Input type={formElement.type} value={formElement.value} placeholder={formElement.placeholder} onChange={(event) => this.inputChangedHandler(event, tabElement.id, formElement.id)} />
+                                                            <Uploader />
+                                                        </div>
+                                                    : null}
+                                                    {formElement.id !== 'claim_hash' ? 
+                                                        <Input type={formElement.type} value={formElement.value} placeholder={formElement.placeholder} onChange={(event) => this.inputChangedHandler(event, tabElement.id, formElement.id)} />
+                                                    : null}
                                                     <FormFeedback>...</FormFeedback>
                                                     <FormText>{formElement.text}</FormText>
                                                 </Col>
@@ -643,9 +714,9 @@ class Members extends Component {
                                 {tabElement.id === 'shredcase' ? 
                                     <Form onSubmit={(event) => this.handleSubmit(event, tabElement.id)}>
                                         {shredCaseArr.map(formElement => (
-                                            <FormGroup className='formgroup' row>
-                                                <Label for={formElement.id} sm={2}>{formElement.label}</Label>
-                                                <Col sm={10}>
+                                            <FormGroup className='formgroup' key={formElement.id} row>
+                                                <Label for={formElement.id} sm={1}>{formElement.label}</Label>
+                                                <Col sm={11}>
                                                     <Input type={formElement.type} value={formElement.value} placeholder={formElement.placeholder} onChange={(event) => this.inputChangedHandler(event, tabElement.id, formElement.id)} />
                                                     <FormFeedback>...</FormFeedback>
                                                     <FormText>{formElement.text}</FormText>
@@ -656,9 +727,9 @@ class Members extends Component {
                                 {tabElement.id === 'readycase' ? 
                                     <Form onSubmit={(event) => this.handleSubmit(event, tabElement.id)}>
                                         {readyCaseArr.map(formElement => (
-                                            <FormGroup className='formgroup' row>
-                                                <Label for={formElement.id} sm={2}>{formElement.label}</Label>
-                                                <Col sm={10}>
+                                            <FormGroup className='formgroup' key={formElement.id} row>
+                                                <Label for={formElement.id} sm={1}>{formElement.label}</Label>
+                                                <Col sm={11}>
                                                     <Input type={formElement.type} value={formElement.value} placeholder={formElement.placeholder} onChange={(event) => this.inputChangedHandler(event, tabElement.id, formElement.id)} />
                                                     <FormFeedback>...</FormFeedback>
                                                     <FormText>{formElement.text}</FormText>
@@ -668,7 +739,7 @@ class Members extends Component {
                                     </Form> : null}
                                 {this.state.loading ? 
                                     <Spinner className='submitSpinner' type='grow' color='primary' /> : 
-                                    <Button className='submitButton' color='primary' onClick={(event) => this.handleSearch(event, tabElement.id)}>Submit</Button> }
+                                    <Button className='submitButton' color='primary' onClick={(event) => this.handleSearch(event, tabElement.id)} disabled={!this.props.authentication.isLogin} >Submit</Button> }
                             </Col>
                         </Row>
                     </TabPane>
@@ -678,12 +749,27 @@ class Members extends Component {
 
         return (
             <div className='MemberContent'>
-                <p>Arbitration for members coming soon...</p>
-                {tabBar}
-                {tabContent}
+                <Jumbotron className='jumbo'>
+                    {tabBar}
+                    {tabContent}
+                </Jumbotron>
+                <p>Output:</p>
+                <BlockConsole consoleoutput={this.state.consoleoutput} />
+                <p>Balances:</p>
+                <BlockConsole consoleoutput={this.state.balances} />
+                <p>Cases:</p>
+                <BlockConsole consoleoutput={this.state.cases} />            
             </div>
         )
     }
 }   
+// Map all state to component props (for redux to connect)
+const mapStateToProps = state => state;
 
-export default Members;
+// Map the following action to props
+const mapDispatchToProps = {
+  setAuth: AuthenticationActions.setAuthentication,
+};
+
+// Export a redux connected component
+export default connect(mapStateToProps, mapDispatchToProps)(Members);

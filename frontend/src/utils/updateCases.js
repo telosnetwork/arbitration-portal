@@ -4,7 +4,7 @@ export const updateCases = async (prevState, updatedCase) => {
 
     let isFound = false;
 
-    let counters = await axios.get(`${process.env.REACT_APP_API_URL}/posts/counter`);
+    let counters = await axios.get(`${process.env.REACT_APP_API_URL}/posts/counter?type=case`);
     let updatedCaseId = counters.case_counter;
 
     let url = `${process.env.REACT_APP_API_URL}/posts/case`;

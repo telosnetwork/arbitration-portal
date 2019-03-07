@@ -6,9 +6,16 @@ import Counter from '../../models/counter.model';
  */
 
  export const listCounters = async (req, res) => {
+    let type = req.query.type;
+
      try {
-        const confirmedCounters = await Counter.find({}).exec();
-        res.send(confirmedCounters);
+         if (type === 'case') {
+            const confirmedCounters = await Counter.find({ case_counter: { $exists: true } }).exec();
+            res.send(confirmedCounters);
+         } else if (type === 'claim') {
+            const confirmedCounters = await Counter.find({ claim_counter: { $exists: true } }).exec();
+            res.send(confirmedCounters);
+         }
      } catch (err) {
          console.error(err);
      }

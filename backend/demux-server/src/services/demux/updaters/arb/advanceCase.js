@@ -3,18 +3,18 @@ async function advanceCaseHandler (state, payload, blockInfo, context) {
         console.log('AdvanceCase updater PAYLOAD:   ', payload);
         console.log('AdvanceCase updater BlockInfo: ', blockInfo);
 
-        let case_id    = payload.data.case_id;
+        let case_id    = parseInt(payload.data.case_id);
         
         let arbitrator = payload.data.assigned_arb;
 
-        let caseState = await state.case.findOne({ case_id: case_id }).exec();
+        let caseState  = await state.case.findOne({ case_id: case_id }).exec();
         let arbitrators;
         let approvals;
         let case_status;
         if (caseState) {
-            ({ arbitrators } = caseState)
-            ({ approvals }   = caseState)
-            ({ case_status } = caseState)
+            ({ arbitrators } = caseState);
+            ({ approvals }   = caseState);
+            ({ case_status } = caseState);
             if (approvals.length + 1 < arbitrators.length) {
                 approvals.push(arbitrator);
             } else if (approvals.length + 1 === arbitrators.length) {

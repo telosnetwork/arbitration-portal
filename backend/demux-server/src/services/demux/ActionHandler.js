@@ -3,7 +3,7 @@ import models from '../../models';
 import io     from '../../utils/io';
 
 const stateHist = {};
-const stateHistMaxLength = 20;
+const stateHistMaxLength = 200;
 
 class ActionHandler extends AbstractActionHandler {
 

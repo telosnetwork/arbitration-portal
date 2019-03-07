@@ -6,7 +6,7 @@ async function newArbStatusHandler (state, payload, blockInfo, context) {
         let arbitrator = payload.data.arbitrator;
 
         // Arbitrator Status
-        let arb_status = payload.data.new_status;
+        let arb_status = parseInt(payload.data.new_status);
 
         await state.arbitrator.findOneAndUpdate({ arb: arbitrator }, {
             arb:        arbitrator,

@@ -7,13 +7,17 @@ async function fileCaseHandler (state, payload, blockInfo, context) {
         let case_counter = 0;
         let counters = await state.counter.findOne({}).exec();
         if (counters) {
-            ({ case_counter } = counters)
+            ({ case_counter } = counters);
             case_counter += 1;
             await state.counter.updateOne({}, {
                 $inc: { case_counter: 1 }
             }, { upsert: true }).exec();
+        } else {
+            await state.counter.create({
+                case_counter: case_counter
+            });
         }
-
+        
         // Case_Status
         let case_status    = 0; // CASE_SETUP (0)
 
@@ -40,7 +44,7 @@ async function fileCaseHandler (state, payload, blockInfo, context) {
             respondant:     respondant,
             required_langs: lang_codes,
             unread_claims:  [unread_claims]
-        }).exec();
+        });
     } catch (err) {
         console.error('FileCase updater error: ', err);
     }

@@ -1,21 +1,29 @@
-import React, { Component } from 'react';
-import axios                from 'axios';
+import React, { Component }      from 'react';
+import axios                     from 'axios';
 
 // Utilities
-import ScatterBridge        from '../../utils/scatterBridge';
-import IOClient             from '../../utils/io-client';
-// import { updateTransfers }  from '../../utils/updateTransfers';
-// import { updateBalances }   from '../../utils/updateBalances';
+import ScatterBridge             from '../../utils/scatterBridge';
+// import IOClient                  from '../../utils/io-client';
+// import { updateTransfers }       from '../../utils/updateTransfers';
+// import { updateBalances }        from '../../utils/updateBalances';
+
+// Components
+import BlockConsole              from '../BlockConsole';
+
+// Redux
+import { connect }               from 'react-redux';
+import { AuthenticationActions } from '../../actions';
 
 // Reactstrap Components
 import { InputGroup, InputGroupAddon } from 'reactstrap';
 import { Button, Spinner, Col, Form, FormGroup, Label, Input, FormText, FormFeedback } from 'reactstrap';
+import { Jumbotron } from 'reactstrap';
 
 class Transfers extends Component {
 
     constructor (props) {
         super(props);
-        
+
         this.appName = process.env.REACT_APP_NAME;
         this.network = {
           blockchain: `${process.env.REACT_APP_BLOCKCHAIN}`,
@@ -25,13 +33,13 @@ class Transfers extends Component {
           chainId:    `${process.env.REACT_APP_CHAINID}`
         };
         this.eosio = new ScatterBridge(this.network, this.appName);
-        this.io    = new IOClient();
+        // this.io    = new IOClient();
 
         this.state = {
-            isLogin:   false,
-            loading:   false,
-            balances:  [],
-            transfers: [],
+            loading:       false,
+            consoleoutput: '',
+            balances:      [],
+            transfers:     [],
             transferForm: {
                 from: {
                     label: 'From:',
@@ -72,6 +80,12 @@ class Transfers extends Component {
         this.transfer            = this.transfer.bind(this);
     }
 
+    toggleLogin() {
+        const { setAuth } = this.props;
+        const setaccounts = this.eosio.currentAccount ? this.eosio.currentAccount : null;
+        setAuth({ isLogin: !this.props.authentication.isLogin, account: setaccounts });
+    }
+
     handleSubmit = async(event) => {
         event.preventDefault();
         await this.handleSearch(event);
@@ -101,28 +115,34 @@ class Transfers extends Component {
         this.setState({ transferForm: updatedForm });
     }
 
-    toggleLogin() {
-        this.setState(prevState => ({
-            isLogin: !prevState.isLogin
-        }));
-    }
-
     // Real-Time Updates via Socket.io
     componentDidMount = async() => {
         await this.eosio.connect();
         await this.eosio.login();
-        this.toggleLogin();
+        if (!(this.props.authentication.isLogin || this.props.authentication.account)) {
+            if (this.eosio.isConnected && this.eosio.currentAccount) {
+                this.toggleLogin();
+            }
+        }
 
-        // this.loadBalances();
-        // this.loadTransfers();
+        this.loadBalances();
+        this.loadTransfers();
 
         // /**
         //  * Transfer Action Listeners
         //  */
-        // this.io.onMessage('transferAction',     (transfer) => {
+        // this.io.onMessage('transferaction', () => {
+        //     this.loadBalances();
+        //     this.loadTransfers();
+        // })
+
+        // /**
+        //  * Transfer Action Listeners
+        //  */
+        // this.io.onMessage('transferaction',     (transfer) => {
         //     this.setState((prevState) => (
         //         {
-        //             balances:  updateBalances(prevState, transfer),
+        //             balances:  updateBalances (prevState, transfer),
         //             transfers: updateTransfers(prevState, transfer)
         //         }
         //     ));
@@ -132,24 +152,24 @@ class Transfers extends Component {
     loadBalances = async () => {
         const response = await axios.get(`${process.env.REACT_APP_API_URL}/posts/balance`);
         console.log('LoadBalances: ', response);
-        this.setState({ balances: response.data.reverse() })
+        this.setState({ balances: response.data.reverse() });
     }
 
     loadTransfers = async () => {
         const response = await axios.get(`${process.env.REACT_APP_API_URL}/posts/transfers`);
         console.log('LoadTransfers: ', response);
-        this.setState({ transfers: response.data.reverse() })
+        this.setState({ transfers: response.data.reverse() });    
     }
 
     /**
      * Transfer Actions
      */
     transfer = async (to, quantity, memo) => {
-        const precision = `.0000 EOS`;
+        const precision = `.0000 TLOS`;
         try {
             let actions = await this.eosio.makeAction(process.env.REACT_APP_EOSIO_TOKEN_ACCOUNT, 'transfer', 
                 {
-                    from:      this.eosio.currentAccount.name,
+                    from:      `${this.props.authentication.account.name}`,
                     to:        `${to}`,
                     quantity:  `${quantity}${precision}`,
                     memo:      `${memo}`
@@ -157,8 +177,9 @@ class Transfers extends Component {
             );
             let result = await this.eosio.sendTx(actions);
             console.log('Results: ', result);
+            this.setState({ consoleoutput: result });
             if (result) {
-                alert(`Transfer Successful - From: ${this.eosio.currentAccount.name} To: emanateissue`);
+                alert(`Transfer Successful - From: ${this.props.authentication.account.name} To: emanateissue`);
             } else {
                 alert(`Transfer Unsuccessful`);
             }
@@ -173,9 +194,9 @@ class Transfers extends Component {
             <Input disabled></Input>
         );
 
-        if (this.eosio.isConnected && this.eosio.currentAccount) {
+        if (this.props.authentication.isLogin && this.props.authentication.account) {
             account = (
-                <Input value={this.eosio.currentAccount.name} disabled></Input>
+                <Input value={this.props.authentication.account.name} disabled></Input>
             )
         }
 
@@ -194,13 +215,13 @@ class Transfers extends Component {
         let formContent = (
             <Form onSubmit={this.handleSubmit}>
                 {formElementsArr.map(formElement => (
-                    <FormGroup className='formgroup' row>
+                    <FormGroup className='formgroup' key={formElement.id} row>
                         <Label for={formElement.id} sm={1}>{formElement.label}</Label>
                         <Col sm={11}>
-                            {formElement.id === 'from'     ? account : formElement.id === 'quantity' ? null : <Input type={formElement.type} value={formElement.value} placeholder={formElement.placeholder} onChange={(event) => this.inputChangedHandler(event, formElement.id)} /> }
+                            {formElement.id === 'from'     ? account : formElement.id === 'quantity' ? null : <Input type={formElement.type} value={formElement.value} placeholder={formElement.placeholder} onChange={(event) => this.inputChangedHandler(event, formElement.id)} disabled={!this.props.authentication.isLogin} /> }
                             {formElement.id === 'quantity' ? <InputGroup>
-                                                                <Input type={formElement.type} value={formElement.value} placeholder={formElement.placeholder} onChange={(event) => this.inputChangedHandler(event, formElement.id)} />
-                                                                <InputGroupAddon addonType='append'>.0000 EOS</InputGroupAddon>
+                                                                <Input type={formElement.type} value={formElement.value} placeholder={formElement.placeholder} onChange={(event) => this.inputChangedHandler(event, formElement.id)} disabled={!this.props.authentication.isLogin} />
+                                                                <InputGroupAddon addonType='append'>.0000 TLOS</InputGroupAddon>
                                                              </InputGroup> : null }
                             <FormFeedback>...</FormFeedback>
                             <FormText>{formElement.text}</FormText>
@@ -209,24 +230,39 @@ class Transfers extends Component {
                 ))}
             </Form>
         )
-        
 
         let submission = null;
 
         if (this.state.loading) {
             submission = <Spinner className='submitSpinner' type='grow' color='primary' />
         } else {
-            submission = <Button className='submitButton' color='primary' onClick={this.handleSearch}>Submit</Button>
+            submission = <Button className='submitButton' color='primary' onClick={this.handleSearch} disabled={!this.props.authentication.isLogin} >Submit</Button>
         }
 
         return (
             <div className='TransferContent'>
-                {formContent}
-                {submission}
+                <Jumbotron className='jumbo'>
+                    {formContent}
+                    {submission}
+                </Jumbotron>
+                <p>Output:</p>
+                <BlockConsole consoleoutput={this.state.consoleoutput} />
+                <p>Balances:</p>
+                <BlockConsole consoleoutput={this.state.balances} />
+                <p>Transfers:</p>
+                <BlockConsole consoleoutput={this.state.transfers} />
             </div>
         );
     }
 
 }
+// Map all state to component props (for redux to connect)
+const mapStateToProps = state => state;
 
-export default Transfers;
+// Map the following action to props
+const mapDispatchToProps = {
+  setAuth: AuthenticationActions.setAuthentication,
+};
+
+// Export a redux connected component
+export default connect(mapStateToProps, mapDispatchToProps)(Transfers);

@@ -3,7 +3,7 @@ async function assignToCaseHandler (state, payload, blockInfo, context) {
         console.log('AssignToCase updater PAYLOAD:   ', payload);
         console.log('AssignToCase updater BlockInfo: ', blockInfo);
 
-        let case_id    = payload.data.case_id;
+        let case_id    = parseInt(payload.data.case_id);
 
         let arbitrator = payload.data.arb_to_assign;
 
@@ -13,7 +13,7 @@ async function assignToCaseHandler (state, payload, blockInfo, context) {
         let arbState = await state.arbitrator.findOne({ arb: arbitrator }).exec();
         let open_case_ids;
         if (arbState) {
-            ({ open_case_ids } = arbState)
+            ({ open_case_ids } = arbState);
             open_case_ids.push(case_id);
         } else {
             open_case_ids = [case_id];
@@ -26,12 +26,21 @@ async function assignToCaseHandler (state, payload, blockInfo, context) {
 
         let caseState = await state.case.findOne({ case_id: case_id }).exec();
         let arbitrators;
+        let case_status;
         if (caseState) {
-            ({ arbitrators } = caseState)
+            ({ arbitrators } = caseState);
+            ({ case_status } = caseState);
             arbitrators.push(arbitrator);
             await state.case.findOneAndUpdate({ case_id: case_id }, {
                 arbitrators: arbitrators
             }).exec();
+
+            if ( case_status == 1 ) {
+                case_status += 1;
+                await state.case.findOneAndUpdate({ case_id: case_id }, {
+                    case_status: case_status
+                }).exec();
+            }
         }
     } catch (err) {
         console.error('AssignToCase updater error: ', err);

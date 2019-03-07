@@ -1,35 +1,32 @@
-import React from 'react';
+import React, { Component } from 'react';
 
-import { Input, Label, Col, FormFeedback, FormText } from 'reactstrap';
+class Input extends Component {
 
-const input = (props) => {
-    let inputElement = null;
-    
-    switch (props.elementType) {
-        case ('input'):
-            inputElement = <Input 
-                {...props.elementConfig}
-                value={props.value}
-                onChange={props.changed} />;
-            break;
-        default:
-            inputElement = <Input 
-                {...props.elementConfig}
-                value={props.value}
-                onChange={props.changed} />;
+    constructor(props) {
+        // Inherit Constructor
+        super(props);
+
+        // Component State Setup
+        this.state = {
+
+        };
+
+        // Bind Functions
     }
 
-    return (
-        <div>
-            <Label for={props.id} sm={1}>{props.id}</Label>
-            <Col sm={11}>
-                {inputElement}
-                <FormFeedback>...</FormFeedback>
-                <FormText>{props.text}</FormText>
-            </Col>
-        </div>
-    )
+    componentDidMount() {
+        this.isComponentMounted = true;
+    }
 
+    componentWillMount() {
+        this.isComponentMounted = false;
+    }
+
+    render() {
+        return (
+            <label>Input</label>
+        )
+    }
 }
 
-export default input;
+export default Input;

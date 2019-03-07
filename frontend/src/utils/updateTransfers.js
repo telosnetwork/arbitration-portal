@@ -14,5 +14,7 @@ export const updateTransfers = async (prevState, updatedTransfer) => {
         updatedTransfers = [{ ...updatedTransfer }, ...updatedTransfers ];
     }
 
+    console.log(updatedTransfers);
+
     return updatedTransfers;
 };

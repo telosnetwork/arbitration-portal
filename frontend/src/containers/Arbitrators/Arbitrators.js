@@ -1,17 +1,26 @@
-import React, { Component }  from 'react';
-import axios                 from 'axios';
+import React, { Component }      from 'react';
+import axios                     from 'axios';
 
 // Utilities
-import ScatterBridge         from '../../utils/scatterBridge';
-import IOClient              from '../../utils/io-client';
-// import { updateArbitrators } from '../../utils/updateArbitrators';
-// import { updateBalances }    from '../../utils/updateBalances';
-// import { updateCases }       from '../../utils/updateCases';
-// import { updateClaims }      from '../../utils/updateClaims';
+import ScatterBridge             from '../../utils/scatterBridge';
+// import IOClient               from '../../utils/io-client';
+// import { updateArbitrators }  from '../../utils/updateArbitrators';
+// import { updateBalances }     from '../../utils/updateBalances';
+// import { updateCases }        from '../../utils/updateCases';
+// import { updateClaims }       from '../../utils/updateClaims';
+
+// Components
+import Uploader                  from '../Uploader';
+import BlockConsole              from '../BlockConsole';
+
+// Redux
+import { connect }               from 'react-redux';
+import { AuthenticationActions } from '../../actions';
 
 import { TabContent, TabPane, Nav, NavItem, NavLink, Row, Col } from 'reactstrap';
 import classnames from 'classnames';
 import { Button, Spinner, Form, FormGroup, Label, CustomInput, Input, FormText, FormFeedback } from 'reactstrap';
+import { Jumbotron } from 'reactstrap';
 
 class Arbitrators extends Component {
 
@@ -27,7 +36,7 @@ class Arbitrators extends Component {
           chainId:    `${process.env.REACT_APP_CHAINID}`
         };
         this.eosio = new ScatterBridge(this.network, this.appName);
-        this.io    = new IOClient();
+        // this.io    = new IOClient();
         
         this.languageCodes = {
             ENGL: '0',
@@ -49,12 +58,13 @@ class Arbitrators extends Component {
         };
 
         this.state = {
-            isLogin:     false,
-            activeTab:   '1',
-            arbitrators: [],
-            cases:       [],
-            balances:    [],
-            claims:      [],
+            loading:       false,
+            activeTab:     '1',
+            consoleoutput: '',
+            arbitrators:   [],
+            cases:         [],
+            balances:      [],
+            claims:        [],
             tabs: {
                 respond: {
                     name:      'Respond',
@@ -76,29 +86,33 @@ class Arbitrators extends Component {
                     name:      'Accept Claim',
                     activeTab: '5'
                 },
+                setruling: {
+                    name:      'Set Ruling',
+                    activeTab: '6'
+                },
                 advancecase: {
                     name:      'Advance Case',
-                    activeTab: '6'
+                    activeTab: '7'
                 },
                 dismisscase: {
                     name:      'Dismiss Case',
-                    activeTab: '7'
+                    activeTab: '8'
                 },
                 recuse: {
                     name:      'Recuse',
-                    activeTab: '8'
+                    activeTab: '9'
                 },
                 newarbstatus: {
                     name:      'New Arbitrator Status',
-                    activeTab: '9'
+                    activeTab: '10'
                 },
                 setlangcodes: {
                     name:      'Set Language Codes',
-                    activeTab: '10'
+                    activeTab: '11'
                 },
                 deletecase: {
                     name:      'Delete Case',
-                    activeTab: '11'
+                    activeTab: '12'
                 }                
             },
             arbitratorForm: {
@@ -238,6 +252,29 @@ class Arbitrators extends Component {
                         text:  'Please input a valid Decision Class'
                     }
                 },
+                setruling: {
+                    case_id: {
+                        label: 'Case ID:',
+                        value: '',
+                        type:  'number',
+                        placeholder: '0',
+                        text:  'Please input a valid case ID'
+                    },
+                    assigned_arb: {
+                        label: 'Assigned Arbitrator:',
+                        value: '',
+                        type:  'text',
+                        placeholder: 'account_name',
+                        text:  'Please input a valid TELOS account name'
+                    },
+                    case_ruling: {
+                        label: 'Case Ruling:',
+                        value: '',
+                        type:  'text',
+                        placeholder: 'ipfs_link',
+                        test:  'Please input a valid IPFS link'
+                    }
+                },
                 advancecase: {
                     case_id: {
                         label: 'Case ID:',
@@ -302,7 +339,7 @@ class Arbitrators extends Component {
                 },
                 newarbstatus: {
                     arbitrator: {
-                        label: 'Arbitrator',
+                        label: 'Arbitrator:',
                         value: '',
                         type:  'text',
                         placeholder: 'account_name',
@@ -311,14 +348,14 @@ class Arbitrators extends Component {
                     new_status: {
                         label: 'New Arbitrator Status:',
                         value: '',
-                        type:  'checkbox',
+                        type:  'radio',
                         placeholder: '',
                         text:  'Please select from the following valid arbitrator statuses'
                     }
                 },
                 setlangcodes: {
                     arbitrator: {
-                        label: 'Arbitrator',
+                        label: 'Arbitrator:',
                         value: '',
                         type:  'text',
                         placeholder: 'account_name',
@@ -344,11 +381,26 @@ class Arbitrators extends Component {
             }
         };
 
-        this.handleSubmit        = this.handleSubmit.bind(this);
-        this.handleSearch        = this.handleSearch.bind(this);
-        this.inputChangedHandler = this.inputChangedHandler.bind(this);
-        this.toggleLogin         = this.toggleLogin.bind(this);
-        this.toggleTab           = this.toggleTab.bind(this);
+        this.handleSubmit           = this.handleSubmit.bind(this);
+        this.handleSearch           = this.handleSearch.bind(this);
+        this.inputChangedHandler    = this.inputChangedHandler.bind(this);
+        this.checkBoxChangedHandler = this.checkBoxChangedHandler.bind(this);
+        this.toggleLogin            = this.toggleLogin.bind(this);
+        this.toggleTab              = this.toggleTab.bind(this);
+    }
+
+    toggleTab(tab) {
+        if (this.state.activeTab !== tab) {
+            this.setState({
+                activeTab: tab
+            });
+        }
+    }
+
+    toggleLogin() {
+        const { setAuth } = this.props;
+        const setaccounts = this.eosio.currentAccount ? this.eosio.currentAccount : null;
+        setAuth({ isLogin: !this.props.authentication.isLogin, account: setaccounts });
     }
 
     handleSubmit = async(event, tab_id) => {
@@ -360,8 +412,8 @@ class Arbitrators extends Component {
         event.preventDefault();
         this.setState({ loading: true });
         const formData = {};
-        for (let formElementIdentifier in this.state.memberForm[tab_id]) {
-            formData[formElementIdentifier] = this.state.memberForm[tab_id][formElementIdentifier].value;
+        for (let formElementIdentifier in this.state.arbitratorForm[tab_id]) {
+            formData[formElementIdentifier] = this.state.arbitratorForm[tab_id][formElementIdentifier].value;
         }
         // Send Action to Respective Action Handler
         switch (tab_id) {
@@ -379,6 +431,9 @@ class Arbitrators extends Component {
                 break;
             case 'acceptclaim':
                 await this.acceptclaim(formData.case_id, formData.assigned_arb, formData.claim_hash, formData.decision_link, formData.decision_class);
+                break;
+            case 'setruling':
+                await this.setruling(formData.case_id,  formData.assigned_arb, formData.case_ruling);
                 break;
             case 'advancecase':
                 await this.advancecase(formData.case_id, formData.assigned_arb);
@@ -405,7 +460,7 @@ class Arbitrators extends Component {
 
     inputChangedHandler = (event, tab_id, element_id) => {
         const updatedForm = {
-            ...this.state.memberForm
+            ...this.state.arbitratorForm
         };
         const updatedFormTab = {
             ...updatedForm[tab_id]
@@ -414,38 +469,60 @@ class Arbitrators extends Component {
             ...updatedFormTab[element_id]
         };
 
-        updatedFormElement.value   = event.target.value;
+        if (tab_id === 'newarbstatus' && element_id === 'new_status') {
+            updatedFormElement.value   = this.arbitratorStatus[event.target.id];
+        } else {
+            updatedFormElement.value   = event.target.value;
+        }
+
         updatedFormTab[element_id] = updatedFormElement;
         updatedForm[tab_id]        = updatedFormTab;
 
-        this.setState({ memberForm: updatedForm });
+        this.setState({ arbitratorForm: updatedForm });
     }
 
+    checkBoxChangedHandler = (tab_id, element_id, language) => {
+        
+        let updatedLanguages = [];
 
+        const updatedForm = {
+            ...this.state.arbitratorForm
+        };
+        const updatedFormTab = {
+            ...updatedForm[tab_id]
+        };
+        const updatedFormElement = {
+            ...updatedFormTab[element_id]
+        };
 
-    toggleLogin() {
-        this.setState(prevState => ({
-            isLogin: !prevState.isLogin
-        }));
-    }
+        updatedLanguages = [...updatedFormElement.value];
 
-    toggleTab(tab) {
-        if (this.state.activeTab !== tab) {
-            this.setState({
-                activeTab: tab
-            });
+        if (!updatedLanguages.includes(parseInt(this.languageCodes[language]))) {
+            updatedLanguages.push(parseInt(this.languageCodes[language]));
+        }  else {
+            let index = updatedLanguages.indexOf(parseInt(this.languageCodes[language]));
+            updatedLanguages.splice(index, 1);
         }
+                
+        updatedFormElement.value   = updatedLanguages;
+        updatedFormTab[element_id] = updatedFormElement;
+        updatedForm[tab_id]        = updatedFormTab;
+
+        this.setState({ arbitratorForm: updatedForm });
     }
 
     componentDidMount = async() => {
         await this.eosio.connect();
         await this.eosio.login();
-        this.toggleLogin();
-
-        // this.loadArbitrators();
-        // this.loadCases();
-        // this.loadBalances();
-        // this.loadClaims();
+        if (!(this.props.authentication.isLogin || this.props.authentication.account)) {
+            if (this.eosio.isConnected && this.eosio.currentAccount) {
+                this.toggleLogin();
+            }
+        }
+        this.loadArbitrators();
+        this.loadCases();
+        this.loadBalances();
+        this.loadClaims();
 
         // /**
         //      * Arbitration (Member and Arbitrator) Action Listeners
@@ -486,6 +563,14 @@ class Arbitrators extends Component {
         //         {
         //             cases:  updateCases(prevState, post),
         //             claims: updateClaims(prevState, post)
+        //         } 
+        //     ));  
+        // });
+
+        // this.io.onMessage('setRulingAction',  (postCase) => {
+        //     this.setState((prevState) => (
+        //         {
+        //             cases: updateCases(prevState, postCase)
         //         } 
         //     ));  
         // });
@@ -544,25 +629,25 @@ class Arbitrators extends Component {
     loadArbitrators = async () => {
         const response = await axios.get(`${process.env.REACT_APP_API_URL}/posts/arbitrator`);
         console.log('LoadArbitrators: ', response);
-        this.setState({ arbitrators: response.data.reverse() })
+        this.setState({ arbitrators: response.data.reverse() });
     }
 
     loadCases = async () => {
         const response = await axios.get(`${process.env.REACT_APP_API_URL}/posts/case`);
         console.log('LoadCases: ', response);
-        this.setState({ cases: response.data.reverse() })
+        this.setState({ cases: response.data.reverse() });
     }
 
     loadBalances = async () => {
         const response = await axios.get(`${process.env.REACT_APP_API_URL}/posts/balance`);
         console.log('LoadBalances: ', response);
-        this.setState({ balances: response.data.reverse() })
+        this.setState({ balances: response.data.reverse() });
     }
 
     loadClaims = async () => {
         const response = await axios.get(`${process.env.REACT_APP_API_URL}/posts/claim`);
         console.log('LoadClaims: ', response);
-        this.setState({ claims: response.data.reverse() })
+        this.setState({ claims: response.data.reverse() });
     }
 
     /**
@@ -571,9 +656,9 @@ class Arbitrators extends Component {
 
     respond = async(case_id, claim_hash, respondant, response_link) => {
         try {
-            let actions = await this.eosio.makeAction(process.env.REACT_APP_CONTRACT_ACCOUNT, 'respond',
+            let actions = await this.eosio.makeAction(process.env.REACT_APP_EOSIO_CONTRACT_ACCOUNT, 'respond',
                 {
-                    case_id:       `${case_id}`,
+                    case_id:       parseInt(case_id),
                     claim_hash:    `${claim_hash}`,
                     respondant:    `${respondant}`,
                     response_link: `${response_link}`
@@ -581,6 +666,7 @@ class Arbitrators extends Component {
             );
             let result = await this.eosio.sendTx(actions);
             console.log('Results: ', result);
+            this.setState({ consoleoutput: result });
             if (result) {
                 alert(`Respond Successful`);
             } else {
@@ -594,19 +680,20 @@ class Arbitrators extends Component {
 
      addarbs = async(case_id, assigned_arb, num_arbs_to_assign) => {
         try {
-            let actions = await this.eosio.makeAction(process.env.REACT_APP_CONTRACT_ACCOUNT, 'addarbs',
+            let actions = await this.eosio.makeAction(process.env.REACT_APP_EOSIO_CONTRACT_ACCOUNT, 'addarbs',
                 {
-                    case_id:            `${case_id}`,
+                    case_id:            parseInt(case_id),
                     assigned_arb:       `${assigned_arb}`,
-                    num_arbs_to_assign: `${num_arbs_to_assign}`
+                    num_arbs_to_assign: parseInt(num_arbs_to_assign)
                 }
             );
             let result = await this.eosio.sendTx(actions);
             console.log('Results: ', result);
+            this.setState({ consoleoutput: result });
             if (result) {
-                alert(`Add Arbitrators Successful`);
+                alert(`AddArbitrators Successful`);
             } else {
-                alert(`Add Arbitrators Unsuccessful`);
+                alert(`AddArbitrators Unsuccessful`);
             }
         } catch (err) {
             console.error(err);
@@ -616,18 +703,23 @@ class Arbitrators extends Component {
 
      assigntocase = async(case_id, arb_to_assign) => {
          try {
-            let actions = await this.eosio.makeAction(process.env.REACT_APP_CONTRACT_ACCOUNT, 'assigntocase',
+            let actions = await this.eosio.makeAction(process.env.REACT_APP_EOSIO_CONTRACT_ACCOUNT, 'assigntocase',
                 {
-                    case_id:       `${case_id}`,
+                    case_id:       parseInt(case_id),
                     arb_to_assign: `${arb_to_assign}`
+                },
+                {
+                    actor: `${process.env.REACT_APP_EOSIO_CONTRACT_ACCOUNT}`,
+                    permission: 'assign'
                 }
             );
             let result = await this.eosio.sendTx(actions);
             console.log('Results: ', result);
+            this.setState({ consoleoutput: result });
             if (result) {
-                alert(`Assign To Case Successful`);
+                alert(`AssignToCase Successful`);
             } else {
-                alert(`Assign To Case Unsuccessful`);
+                alert(`AssignToCase Unsuccessful`);
             }
          } catch (err) {
              console.error(err);
@@ -637,9 +729,9 @@ class Arbitrators extends Component {
 
      dismissclaim = async(case_id, assigned_arb, claim_hash, memo) => {
          try {
-            let actions = await this.eosio.makeAction(process.env.REACT_APP_CONTRACT_ACCOUNT, 'dismissclaim',
+            let actions = await this.eosio.makeAction(process.env.REACT_APP_EOSIO_CONTRACT_ACCOUNT, 'dismissclaim',
                 {
-                    case_id:      `${case_id}`,
+                    case_id:      parseInt(case_id),
                     assigned_arb: `${assigned_arb}`,
                     claim_hash:   `${claim_hash}`,
                     memo:         `${memo}`
@@ -647,10 +739,11 @@ class Arbitrators extends Component {
             );
             let result = await this.eosio.sendTx(actions);
             console.log('Results: ', result);
+            this.setState({ consoleoutput: result });
             if (result) {
-                alert(`Dismiss Claim Successful`);
+                alert(`DismissClaim Successful`);
             } else {
-                alert(`Dismiss Claim Unsuccessful`);
+                alert(`DismissClaim Unsuccessful`);
             }
          } catch (err) {
              console.error(err);
@@ -660,9 +753,9 @@ class Arbitrators extends Component {
 
      acceptclaim = async(case_id, assigned_arb, claim_hash, decision_link, decision_class) => {
          try {
-            let actions = await this.eosio.makeAction(process.env.REACT_APP_CONTRACT_ACCOUNT, 'acceptclaim',
+            let actions = await this.eosio.makeAction(process.env.REACT_APP_EOSIO_CONTRACT_ACCOUNT, 'acceptclaim',
                 {
-                    case_id:        `${case_id}`,
+                    case_id:        parseInt(case_id),
                     assigned_arb:   `${assigned_arb}`,
                     claim_hash:     `${claim_hash}`,
                     decision_link:  `${decision_link}`,
@@ -671,10 +764,11 @@ class Arbitrators extends Component {
             );
             let result = await this.eosio.sendTx(actions);
             console.log('Results: ', result);
+            this.setState({ consoleoutput: result });
             if (result) {
-                alert(`Accept Claim Successful`);
+                alert(`AcceptClaim Successful`);
             } else {
-                alert(`Accept Claim Unsuccessful`);
+                alert(`AcceptClaim Unsuccessful`);
             }
          } catch (err) {
             console.error(err);
@@ -682,20 +776,44 @@ class Arbitrators extends Component {
          this.setState({ loading: false });
      }
 
+     setruling = async(case_id, assigned_arb, case_ruling) =>  {
+         try {
+            let actions = await this.eosio.makeAction(process.env.REACT_APP_EOSIO_CONTRACT_ACCOUNT, 'setruling',
+                {
+                    case_id:      parseInt(case_id),
+                    assigned_arb: `${assigned_arb}`,
+                    case_ruling:  `${case_ruling}`
+                }
+            );
+            let result = await this.eosio.sendTx(actions);
+            console.log('Results: ', result);
+            this.setState({ consoleoutput: result });
+            if (result) {
+                alert(`SetRuling Successful`);
+            } else {
+                alert(`SetRuling Unsuccessful`);
+            }
+         } catch (err) {
+             console.error(err);
+         }
+         this.setState({ loading: true });
+     }
+
      advancecase = async(case_id, assigned_arb) => {
          try {
-            let actions = await this.eosio.makeAction(process.env.REACT_APP_CONTRACT_ACCOUNT, 'advancecase',
+            let actions = await this.eosio.makeAction(process.env.REACT_APP_EOSIO_CONTRACT_ACCOUNT, 'advancecase',
                 {
-                    case_id:      `${case_id}`,
+                    case_id:      parseInt(case_id),
                     assigned_arb: `${assigned_arb}`,
                 }
             );
             let result = await this.eosio.sendTx(actions);
             console.log('Results: ', result);
+            this.setState({ consoleoutput: result });
             if (result) {
-                alert(`Advance Case Successful`);
+                alert(`AdvanceCase Successful`);
             } else {
-                alert(`Advance Case Unsuccessful`);
+                alert(`AdvanceCase Unsuccessful`);
             }
          } catch (err) {
              console.error(err);
@@ -705,19 +823,20 @@ class Arbitrators extends Component {
 
      dismisscase = async(case_id, assigned_arb, ruling_link) => {
          try {
-            let actions = await this.eosio.makeAction(process.env.REACT_APP_CONTRACT_ACCOUNT, 'dismisscase',
+            let actions = await this.eosio.makeAction(process.env.REACT_APP_EOSIO_CONTRACT_ACCOUNT, 'dismisscase',
                 {
-                    case_id:      `${case_id}`,
+                    case_id:      parseInt(case_id),
                     assigned_arb: `${assigned_arb}`,
                     ruling_link:  `${ruling_link}`,
                 }
             );
             let result = await this.eosio.sendTx(actions);
             console.log('Results: ', result);
+            this.setState({ consoleoutput: result });
             if (result) {
-                alert(`Dismiss Case Successful`);
+                alert(`DismissCase Successful`);
             } else {
-                alert(`Dismiss Case Unsuccessful`);
+                alert(`DismissCase Unsuccessful`);
             }
          } catch (err) {
              console.error(err);
@@ -727,19 +846,20 @@ class Arbitrators extends Component {
 
      recuse = async(case_id, rationale, assigned_arb) => {
          try {
-            let actions = await this.eosio.sendTx(process.env.REACT_APP_CONTRACT_ACCOUNT, 'recuse',
+            let actions = await this.eosio.makeAction(process.env.REACT_APP_EOSIO_CONTRACT_ACCOUNT, 'recuse',
                 {
-                    case_id:      `${case_id}`,
+                    case_id:      parseInt(case_id),
                     rationale:    `${rationale}`,
                     assigned_arb: `${assigned_arb}`
                 }
             );
             let result = await this.eosio.sendTx(actions);
             console.log('Results: ', result);
+            this.setState({ consoleoutput: result });
             if (result) {
-                alert(`Recuse Successful`);
+                alert(`RecuseSuccessful`);
             } else {
-                alert(`Recuse Unsuccessful`);
+                alert(`RecuseUnsuccessful`);
             }
          } catch (err) {
             console.error(err);
@@ -753,18 +873,19 @@ class Arbitrators extends Component {
 
      newarbstatus = async(new_status, arbitrator) => {
          try {
-            let actions = await this.eosio.makeAction(process.env.REACT_APP_CONTRACT_ACCOUNT, 'newarbstatus',
+            let actions = await this.eosio.makeAction(process.env.REACT_APP_EOSIO_CONTRACT_ACCOUNT, 'newarbstatus',
                 {
-                    new_status: `${new_status}`,
+                    new_status: parseInt(new_status),
                     arbitrator: `${arbitrator}`
                 }
             );
             let result = await this.eosio.sendTx(actions);
             console.log('Results: ', result);
+            this.setState({ consoleoutput: result });
             if (result) {
-                alert(`New Arbitrator Status Successful`);
+                alert(`NewArbitratorStatus Successful`);
             } else {
-                alert(`New Arbitrator Status Unsuccessful`);
+                alert(`NewArbitratorStatus Unsuccessful`);
             }
          } catch (err) {
              console.error(err);
@@ -774,18 +895,19 @@ class Arbitrators extends Component {
 
      setlangcodes = async(arbitrator, lang_codes) => {
         try {
-            let actions = await this.eosio.makeAction(process.env.REACT_APP_CONTRACT_ACCOUNT, 'setlangcodes',
+            let actions = await this.eosio.makeAction(process.env.REACT_APP_EOSIO_CONTRACT_ACCOUNT, 'setlangcodes',
                 {
                     arbitrator: `${arbitrator}`,
-                    lang_codes: `${lang_codes}`
+                    lang_codes: lang_codes
                 }
             );
             let result = await this.eosio.sendTx(actions);
             console.log('Results: ', result);
+            this.setState({ consoleoutput: result });
             if (result) {
-                alert(`Set Language Codes Successful`);
+                alert(`SetLanguageCodes Successful`);
             } else {
-                alert(`Set Language Codes Unsuccessful`);
+                alert(`SetLanguageCodes Unsuccessful`);
             }
         } catch (err) {
             console.error(err);
@@ -795,17 +917,18 @@ class Arbitrators extends Component {
 
      deletecase = async(case_id) => {
          try {
-            let actions = await this.eosio.makeAction(process.env.REACT_APP_CONTRACT_ACCOUNT, 'deletecase',
+            let actions = await this.eosio.makeAction(process.env.REACT_APP_EOSIO_CONTRACT_ACCOUNT, 'deletecase',
                 {
-                    case_id: `${case_id}`
+                    case_id: parseInt(case_id)
                 }
             );
             let result = await this.eosio.sendTx(actions);
             console.log('Results: ', result);
+            this.setState({ consoleoutput: result });
             if (result) {
-                alert(`Delete Case Successful`);
+                alert(`DeleteCase Successful`);
             } else {
-                alert(`Delete Case Unsuccessful`);
+                alert(`DeleteCase Unsuccessful`);
             }
          } catch (err) {
              console.error(err);
@@ -883,6 +1006,18 @@ class Arbitrators extends Component {
                 type:  this.state.arbitratorForm.acceptclaim[key].type,
                 placeholder: this.state.arbitratorForm.acceptclaim[key].placeholder,
                 text:  this.state.arbitratorForm.acceptclaim[key].text
+            });
+        } 
+        
+        const setRulingArr = [];
+        for (let key in this.state.arbitratorForm.setruling) {
+            setRulingArr.push({
+                id:    key,
+                label: this.state.arbitratorForm.setruling[key].label,
+                value: this.state.arbitratorForm.setruling[key].value,
+                type:  this.state.arbitratorForm.setruling[key].type,
+                placeholder: this.state.arbitratorForm.setruling[key].placeholder,
+                text:  this.state.arbitratorForm.setruling[key].text
             });
         }  
 
@@ -965,7 +1100,7 @@ class Arbitrators extends Component {
         let tabBar = (
             <Nav tabs>
                 {tabElementsArr.map(tabElement => (
-                    <NavItem>
+                    <NavItem key={tabElement.name}>
                         <NavLink
                             className={classnames({ active: this.state.activeTab === tabElement.activeTab })}
                             onClick={() => { this.toggleTab(tabElement.activeTab) }}>
@@ -979,16 +1114,24 @@ class Arbitrators extends Component {
         let tabContent = (
             <TabContent className='tabContent' activeTab={this.state.activeTab}>
                 {tabElementsArr.map(tabElement => (
-                    <TabPane tabId={tabElement.activeTab}>
+                    <TabPane tabId={tabElement.activeTab} key={tabElement.activeTab}>
                         <Row>
                             <Col sm='12'>
                                 {tabElement.id === 'respond' ? 
                                     <Form onSubmit={(event) => this.handleSubmit(event, tabElement.id)}>
                                         {respondFormArr.map(formElement => (
-                                            <FormGroup className='formgroup' row>
-                                                <Label for={formElement.id} sm={2}>{formElement.label}</Label>
-                                                <Col sm={10}>
-                                                    <Input type={formElement.type} value={formElement.value} placeholder={formElement.placeholder} onChange={(event) => this.inputChangedHandler(event, tabElement.id, formElement.id)} />
+                                            <FormGroup className='formgroup' key={formElement.id} row>
+                                                <Label for={formElement.id} sm={1}>{formElement.label}</Label>
+                                                <Col sm={11}>
+                                                    {formElement.id === 'claim_hash' || formElement.id === 'response_link' ?
+                                                        <div>
+                                                            <Input type={formElement.type} value={formElement.value} placeholder={formElement.placeholder} onChange={(event) => this.inputChangedHandler(event, tabElement.id, formElement.id)} />
+                                                            <Uploader  />
+                                                        </div>
+                                                    : null}
+                                                    {formElement.id !== 'claim_hash' && formElement.id !== 'response_link' ?
+                                                        <Input type={formElement.type} value={formElement.value} placeholder={formElement.placeholder} onChange={(event) => this.inputChangedHandler(event, tabElement.id, formElement.id)} />
+                                                    : null}
                                                     <FormFeedback>...</FormFeedback>
                                                     <FormText>{formElement.text}</FormText>
                                                 </Col>
@@ -998,9 +1141,9 @@ class Arbitrators extends Component {
                                     {tabElement.id === 'addarbs' ? 
                                     <Form onSubmit={(event) => this.handleSubmit(event, tabElement.id)}>
                                         {addArbsArr.map(formElement => (
-                                            <FormGroup className='formgroup' row>
-                                                <Label for={formElement.id} sm={2}>{formElement.label}</Label>
-                                                <Col sm={10}>
+                                            <FormGroup className='formgroup' key={formElement.id} row>
+                                                <Label for={formElement.id} sm={1}>{formElement.label}</Label>
+                                                <Col sm={11}>
                                                     <Input type={formElement.type} value={formElement.value} placeholder={formElement.placeholder} onChange={(event) => this.inputChangedHandler(event, tabElement.id, formElement.id)} />
                                                     <FormFeedback>...</FormFeedback>
                                                     <FormText>{formElement.text}</FormText>
@@ -1011,9 +1154,9 @@ class Arbitrators extends Component {
                                     {tabElement.id === 'assigntocase' ? 
                                     <Form onSubmit={(event) => this.handleSubmit(event, tabElement.id)}>
                                         {assignToCaseArr.map(formElement => (
-                                            <FormGroup className='formgroup' row>
-                                                <Label for={formElement.id} sm={2}>{formElement.label}</Label>
-                                                <Col sm={10}>
+                                            <FormGroup className='formgroup' key={formElement.id} row>
+                                                <Label for={formElement.id} sm={1}>{formElement.label}</Label>
+                                                <Col sm={11}>
                                                     <Input type={formElement.type} value={formElement.value} placeholder={formElement.placeholder} onChange={(event) => this.inputChangedHandler(event, tabElement.id, formElement.id)} />
                                                     <FormFeedback>...</FormFeedback>
                                                     <FormText>{formElement.text}</FormText>
@@ -1024,10 +1167,18 @@ class Arbitrators extends Component {
                                     {tabElement.id === 'dismissclaim' ? 
                                     <Form onSubmit={(event) => this.handleSubmit(event, tabElement.id)}>
                                         {dismissClaimArr.map(formElement => (
-                                            <FormGroup className='formgroup' row>
-                                                <Label for={formElement.id} sm={2}>{formElement.label}</Label>
-                                                <Col sm={10}>
-                                                    <Input type={formElement.type} value={formElement.value} placeholder={formElement.placeholder} onChange={(event) => this.inputChangedHandler(event, tabElement.id, formElement.id)} />
+                                            <FormGroup className='formgroup' key={formElement.id} row>
+                                                <Label for={formElement.id} sm={1}>{formElement.label}</Label>
+                                                <Col sm={11}>
+                                                    {formElement.id === 'claim_hash' ? 
+                                                        <div>
+                                                            <Input type={formElement.type} value={formElement.value} placeholder={formElement.placeholder} onChange={(event) => this.inputChangedHandler(event, tabElement.id, formElement.id)} />
+                                                            <Uploader />
+                                                        </div>
+                                                    : null}
+                                                    {formElement.id !== 'claim_hash' ?
+                                                        <Input type={formElement.type} value={formElement.value} placeholder={formElement.placeholder} onChange={(event) => this.inputChangedHandler(event, tabElement.id, formElement.id)} />
+                                                    : null}
                                                     <FormFeedback>...</FormFeedback>
                                                     <FormText>{formElement.text}</FormText>
                                                 </Col>
@@ -1037,10 +1188,39 @@ class Arbitrators extends Component {
                                     {tabElement.id === 'acceptclaim' ? 
                                     <Form onSubmit={(event) => this.handleSubmit(event, tabElement.id)}>
                                         {acceptClaimArr.map(formElement => (
-                                            <FormGroup className='formgroup' row>
-                                                <Label for={formElement.id} sm={2}>{formElement.label}</Label>
-                                                <Col sm={10}>
-                                                    <Input type={formElement.type} value={formElement.value} placeholder={formElement.placeholder} onChange={(event) => this.inputChangedHandler(event, tabElement.id, formElement.id)} />
+                                            <FormGroup className='formgroup' key={formElement.id} row>
+                                                <Label for={formElement.id} sm={1}>{formElement.label}</Label>
+                                                <Col sm={11}>
+                                                    {formElement.id === 'claim_hash' || formElement.id === 'decision_link' ?
+                                                        <div>
+                                                            <Input type={formElement.type} value={formElement.value} placeholder={formElement.placeholder} onChange={(event) => this.inputChangedHandler(event, tabElement.id, formElement.id)} />
+                                                            <Uploader />
+                                                        </div>
+                                                    : null}
+                                                    {formElement.id !== 'claim_hash' && formElement.id !== 'decision_link' ?
+                                                        <Input type={formElement.type} value={formElement.value} placeholder={formElement.placeholder} onChange={(event) => this.inputChangedHandler(event, tabElement.id, formElement.id)} />
+                                                    : null}
+                                                    <FormFeedback>...</FormFeedback>
+                                                    <FormText>{formElement.text}</FormText>
+                                                </Col>
+                                            </FormGroup>
+                                        ))}
+                                    </Form> : null}
+                                    {tabElement.id === 'setruling' ? 
+                                    <Form onSubmit={(event) => this.handleSubmit(event, tabElement.id)}>
+                                        {setRulingArr.map(formElement => (
+                                            <FormGroup className='formgroup' key={formElement.id} row>
+                                                <Label for={formElement.id} sm={1}>{formElement.label}</Label>
+                                                <Col sm={11}>
+                                                    {formElement.id === 'case_ruling' ? 
+                                                        <div>
+                                                            <Input type={formElement.type} value={formElement.value} placeholder={formElement.placeholder} onChange={(event) => this.inputChangedHandler(event, tabElement.id, formElement.id)} />
+                                                            <Uploader />
+                                                        </div>
+                                                    : null}
+                                                    {formElement.id !== 'case_ruling' ?
+                                                        <Input type={formElement.type} value={formElement.value} placeholder={formElement.placeholder} onChange={(event) => this.inputChangedHandler(event, tabElement.id, formElement.id)} />
+                                                    : null}
                                                     <FormFeedback>...</FormFeedback>
                                                     <FormText>{formElement.text}</FormText>
                                                 </Col>
@@ -1050,9 +1230,9 @@ class Arbitrators extends Component {
                                     {tabElement.id === 'advancecase' ? 
                                     <Form onSubmit={(event) => this.handleSubmit(event, tabElement.id)}>
                                         {advanceCaseArr.map(formElement => (
-                                            <FormGroup className='formgroup' row>
-                                                <Label for={formElement.id} sm={2}>{formElement.label}</Label>
-                                                <Col sm={10}>
+                                            <FormGroup className='formgroup' key={formElement.id} row>
+                                                <Label for={formElement.id} sm={1}>{formElement.label}</Label>
+                                                <Col sm={11}>
                                                     <Input type={formElement.type} value={formElement.value} placeholder={formElement.placeholder} onChange={(event) => this.inputChangedHandler(event, tabElement.id, formElement.id)} />
                                                     <FormFeedback>...</FormFeedback>
                                                     <FormText>{formElement.text}</FormText>
@@ -1063,10 +1243,18 @@ class Arbitrators extends Component {
                                     {tabElement.id === 'dismisscase' ? 
                                     <Form onSubmit={(event) => this.handleSubmit(event, tabElement.id)}>
                                         {dismissCaseArr.map(formElement => (
-                                            <FormGroup className='formgroup' row>
-                                                <Label for={formElement.id} sm={2}>{formElement.label}</Label>
-                                                <Col sm={10}>
-                                                    <Input type={formElement.type} value={formElement.value} placeholder={formElement.placeholder} onChange={(event) => this.inputChangedHandler(event, tabElement.id, formElement.id)} />
+                                            <FormGroup className='formgroup' key={formElement.id} row>
+                                                <Label for={formElement.id} sm={1}>{formElement.label}</Label>
+                                                <Col sm={11}>
+                                                    {formElement.id === 'ruling_link' ?
+                                                        <div>
+                                                            <Input type={formElement.type} value={formElement.value} placeholder={formElement.placeholder} onChange={(event) => this.inputChangedHandler(event, tabElement.id, formElement.id)} />
+                                                            <Uploader />
+                                                        </div>
+                                                    : null}
+                                                    {formElement.id !== 'ruling_link' ?
+                                                        <Input type={formElement.type} value={formElement.value} placeholder={formElement.placeholder} onChange={(event) => this.inputChangedHandler(event, tabElement.id, formElement.id)} />
+                                                    : null}
                                                     <FormFeedback>...</FormFeedback>
                                                     <FormText>{formElement.text}</FormText>
                                                 </Col>
@@ -1076,9 +1264,9 @@ class Arbitrators extends Component {
                                     {tabElement.id === 'recuse' ? 
                                     <Form onSubmit={(event) => this.handleSubmit(event, tabElement.id)}>
                                         {recuseFormArr.map(formElement => (
-                                            <FormGroup className='formgroup' row>
-                                                <Label for={formElement.id} sm={2}>{formElement.label}</Label>
-                                                <Col sm={10}>
+                                            <FormGroup className='formgroup' key={formElement.id} row>
+                                                <Label for={formElement.id} sm={1}>{formElement.label}</Label>
+                                                <Col sm={11}>
                                                     <Input type={formElement.type} value={formElement.value} placeholder={formElement.placeholder} onChange={(event) => this.inputChangedHandler(event, tabElement.id, formElement.id)} />
                                                     <FormFeedback>...</FormFeedback>
                                                     <FormText>{formElement.text}</FormText>
@@ -1089,17 +1277,18 @@ class Arbitrators extends Component {
                                     {tabElement.id === 'newarbstatus' ? 
                                     <Form onSubmit={(event) => this.handleSubmit(event, tabElement.id)}>
                                         {newArbStatusArr.map(formElement => (
-                                            <FormGroup className='formgroup' row>
-                                                <Label for={formElement.id} sm={2}>{formElement.label}</Label>
-                                                <Col sm={10}>
+                                            <FormGroup className='formgroup' key={formElement.id} row>
+                                                <Label for={formElement.id} sm={1}>{formElement.label}</Label>
+                                                <Col sm={11}>
                                                     {formElement.id === 'new_status' ? 
                                                         arbstatuses.map(status => (
-                                                            <CustomInput className='checkboxClass' type={formElement.type} id={status} label={status} />
+                                                            <CustomInput className='radioClass' key={status} name={formElement.id} type={formElement.type} id={status} label={status} onClick={(event) => this.inputChangedHandler(event, tabElement.id, formElement.id)} />
                                                         ))
                                                     : null }
                                                     {formElement.id !== 'new_status' ? 
                                                         <Input type={formElement.type} value={formElement.value} placeholder={formElement.placeholder} onChange={(event) => this.inputChangedHandler(event, tabElement.id, formElement.id)} />
-                                                    : null}                                                     <FormFeedback>...</FormFeedback>
+                                                    : null}                                                     
+                                                    <FormFeedback>...</FormFeedback>
                                                     <FormText>{formElement.text}</FormText>
                                                 </Col>
                                             </FormGroup>
@@ -1108,17 +1297,18 @@ class Arbitrators extends Component {
                                     {tabElement.id === 'setlangcodes' ? 
                                     <Form onSubmit={(event) => this.handleSubmit(event, tabElement.id)}>
                                         {setLangCodesArr.map(formElement => (
-                                            <FormGroup className='formgroup' row>
-                                                <Label for={formElement.id} sm={2}>{formElement.label}</Label>
-                                                <Col sm={10}>
+                                            <FormGroup className='formgroup' key={formElement.id} row>
+                                                <Label for={formElement.id} sm={1}>{formElement.label}</Label>
+                                                <Col sm={11}>
                                                     {formElement.id === 'lang_codes' ? 
                                                         languages.map(language => (
-                                                            <CustomInput className='checkboxClass' type={formElement.type} id={language} label={language} />
+                                                            <CustomInput className='checkboxClass' key={language} name={formElement.id} type={formElement.type} id={language} label={language} onClick={() => this.checkBoxChangedHandler(tabElement.id, formElement.id, language)} />
                                                         ))
                                                     : null }
                                                     {formElement.id !== 'lang_codes' ? 
                                                         <Input type={formElement.type} value={formElement.value} placeholder={formElement.placeholder} onChange={(event) => this.inputChangedHandler(event, tabElement.id, formElement.id)} />
-                                                    : null}                                                    <FormFeedback>...</FormFeedback>
+                                                    : null }                                                    
+                                                    <FormFeedback>...</FormFeedback>
                                                     <FormText>{formElement.text}</FormText>
                                                 </Col>
                                             </FormGroup>
@@ -1127,9 +1317,9 @@ class Arbitrators extends Component {
                                     {tabElement.id === 'deletecase' ? 
                                     <Form onSubmit={(event) => this.handleSubmit(event, tabElement.id)}>
                                         {deleteCaseArr.map(formElement => (
-                                            <FormGroup className='formgroup' row>
-                                                <Label for={formElement.id} sm={2}>{formElement.label}</Label>
-                                                <Col sm={10}>
+                                            <FormGroup className='formgroup' key={formElement.id} row>
+                                                <Label for={formElement.id} sm={1}>{formElement.label}</Label>
+                                                <Col sm={11}>
                                                     <Input type={formElement.type} value={formElement.value} placeholder={formElement.placeholder} onChange={(event) => this.inputChangedHandler(event, tabElement.id, formElement.id)} />
                                                     <FormFeedback>...</FormFeedback>
                                                     <FormText>{formElement.text}</FormText>
@@ -1139,7 +1329,7 @@ class Arbitrators extends Component {
                                     </Form> : null}
                                 {this.state.loading ? 
                                     <Spinner className='submitSpinner' type='grow' color='primary' /> : 
-                                    <Button className='submitButton' color='primary' onClick={(event) => this.handleSearch(event, tabElement.id)}>Submit</Button> }
+                                    <Button className='submitButton' color='primary' onClick={(event) => this.handleSearch(event, tabElement.id)} disabled={!this.props.authentication.isLogin} >Submit</Button> }
                             </Col>
                         </Row>
                     </TabPane>
@@ -1149,13 +1339,32 @@ class Arbitrators extends Component {
 
         return (
             <div className='ArbitratorContent'>
-                <p>Arbitration for arbitrators coming soon...</p>
-                {tabBar}
-                {tabContent}
+                <Jumbotron className='jumbo'>
+                    {tabBar}
+                    {tabContent}
+                </Jumbotron>
+                <p>Output:</p>
+                <BlockConsole consoleoutput={this.state.consoleoutput} />
+                <p>Balances:</p>
+                <BlockConsole consoleoutput={this.state.balances} />
+                <p>Cases:</p>
+                <BlockConsole consoleoutput={this.state.cases} />
+                <p>Claims:</p>
+                <BlockConsole consoleoutput={this.state.claims} />
+                <p>Arbitrators:</p>
+                <BlockConsole consoleoutput={this.state.arbitrators} />
             </div>
         )
     }
 
 }
+// Map all state to component props (for redux to connect)
+const mapStateToProps = state => state;
 
-export default Arbitrators;
+// Map the following action to props
+const mapDispatchToProps = {
+  setAuth: AuthenticationActions.setAuthentication,
+};
+
+// Export a redux connected component
+export default connect(mapStateToProps, mapDispatchToProps)(Arbitrators);

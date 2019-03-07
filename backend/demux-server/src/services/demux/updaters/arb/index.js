@@ -11,7 +11,7 @@ import dismissClaimHandler from './dismissClaim';
 import acceptClaimHandler  from './acceptClaim';
 import advanceCaseHandler  from './advanceCase';
 import dismissCaseHandler  from './dismissCase';
-// import resolveCaseHandler  from './resolveCase';
+import setRulingHandler    from './setRuling';
 import recuseHandler       from './recuse';
 // import newJoinderHandler   from './newjoinder';
 // import joinCasesHandler    from './joincases';
@@ -78,10 +78,10 @@ export default [
         actionType: `${process.env.ARB_CONTRACT}::dismisscase`,
         apply:      dismissCaseHandler
     },
-    // {
-    //     actionType: `${process.env.ARB_CONTRACT}::resolvecase`,
-    //     apply:      resolveCaseHandler
-    // },
+    {
+        actionType: `${process.env.ARB_CONTRACT}::setruling`,
+        apply:      setRulingHandler
+    },
     {
         actionType: `${process.env.ARB_CONTRACT}::recuse`,
         apply:      recuseHandler
