@@ -15,7 +15,8 @@ import mainLogo                  from '../resources/telosLogo.png'
 // Redux
 import { withRouter }            from 'react-router-dom';
 import { connect }               from 'react-redux';
-import { AuthenticationActions } from '../actions';
+import { AuthenticationActions } from 'business/actions';
+import { AuthenticationSelectors } from 'business/selectors';
 
 // Reactstrap Components
 import { Collapse, Navbar, NavbarToggler, Nav, NavItem }      from 'reactstrap';
@@ -182,8 +183,13 @@ class App extends Component {
           );
       }
   }
-// Map all state to component props (for redux to connect)
-const mapStateToProps = state => state;
+
+const mapStateToProps = state => ({
+    authentication: {
+        isLogin: AuthenticationSelectors.isLogin(state),
+        account: AuthenticationSelectors.account(state),
+    },
+});
 
 // Map the following action to props
 const mapDispatchToProps = {

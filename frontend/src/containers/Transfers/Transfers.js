@@ -12,7 +12,8 @@ import BlockConsole              from '../BlockConsole';
 
 // Redux
 import { connect }               from 'react-redux';
-import { AuthenticationActions } from '../../actions';
+import { AuthenticationActions } from 'business/actions';
+import { AuthenticationSelectors } from 'business/selectors';
 
 // Reactstrap Components
 import { InputGroup, InputGroupAddon } from 'reactstrap';
@@ -256,8 +257,13 @@ class Transfers extends Component {
     }
 
 }
-// Map all state to component props (for redux to connect)
-const mapStateToProps = state => state;
+
+const mapStateToProps = state => ({
+    authentication: {
+        isLogin: AuthenticationSelectors.isLogin(state),
+        account: AuthenticationSelectors.account(state),
+    },
+});
 
 // Map the following action to props
 const mapDispatchToProps = {
