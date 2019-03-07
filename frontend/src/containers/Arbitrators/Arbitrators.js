@@ -15,7 +15,7 @@ import BlockConsole              from '../BlockConsole';
 
 // Redux
 import { connect }               from 'react-redux';
-import { AuthenticationActions } from '../../actions';
+import { AuthenticationActions } from 'business/actions';
 
 import { TabContent, TabPane, Nav, NavItem, NavLink, Row, Col } from 'reactstrap';
 import classnames from 'classnames';
