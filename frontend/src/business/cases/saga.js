@@ -6,10 +6,8 @@ import * as actions from './actions';
 
 export function* fetchCases() {
 
-  //yield put(actions.setUsersLoading(true));
   let cases = yield api.getCases();
   yield put(actions.setCases(cases));
-  //yield put(actions.setUsersLoading(false));
 
 }
 
