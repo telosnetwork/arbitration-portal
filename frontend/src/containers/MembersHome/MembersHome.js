@@ -1,16 +1,28 @@
 import React, { Component }      from 'react';
 
+// Components
+import MembersModal from  '../MembersModal';
+
 // Redux
 import { connect }               from 'react-redux';
 import { CasesSelectors } from 'business/selectors';
-//import { AuthenticationActions } from 'business/actions';
 
 class MembersHome extends Component {
 
   constructor(props) {
     super(props);
+
+    this.state = {
+      memberAction: null,
+    }
+
   }
 
+  onNewCase() {
+    return () => {
+      // TODO
+    }
+  }
   onDeleteCasefile(casefile) {
     return () => {
       // TODO
@@ -33,12 +45,22 @@ class MembersHome extends Component {
   }
   onAddClaim(casefile) {
     return () => {
-      // TODO
+      this.setState({
+        memberAction: 'addclaim',
+        casefile,
+      })
     }
   }
   onDeleteClaim(casefile, claim) {
     return () => {
       // TODO
+    }
+  }
+  closeAction() {
+    return () => {
+      this.setState({
+        memberAction: null,
+      })
     }
   }
 
@@ -93,9 +115,22 @@ class MembersHome extends Component {
 
     return (
       <div className='MemberContent'>
+
+        <div onClick={this.onNewCase()}>New case</div>
+
         <ul>
           {this.props.cases.map(c => <li key={c._id}>{this.renderCase(c)}</li>)}
         </ul>
+
+        {this.state.memberAction ?
+          <div className="action-modal">
+
+            <div onClick={this.closeAction()}>X</div>
+
+            <MembersModal actionName={this.state.memberAction} />
+
+          </div> : null}
+
       </div>
     )
   }
