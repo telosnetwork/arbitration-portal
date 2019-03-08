@@ -1,5 +1,10 @@
 import { ActionTypes } from 'const';
 
+export function fetchCases() {
+    return {
+        type: ActionTypes.FETCH_CASES,
+    };
+}
 
 export function setCases(cases) {
     return {
