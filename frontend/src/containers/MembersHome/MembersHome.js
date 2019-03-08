@@ -5,7 +5,8 @@ import MembersModal from  '../MembersModal';
 
 // Redux
 import { connect }               from 'react-redux';
-import { CasesSelectors } from 'business/selectors';
+import { CasesActions, ClaimsActions } from 'business/actions';
+import { ClaimsSelectors, CasesSelectors } from 'business/selectors';
 
 class MembersHome extends Component {
 
@@ -45,9 +46,9 @@ class MembersHome extends Component {
   }
   onAddClaim(casefile) {
     return () => {
+      this.props.setSelectedCase(casefile.case_id);
       this.setState({
         memberAction: 'addclaim',
-        casefile,
       })
     }
   }
@@ -141,6 +142,8 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = {
+  setSelectedCase: CasesActions.setSelectedCase,
+  setSelectedClaim: ClaimsActions.setSelectedClaim,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(MembersHome);

@@ -13,12 +13,10 @@ import BlockConsole              from '../BlockConsole';
 
 // Redux
 import { connect }               from 'react-redux';
-import { AuthenticationActions } from 'business/actions';
+import { CasesSelectors, ClaimsSelectors } from 'business/selectors';
 
-import { TabContent, TabPane, Nav, NavItem, NavLink, Row, Col } from 'reactstrap';
-import classnames    from 'classnames';
+import { Row, Col } from 'reactstrap';
 import { Button, Spinner, Form, FormGroup, Label, CustomInput, Input, FormText, FormFeedback } from 'reactstrap';
-import { Jumbotron } from 'reactstrap';
 
 class MembersModal extends Component {
 
@@ -79,13 +77,6 @@ class MembersModal extends Component {
         }
       },
       addclaim: {
-        case_id: {
-          label: 'Case ID:',
-          value: '',
-          type: 'number',
-          placeholder: '0',
-          text: 'Please input a valid case ID',
-        },
         claimant: {
           label: 'Claimant:',
           value: '',
@@ -209,26 +200,53 @@ class MembersModal extends Component {
 
   }
 
+  renderActionHeader() {
+
+    const { actionName } = this.props;
+
+    let content = null;
+
+    if(actionName === 'addclaim') {
+      content = (
+        <div>
+          Case ID: {this.props.case.case_id}
+        </div>
+      );
+    }
+
+    return (
+      <div>
+        Action: {this.props.actionName}
+        {content}
+      </div>
+    );
+  }
+
   render() {
 
     const { actionName } = this.props;
 
     return (
-      <Row>
-        <Col sm='12'>
-          <Form onSubmit={(event) => this.handleSubmit(event, actionName)}>
-            {this.renderForm(actionName)}
-            {this.state.loading && <Spinner className='submitSpinner' type='grow' color='primary' />}
-            <Button className='submitButton' color='primary' onClick={(event) => this.handleSubmit(event, actionName)}>Submit</Button>
-          </Form>
-        </Col>
-      </Row>
+      <div>
+        {this.renderActionHeader()}
+        <Row>
+          <Col sm='12'>
+            <Form onSubmit={(event) => this.handleSubmit(event, actionName)}>
+              {this.renderForm(actionName)}
+              {this.state.loading && <Spinner className='submitSpinner' type='grow' color='primary' />}
+              <Button className='submitButton' color='primary' onClick={(event) => this.handleSubmit(event, actionName)}>Submit</Button>
+            </Form>
+          </Col>
+        </Row>
+      </div>
     );
   }
 
 }
 
 const mapStateToProps = state => ({
+  case: CasesSelectors.getSelectedCase(state),
+  claim: ClaimsSelectors.getSelectedClaim(state),
 });
 
 const mapDispatchToProps = {
