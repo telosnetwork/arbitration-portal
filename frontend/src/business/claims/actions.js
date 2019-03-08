@@ -1,6 +1,6 @@
 import { ActionTypes } from 'const';
 
-export function fetchCalims() {
+export function fetchClaims() {
     return {
         type: ActionTypes.FETCH_CLAIMS,
     };

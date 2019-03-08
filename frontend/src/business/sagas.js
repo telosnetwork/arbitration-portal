@@ -1,7 +1,11 @@
-import usersSaga from './cases/saga';
+import claimsSaga from './cases/saga';
+import casesSaga from './cases/saga';
+import arbitrators from './arbitrators/saga';
 
 export default function* rootSaga() {
 
-  yield usersSaga();
+  yield claimsSaga();
+  yield casesSaga();
+  yield arbitrators();
 
 }

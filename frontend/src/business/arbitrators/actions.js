@@ -1,6 +1,6 @@
 import { ActionTypes } from 'const';
 
-export function fetchCases() {
+export function fetchArbitrators() {
     return {
         type: ActionTypes.FETCH_ARBITRATORS,
     };

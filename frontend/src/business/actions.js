@@ -7,5 +7,5 @@ export {
     AuthenticationActions,
     CasesActions,
     ClaimsActions,
-    ArbitratorsActions
+    ArbitratorsActions,
 }

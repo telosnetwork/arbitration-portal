@@ -20,10 +20,11 @@ const initialState = {
 
 function setArbitrators(state, action) {
 
-    const arbitratorList = action.cases.map(c => Object.assign({}, emptyArbitrator, c));
-    return Object.assign({
+    const arbitratorList = action.arbitrators.map(c => Object.assign({}, emptyArbitrator, c));
+    return {
+      ...state,
         arbitratorList,
-    });
+    };
 
 }
 

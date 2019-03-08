@@ -18,9 +18,10 @@ const initialState = {
 function setClaims(state, action) {
 
     const claimList = action.claims.map(c => Object.assign({}, emptyClaim, c));
-    return Object.assign({
+    return {
+      ...state,
         claimList,
-    });
+    };
 
 }
 
