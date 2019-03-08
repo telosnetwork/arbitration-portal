@@ -7,6 +7,7 @@ const emptyClaim = {
     claim_id:       0,
     claim_summary:  '',
     decision_link:  '',
+    response_link:  '',
     decision_class: null
 };
 
