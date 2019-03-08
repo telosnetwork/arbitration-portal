@@ -9,16 +9,10 @@ const initialState = {
 };
 
 function setAuth(state, action) {
-    switch (action.type) {
-        case ActionTypes.SET_AUTH: {
-            return Object.assign({}, state, {
-                isLogin: typeof action.isLogin === "undefined" ? !state.isLogin : action.isLogin,
-                account: action.account || initialState.account
-            })
-        }
-        default:
-            return state;
-    }
+    return Object.assign({}, state, {
+        isLogin: typeof action.isLogin === "undefined" ? !state.isLogin : action.isLogin,
+        account: action.account || initialState.account
+    });
 }
 
 export const reducer = createReducer(initialState, {

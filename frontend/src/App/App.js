@@ -6,6 +6,7 @@ import Transfers                 from '../containers/Transfers';
 import Arbitrators               from '../containers/Arbitrators';
 import Members                   from '../containers/Members';
 import NavBar                     from '../containers/NavBar';
+import Bootstrapper                     from '../containers/Bootstrapper';
 
 // Resources
 import mainLogo                  from '../resources/telosLogo.png'
@@ -45,6 +46,7 @@ class App extends Component {
                     <Route exact path='/transfers'   component={Transfers} />
                     <Route render={NotFound}/>
                 </Switch>
+                <Bootstrapper />
             </div>
         );
     }
