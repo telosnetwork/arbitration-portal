@@ -4,15 +4,15 @@ import { ActionTypes }    from 'const';
 import * as api     from 'utils/api-client';
 import * as actions from './actions';
 
-export function* fetchCases() {
+export function* fetchArbitrators() {
 
-  let cases = yield api.getCases();
-  yield put(actions.setCases(cases));
+  let arbitrators = yield api.getArbitrators();
+  yield put(actions.setArbitrators(arbitrators));
 
 }
 
 export default function* usersSaga() {
 
-  yield takeEvery(ActionTypes.FETCH_CASES, fetchCases);
+  yield takeEvery(ActionTypes.FETCH_ARBITRATORS, fetchArbitrators);
 
 }
