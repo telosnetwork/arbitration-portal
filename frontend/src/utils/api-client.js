@@ -1,14 +1,17 @@
 import axios from  "axios";
 
+const axiosInstance = axios.create({
+  baseURL: process.env.REACT_APP_API_URL,
+  timeout: 1000,
+});
+
 export async function call({ path='', params={}, method='GET'}) {
 
-    const qs = Object.keys(params).reduce((acc, key) => `${acc}&${key}=${params[key]}`,'?');
-
-    let url = process.env.REACT_APP_API_URL;
-    url += path;
-    url += qs;
-
-    let result = await axios.get(url);
+    let result = await axiosInstance.request({
+      method,
+      url: path,
+      params
+    });
 
     return result.data;
 
