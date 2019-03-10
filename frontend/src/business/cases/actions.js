@@ -12,3 +12,10 @@ export function setCases(cases) {
         cases,
     }
 }
+
+export function setSelectedCase(case_id) {
+  return {
+    type: ActionTypes.SET_SELECTED_CASE,
+    case_id,
+  }
+}

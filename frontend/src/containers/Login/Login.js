@@ -4,7 +4,6 @@ import React, { Component }      from 'react';
 import ScatterBridge             from 'utils/scatterBridge';
 
 // Redux
-import { withRouter }            from 'react-router-dom';
 import { connect }               from 'react-redux';
 import { AuthenticationActions } from 'business/actions';
 import { AuthenticationSelectors } from 'business/selectors';
@@ -130,4 +129,4 @@ const mapDispatchToProps = {
 };
 
 // Export a redux connected component
-export default withRouter( connect(mapStateToProps, mapDispatchToProps)(Login) );
+export default connect(mapStateToProps, mapDispatchToProps)(Login);
