@@ -28,7 +28,7 @@ async function readyCaseHandler (state, payload, blockInfo, context) {
         let case_status = 1; // AWAITING_ARBS (1)
 
         let sub_value = parseFloat(100) * -1; // _config.fee_structure[0]
-        await state.balance.updateOne({ owner: claimant }, {
+        await state.balance.findOneAndUpdate({ owner: claimant }, {
             id:    payload.transactionId,
             owner: claimant,
             $inc:  { escrow: sub_value }
@@ -47,18 +47,17 @@ async function readyCaseHandler (state, payload, blockInfo, context) {
         });
         let arbitratorsT = result.rows;
 
-        // Chose 1st with the Highest Count for the Arbitrator Languages
         let required_langs;
         let caseState = await state.case.findOne({ case_id: case_id }).exec();
         if (caseState) {
             ({ required_langs } = caseState);
-            let selected_arbitrator;
+            let selected_arbitrator = '';
             for ( let i = required_langs.length; i >= 0; i-- ) {
                 for ( let arbitrator of arbitratorsT ) {
                     if ( count_s(required_langs, arbitrator.languages) >= i ) {
                         if ( (arbitrator.arb_status == 0) ) {
+                            if (selected_arbitrator != '') break;
                             selected_arbitrator = arbitrator.arb;
-                            break;
                         }
                     }
                 }
