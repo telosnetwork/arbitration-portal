@@ -2,7 +2,7 @@ import React, { Component }      from 'react';
 
 // Components
 import IPFSInput                  from '../../components/IPFSInput';
-import { ModalHeader, ModalBody, ModalFooter, Col, Button, Spinner, Form, FormGroup, Label, CustomInput, Input, FormText, FormFeedback  } from 'reactstrap';
+import { Container, Row, ModalHeader, ModalBody, ModalFooter, Col, Button, Spinner, Form, FormGroup, Label, Input, FormText  } from 'reactstrap';
 
 // Redux
 import { connect }               from 'react-redux';
@@ -175,17 +175,18 @@ class MembersModal extends Component {
           </Input>
         );
       }
+      default: {
+        return (
+          <Input
+          name={formElement.id}
+          type={formElement.type}
+          value={formElement.value}
+          placeholder={formElement.placeholder}
+          onChange={(event) => this.inputChangedHandler(event, this.props.actionName, formElement.id)}
+        />
+        );
+      }
     }
-
-    return (
-      <Input
-        name={formElement.id}
-        type={formElement.type}
-        value={formElement.value}
-        placeholder={formElement.placeholder}
-        onChange={(event) => this.inputChangedHandler(event, this.props.actionName, formElement.id)}
-      />
-    );
 
   }
 
@@ -236,6 +237,9 @@ class MembersModal extends Component {
       case 'deletecase': {
         return this.renderDeleteCase();
       }
+      default: {
+        return null;
+      }
     }
   }
 
@@ -253,8 +257,13 @@ class MembersModal extends Component {
       case 'deleteclaim': {
         return 'Are you sure you want to delete this claim ?';
       }
+      case 'readycase': {
+        return 'Ready case';
+      }
+      default: {
+        return '';
+      }
     }
-    return '';
   }
 
   render() {
@@ -274,7 +283,7 @@ class MembersModal extends Component {
           </ModalBody>
           <ModalFooter>
             <Button color="secondary" onClick={this.props.cancel}>Cancel</Button>
-            <Button className='submitButton' color='primary' onClick={(event) => this.handleSubmit(event, actionName)}>Submit</Button>
+            <Button color='primary' onClick={(event) => this.handleSubmit(event, actionName)}>Submit</Button>
           </ModalFooter>
         </div>
       );
@@ -283,12 +292,45 @@ class MembersModal extends Component {
       return (
         <div>
           <ModalHeader toggle={this.props.toggle}>{this.getTitle()}</ModalHeader>
+          <ModalBody>
+            <Container>
+              <Row><Col>
+                Case ID: {this.props.case.case_id}
+                <br/>
+                Case status: {this.props.case.case_status}
+              </Col></Row>
+              {actionName === 'deleteclaim' &&
+              <Row><Col>
+                Claim ID: {this.props.claim.claim_id}
+                <br/>
+                Claim status: {this.props.claim.claim_id}
+              </Col></Row>
+              }
+            </Container>
+          </ModalBody>
           <ModalFooter>
             <Button color="info" onClick={this.props.cancel}>No</Button>
-            <Button className='submitButton' color='danger' onClick={(event) => this.handleSubmit(event, actionName)}>Yes</Button>
+            <Button color='danger' onClick={(event) => this.handleSubmit(event, actionName)}>Yes</Button>
           </ModalFooter>
         </div>
       );
+    }
+    else if (actionName === 'readycase') {
+      return (
+        <div>
+          <ModalHeader toggle={this.props.toggle}>{this.getTitle()}</ModalHeader>
+          <ModalBody>
+            In order to ready the case, you need to make a deposit of 100 TLOS.
+          </ModalBody>
+          <ModalFooter>
+            <Button color="info" onClick={this.props.cancel}>Cancel</Button>
+            <Button color='success' onClick={(event) => this.handleSubmit(event, actionName)}>Deposit</Button>
+          </ModalFooter>
+        </div>
+      );
+    }
+    else {
+      return null;
     }
   }
 

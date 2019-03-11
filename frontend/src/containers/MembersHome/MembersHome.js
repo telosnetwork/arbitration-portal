@@ -2,12 +2,12 @@ import React, { Component }      from 'react';
 
 // Components
 import MembersModal from  '../MembersModal';
-import { Modal, ModalHeader, ModalBody, ModalFooter, Table, Container, Row, Col, Button } from 'reactstrap';
+import { Modal, Table, Container, Row, Col, Button } from 'reactstrap';
 
 // Redux
 import { connect }               from 'react-redux';
 import { CasesActions, ClaimsActions } from 'business/actions';
-import { ClaimsSelectors, CasesSelectors } from 'business/selectors';
+import { CasesSelectors } from 'business/selectors';
 
 class MembersHome extends Component {
 
@@ -48,7 +48,10 @@ class MembersHome extends Component {
   }
   onReadyCasefile(casefile) {
     return () => {
-      // TODO
+      this.props.setSelectedCase(casefile.case_id);
+      this.setState({
+        memberAction: 'readycase',
+      });
     }
   }
   onAddClaim(casefile) {
@@ -78,28 +81,20 @@ class MembersHome extends Component {
     }
   }
 
-  renderUnreadClaim(casefile, claim) {
+  renderClaim(casefile, claim) {
     return (
       <tr key={claim._id}>
         <td className="claim-col">Claim: {claim.claim_id}</td>
-        <td>Unread</td>
         <td>
-          <Button color="danger" onClick={this.onDeleteClaim(casefile, claim)}>Delete</Button>
+          {claim.claim_status === 'unread' && 'Unread'}
+          {claim.claim_status === 'accepted' && 'Accepted'}
+        </td>
+        <td>
+          {claim.claim_status === 'unread' && <Button color="danger" onClick={this.onDeleteClaim(casefile, claim)}>Delete</Button>}
         </td>
       </tr>
     );
   }
-
-  renderAcceptedClaim(casefile, claim) {
-    return (
-      <tr key={claim._id}>
-        <th scope="row">Claim: {claim.claim_id}</th>
-        <td>Accepted</td>
-        <td></td>
-      </tr>
-    );
-  }
-
   renderCase(casefile) {
     return [
       <tr key={casefile._id}>
@@ -115,8 +110,7 @@ class MembersHome extends Component {
           <Button color="danger" onClick={this.onDeleteCasefile(casefile)}>Delete</Button>
         </td>
       </tr>,
-      ...casefile.unread_claims.map(claim => this.renderUnreadClaim(casefile, claim)),
-      ...casefile.accepted_claims.map(claim => this.renderAcceptedClaim(casefile, claim)),
+      ...casefile.claims.map(claim => this.renderClaim(casefile, claim)),
       <tr key="caseactions">
         <td>
           <Button color="primary" onClick={this.onAddClaim(casefile)}>Add claim</Button>
