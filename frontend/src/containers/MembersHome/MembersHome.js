@@ -2,6 +2,7 @@ import React, { Component }      from 'react';
 
 // Components
 import MembersModal from  '../MembersModal';
+import { Container, Row, Col, Button } from 'reactstrap';
 
 // Redux
 import { connect }               from 'react-redux';
@@ -67,61 +68,87 @@ class MembersHome extends Component {
 
   renderUnreadClaim(casefile, claim) {
     return (
-      <div>
-        <span>Claim: {claim.claim_id}</span>
-        <span>Unread</span>
-        <div onClick={this.onDeleteClaim(casefile, claim)}>Delete</div>
-      </div>
+      <Row key={claim._id}>
+        <Col sm="4">Claim: {claim.claim_id}</Col>
+        <Col sm="4">Unread</Col>
+        <Col sm="4">
+          <Button color="danger" onClick={this.onDeleteClaim(casefile, claim)}>Delete</Button>
+        </Col>
+      </Row>
     );
   }
 
   renderAcceptedClaim(casefile, claim) {
     return (
-      <div>
-        <span>Claim: {claim.claim_id}</span>
-        <span>Accepted</span>
-      </div>
+      <Row key={claim._id}>
+        <Col sm="4">Claim: {claim.claim_id}</Col>
+        <Col sm="4">Accepted</Col>
+        <Col sm="4"></Col>
+      </Row>
     );
   }
 
   renderCase(casefile) {
     return (
-      <div>
-        <span>Case: {casefile.case_id}</span>
-        <span>Status: {casefile.case_status}</span>
-        <div onClick={this.onRespondCasefile(casefile)}>Respond</div>
-        <div onClick={this.onEditCasefile(casefile)}>Edit</div>
-        <div onClick={this.onDeleteCasefile(casefile)}>Delete</div>
+      <Row key={casefile._id}>
+        <Container>
+          <Row>
+            <Col sm="4">{casefile.case_id}</Col>
+            <Col sm="4">{casefile.case_status}</Col>
+            <Col sm="4">
+              <Button color="info" onClick={this.onRespondCasefile(casefile)}>Respond</Button>
+              <Button color="warning" onClick={this.onEditCasefile(casefile)}>Edit</Button>
+              <Button color="danger" onClick={this.onDeleteCasefile(casefile)}>Delete</Button>
+            </Col>
+          </Row>
+          <Row>
+            <Col>
+              <Container>
+                {casefile.unread_claims.map(claim => this.renderUnreadClaim(casefile, claim))}
+              </Container>
+            </Col>
+          </Row>
+          <Row>
+            <Col>
+              <Container>
+                {casefile.accepted_claims.map(claim => this.renderAcceptedClaim(casefile, claim))}
+              </Container>
+            </Col>
+          </Row>
+          <Row>
+            <Button color="primary" onClick={this.onAddClaim(casefile)}>Add claim</Button>
+          </Row>
+          <Row>
+            <Button color="success" onClick={this.onReadyCasefile(casefile)}>Submit for arbitration</Button>
+          </Row>
+        </Container>
 
-        <ul>
-          {casefile.unread_claims.map(claim =>
-            <li key={claim._id}>{this.renderUnreadClaim(casefile, claim)}</li>
-          )}
-        </ul>
-
-        <ul>
-          {casefile.accepted_claims.map(claim =>
-            <li key={claim._id}>{this.renderAcceptedClaim(casefile, claim)}</li>
-          )}
-        </ul>
-
-        <div onClick={this.onAddClaim(casefile)}>Add claim</div>
-        <div onClick={this.onReadyCasefile(casefile)}>Submit for arbitration</div>
-
-      </div>
+      </Row>
     );
   }
 
   render() {
 
     return (
-      <div className='MemberContent'>
+      <Container>
 
-        <div onClick={this.onNewCase()}>New case</div>
+        <Row>
+          <Col>
+            <Button color="primary" onClick={this.onNewCase()}>New case</Button>
+          </Col>
+        </Row>
 
-        <ul>
-          {this.props.cases.map(c => <li key={c._id}>{this.renderCase(c)}</li>)}
-        </ul>
+        <Row>
+          <Col sm="4">Case ID</Col>
+          <Col sm="4">Status</Col>
+          <Col sm="4">Actions</Col>
+        </Row>
+
+        <Row>
+          <Container>
+            {this.props.cases.map(this.renderCase.bind(this))}
+          </Container>
+        </Row>
 
         {this.state.memberAction ?
           <div className="action-modal">
@@ -132,7 +159,7 @@ class MembersHome extends Component {
 
           </div> : null}
 
-      </div>
+      </Container>
     )
   }
 }
