@@ -12,6 +12,7 @@ import { CasesSelectors } from 'business/selectors';
 class MembersHome extends Component {
 
   constructor(props) {
+
     super(props);
 
     this.state = {
@@ -36,9 +37,13 @@ class MembersHome extends Component {
       });
     }
   }
-  onRespondCasefile(casefile) {
+  onRespondClaim(casefile, claim) {
     return () => {
-      // TODO
+      this.props.setSelectedCase(casefile.case_id);
+      this.props.setSelectedClaim(claim.claim_id);
+      this.setState({
+        memberAction: 'respondclaim',
+      });
     }
   }
   onEditCasefile(casefile) {
@@ -90,6 +95,7 @@ class MembersHome extends Component {
           {claim.claim_status === 'accepted' && 'Accepted'}
         </td>
         <td>
+          <Button color="info" onClick={this.onRespondClaim(casefile, claim)}>Respond</Button>
           {claim.claim_status === 'unread' && <Button color="danger" onClick={this.onDeleteClaim(casefile, claim)}>Delete</Button>}
         </td>
       </tr>
@@ -105,7 +111,6 @@ class MembersHome extends Component {
           {casefile.case_status}
         </td>
         <td>
-          <Button color="info" onClick={this.onRespondCasefile(casefile)}>Respond</Button>
           <Button color="warning" onClick={this.onEditCasefile(casefile)}>Edit</Button>
           <Button color="danger" onClick={this.onDeleteCasefile(casefile)}>Delete</Button>
         </td>

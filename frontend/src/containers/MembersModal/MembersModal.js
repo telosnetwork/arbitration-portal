@@ -28,15 +28,6 @@ class MembersModal extends Component {
       SWED: '8'
     };
     const forms = {
-      withdraw: {
-        owner: {
-          label: 'Owner:',
-          value: '',
-          type: 'text',
-          placeholder: 'account_name',
-          text: 'Please input a valid TELOS account name'
-        }
-      },
       filecase: {
         respondant: {
           label: 'Respondant:',
@@ -46,7 +37,7 @@ class MembersModal extends Component {
           text: 'Please input a valid TELOS account name'
         },
         claim_link: {
-          label: 'Claim Link:',
+          label: 'Claim file:',
           placeholder: 'ipfs_link',
           special: 'ipfs',
           text: 'Please select a file to upload'
@@ -60,67 +51,20 @@ class MembersModal extends Component {
       },
       addclaim: {
         claim_link: {
-          label: 'Claim Link:',
+          label: 'Claim file:',
           placeholder: 'ipfs_link',
           special: 'ipfs',
           text: 'Please select a file to upload'
         }
       },
-      removeclaim: {
-        case_id: {
-          label: 'Case ID:',
-          value: '',
-          type: 'number',
-          placeholder: '0',
-          text: 'Please input a valid case ID'
-        },
-        claimant: {
-          label: 'Claimant:',
-          value: '',
-          type: 'text',
-          placeholder: 'account_name',
-          text: 'Please input a valid TELOS account name'
-        },
-        claim_hash: {
-          label: 'Claim Hash:',
-          value: '',
-          type: 'text',
+      respondclaim: {
+        response_link: {
+          label: 'Response file:',
           placeholder: 'ipfs_link',
-          text: 'Please input a valid IPFS link'
+          special: 'ipfs',
+          text: 'Please select a file to upload'
         }
       },
-      shredcase: {
-        case_id: {
-          label: 'Case ID:',
-          value: '',
-          type: 'number',
-          placeholder: '0',
-          text: 'Please input a valid case ID'
-        },
-        claimant: {
-          label: 'Claimant:',
-          value: '',
-          type: 'text',
-          placeholder: 'account_name',
-          text: 'Please input a valid TELOS account name'
-        },
-      },
-      readycase: {
-        case_id: {
-          label: 'Case ID:',
-          value: '',
-          type: 'number',
-          placeholder: '0',
-          text: 'Please input a valid case ID'
-        },
-        claimant: {
-          label: 'Claimant:',
-          value: '',
-          type: 'text',
-          placeholder: 'account_name',
-          text: 'Please input a valid TELOS account name'
-        },
-      }
     };
 
     /**
@@ -178,12 +122,12 @@ class MembersModal extends Component {
       default: {
         return (
           <Input
-          name={formElement.id}
-          type={formElement.type}
-          value={formElement.value}
-          placeholder={formElement.placeholder}
-          onChange={(event) => this.inputChangedHandler(event, this.props.actionName, formElement.id)}
-        />
+            name={formElement.id}
+            type={formElement.type}
+            value={formElement.value}
+            placeholder={formElement.placeholder}
+            onChange={(event) => this.inputChangedHandler(event, this.props.actionName, formElement.id)}
+          />
         );
       }
     }
@@ -226,6 +170,12 @@ class MembersModal extends Component {
     ];
   }
 
+  renderRespondClaim() {
+    return [
+      this.renderAutoForm(),
+    ];
+  }
+
   renderForm(actionName) {
     switch (actionName) {
       case 'filecase': {
@@ -236,6 +186,9 @@ class MembersModal extends Component {
       }
       case 'deletecase': {
         return this.renderDeleteCase();
+      }
+      case 'respondclaim': {
+        return this.renderRespondClaim();
       }
       default: {
         return null;
@@ -260,10 +213,38 @@ class MembersModal extends Component {
       case 'readycase': {
         return 'Ready case';
       }
+      case 'respondclaim': {
+        return 'Respond to claim';
+      }
       default: {
         return '';
       }
     }
+  }
+
+  renderHeader() {
+    return [
+      <ModalHeader key="header" toggle={this.props.toggle}>
+        {this.getTitle()}
+      </ModalHeader>,
+      this.props.case &&
+      <ModalBody key="information">
+        <Container>
+          <Row><Col>
+            Case ID: {this.props.case.case_id}
+            <br/>
+            Case status: {this.props.case.case_status}
+          </Col></Row>
+          {this.props.claim &&
+          <Row><Col>
+            Claim ID: {this.props.claim.claim_id}
+            <br/>
+            Claim status: {this.props.claim.claim_id}
+          </Col></Row>
+          }
+        </Container>
+      </ModalBody>
+    ];
   }
 
   render() {
@@ -271,67 +252,55 @@ class MembersModal extends Component {
     const { actionName } = this.props;
     if(!actionName) return null;
 
-    if(actionName === 'filecase' || actionName === 'addclaim' || actionName === 'respond') {
-      return (
-        <div>
-          <ModalHeader toggle={this.props.toggle}>{this.getTitle()}</ModalHeader>
-          <ModalBody>
-            <Form onSubmit={(event) => this.handleSubmit(event, actionName)}>
-              {this.renderForm(actionName)}
-              {this.state.loading && <Spinner className='submitSpinner' type='grow' color='primary' />}
-            </Form>
-          </ModalBody>
-          <ModalFooter>
-            <Button color="secondary" onClick={this.props.cancel}>Cancel</Button>
-            <Button color='primary' onClick={(event) => this.handleSubmit(event, actionName)}>Submit</Button>
-          </ModalFooter>
-        </div>
+    const rendered = [];
+    rendered.push(...this.renderHeader());
+
+    if(actionName === 'filecase' || actionName === 'addclaim' || actionName === 'respondclaim') {
+
+      rendered.push(
+        <ModalBody key="form">
+          <Form onSubmit={(event) => this.handleSubmit(event, actionName)}>
+            {this.renderForm(actionName)}
+            {this.state.loading && <Spinner className='submitSpinner' type='grow' color='primary' />}
+          </Form>
+        </ModalBody>
       );
+      rendered.push(
+        <ModalFooter key="footer">
+          <Button color="secondary" onClick={this.props.cancel}>Cancel</Button>
+          <Button color='primary' onClick={(event) => this.handleSubmit(event, actionName)}>Submit</Button>
+        </ModalFooter>
+      );
+
     }
     else if (actionName === 'deletecase' || actionName === 'deleteclaim') {
-      return (
-        <div>
-          <ModalHeader toggle={this.props.toggle}>{this.getTitle()}</ModalHeader>
-          <ModalBody>
-            <Container>
-              <Row><Col>
-                Case ID: {this.props.case.case_id}
-                <br/>
-                Case status: {this.props.case.case_status}
-              </Col></Row>
-              {actionName === 'deleteclaim' &&
-              <Row><Col>
-                Claim ID: {this.props.claim.claim_id}
-                <br/>
-                Claim status: {this.props.claim.claim_id}
-              </Col></Row>
-              }
-            </Container>
-          </ModalBody>
-          <ModalFooter>
-            <Button color="info" onClick={this.props.cancel}>No</Button>
-            <Button color='danger' onClick={(event) => this.handleSubmit(event, actionName)}>Yes</Button>
-          </ModalFooter>
-        </div>
+
+      rendered.push(
+        <ModalFooter key="footer">
+          <Button color="info" onClick={this.props.cancel}>No</Button>
+          <Button color='danger' onClick={(event) => this.handleSubmit(event, actionName)}>Yes</Button>
+        </ModalFooter>
       );
+
     }
     else if (actionName === 'readycase') {
-      return (
-        <div>
-          <ModalHeader toggle={this.props.toggle}>{this.getTitle()}</ModalHeader>
-          <ModalBody>
-            In order to ready the case, you need to make a deposit of 100 TLOS.
-          </ModalBody>
-          <ModalFooter>
-            <Button color="info" onClick={this.props.cancel}>Cancel</Button>
-            <Button color='success' onClick={(event) => this.handleSubmit(event, actionName)}>Deposit</Button>
-          </ModalFooter>
-        </div>
+
+      rendered.push(
+        <ModalBody key="description">
+          In order to ready the case, you need to make a deposit of 100 TLOS.
+        </ModalBody>
       );
+      rendered.push(
+        <ModalFooter key="footer">
+          <Button color="info" onClick={this.props.cancel}>Cancel</Button>
+          <Button color='success' onClick={(event) => this.handleSubmit(event, actionName)}>Deposit</Button>
+        </ModalFooter>
+      );
+
     }
-    else {
-      return null;
-    }
+
+    return rendered;
+
   }
 
 }
