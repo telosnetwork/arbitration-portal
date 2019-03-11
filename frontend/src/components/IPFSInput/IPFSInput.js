@@ -4,7 +4,7 @@ import ipfsClient                  from 'ipfs-http-client';
 // Create a Stream from a File which enables uploads of large files without allocation mem multiple times
 import fileReaderPullStream        from 'pull-file-reader';
 
-import { Button, Input } from 'reactstrap';
+import { Button, Input, Spinner } from 'reactstrap';
 
 class IPFSInput extends Component {
 
@@ -12,7 +12,8 @@ class IPFSInput extends Component {
     super(props);
 
     this.state = {
-      added_file_hash: null
+      added_file_hash: null,
+      loading: false,
     };
 
     this.ipfs = ipfsClient('ipfs.emanate.live', '5002', { protocol: 'https' });
@@ -23,6 +24,8 @@ class IPFSInput extends Component {
 
     event.stopPropagation();
     event.preventDefault();
+
+    this.setState({loading: true});
 
     const file = event.target.files[0];
     this.saveToIpfs(file);
@@ -40,7 +43,7 @@ class IPFSInput extends Component {
         console.log('Response: ', response);
         ipfsId = response[0].hash;
         console.log('IPFS ID: ' , ipfsId);
-        this.setState({added_file_hash: ipfsId});
+        this.setState({added_file_hash: ipfsId, loading: false});
       }).catch((err) => {
       console.error(err);
     });
@@ -67,18 +70,21 @@ class IPFSInput extends Component {
         console.log('Response: ', response);
         ipfsId = response[response.length - 1].hash
         console.log('IPFS ID: ' , ipfsId);
-        this.setState({added_file_hash: ipfsId});
+        this.setState({added_file_hash: ipfsId, loading: false});
       }).catch((err) => {
       console.error(err);
     });
   }
 
   render() {
+    if(this.state.loading) {
+      return <Spinner size="sm" color='primary' />
+    }
     return (
       <div className='uploadForm'>
         {this.state.added_file_hash ?
           <div>
-            <a href={'https://ipfs.io/ipfs/' + this.state.added_file_hash}>
+            <a className="ipfs-url" href={'https://ipfs.io/ipfs/' + this.state.added_file_hash}>
               https://ipfs.io/ipfs/{this.state.added_file_hash}
             </a>
             <Button>Remove</Button>

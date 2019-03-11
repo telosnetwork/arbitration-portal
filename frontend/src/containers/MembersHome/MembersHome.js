@@ -22,7 +22,10 @@ class MembersHome extends Component {
 
   onNewCase() {
     return () => {
-      // TODO
+      this.props.setSelectedCase(null);
+      this.setState({
+        memberAction: 'filecase',
+      })
     }
   }
   onDeleteCasefile(casefile) {
@@ -142,7 +145,11 @@ class MembersHome extends Component {
           </tbody>
         </Table>
 
-        <Modal isOpen={!!this.state.memberAction} toggle={this.closeAction()}>
+        <Modal
+          isOpen={!!this.state.memberAction}
+          toggle={this.closeAction()}
+          centered
+        >
           <MembersModal actionName={this.state.memberAction} toggle={this.closeAction()}/>
         </Modal>
 

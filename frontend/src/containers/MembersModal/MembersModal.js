@@ -16,7 +16,7 @@ class MembersModal extends Component {
 
     this.state = {};
 
-    const languageCodes = {
+    this.languageCodes = {
       ENGL: '0',
       FRCH: '1',
       GRMN: '2',
@@ -38,35 +38,32 @@ class MembersModal extends Component {
         }
       },
       filecase: {
-        claim_link: {
-          label: 'Claim Link:',
-          value: '',
-          type: 'text',
-          placeholder: 'ipfs_link',
-          text: 'Please input a valid IPFS link'
-        },
-        lang_codes: {
-          label: 'Language Codes:',
-          value: '',
-          type: 'checkbox',
-          placeholder: '',
-          text: 'Please select from the following language codes'
-        },
         respondant: {
           label: 'Respondant:',
           value: '',
           type: 'text',
           placeholder: 'account_name',
           text: 'Please input a valid TELOS account name'
-        }
+        },
+        claim_link: {
+          label: 'Claim Link:',
+          placeholder: 'ipfs_link',
+          special: 'ipfs',
+          text: 'Please select a file to upload'
+        },
+        lang_codes: {
+          label: 'Language Codes:',
+          value: '',
+          special: 'languages',
+          text: 'Please select from the following language codes'
+        },
       },
       addclaim: {
         claim_link: {
           label: 'Claim Link:',
-          value: '',
-          type: 'text',
           placeholder: 'ipfs_link',
           special: 'ipfs',
+          text: 'Please select a file to upload'
         }
       },
       removeclaim: {
@@ -151,6 +148,10 @@ class MembersModal extends Component {
 
   }
 
+  inputChangedHandler(){
+
+  }
+
   handleSubmit(event, actionName) {
 
   }
@@ -161,11 +162,29 @@ class MembersModal extends Component {
       case 'ipfs': {
         return <IPFSInput/>;
       }
+      case 'languages': {
+        return (
+          <Input
+            type="select"
+            name="formElement.id"
+            multiple
+          >
+            {Object.keys(this.languageCodes).map(language =>
+              <option key={language} value={this.languageCodes[language]}>{language}</option>
+            )}
+          </Input>
+        );
+      }
     }
 
     return (
-      <Input type={formElement.type} value={formElement.value} placeholder={formElement.placeholder}
-             onChange={(event) => this.inputChangedHandler(event, this.props.actionName, formElement.id)}/>
+      <Input
+        name={formElement.id}
+        type={formElement.type}
+        value={formElement.value}
+        placeholder={formElement.placeholder}
+        onChange={(event) => this.inputChangedHandler(event, this.props.actionName, formElement.id)}
+      />
     );
 
   }
@@ -177,11 +196,12 @@ class MembersModal extends Component {
 
     return form.map(formElement => (
       <FormGroup key={formElement.id} row>
-        <Label for={formElement.id} sm={1}>{formElement.label}</Label>
-        <Col sm={11}>
-          {this.renderAutoInput(formElement)}
-          <FormFeedback>...</FormFeedback>
-          {formElement.text && <FormText>{formElement.text}</FormText>}
+        <Label key={formElement.id} sm={4}>
+          {formElement.label}
+        </Label>
+        <Col sm={8}>
+        {this.renderAutoInput(formElement)}
+        {formElement.text && <FormText color="muted">{formElement.text}</FormText>}
         </Col>
       </FormGroup>
     ));
@@ -193,12 +213,33 @@ class MembersModal extends Component {
     ];
   }
 
+  renderAddCaseForm() {
+    return [
+      this.renderAutoForm(),
+    ];
+  }
+
   renderForm(actionName) {
     switch (actionName) {
-      case 'addclaim': {
+      case 'filecase': {
         return this.renderFileCaseForm();
       }
+      case 'addclaim': {
+        return this.renderAddCaseForm();
+      }
     }
+  }
+
+  getTitle() {
+    switch (this.props.actionName) {
+      case 'filecase': {
+        return 'Create new case';
+      }
+      case 'addclaim': {
+        return 'Add a new claim';
+      }
+    }
+    return '';
   }
 
   render() {
@@ -208,7 +249,7 @@ class MembersModal extends Component {
 
     return (
       <div>
-        <ModalHeader toggle={this.props.toggle}>{actionName}</ModalHeader>
+        <ModalHeader toggle={this.props.toggle}>{this.getTitle()}</ModalHeader>
         <ModalBody>
           <Form onSubmit={(event) => this.handleSubmit(event, actionName)}>
             {this.renderForm(actionName)}
@@ -216,8 +257,8 @@ class MembersModal extends Component {
           </Form>
         </ModalBody>
         <ModalFooter>
-          <Button className='submitButton' color='primary' onClick={(event) => this.handleSubmit(event, actionName)}>Submit</Button>
           <Button color="secondary" onClick={this.props.toggle}>Cancel</Button>
+          <Button className='submitButton' color='primary' onClick={(event) => this.handleSubmit(event, actionName)}>Submit</Button>
         </ModalFooter>
       </div>
     );
