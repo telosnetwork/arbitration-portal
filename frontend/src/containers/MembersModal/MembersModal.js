@@ -250,6 +250,9 @@ class MembersModal extends Component {
       case 'deletecase': {
         return 'Are you sure you want to delete this case ?';
       }
+      case 'deleteclaim': {
+        return 'Are you sure you want to delete this claim ?';
+      }
     }
     return '';
   }
@@ -270,7 +273,7 @@ class MembersModal extends Component {
             </Form>
           </ModalBody>
           <ModalFooter>
-            <Button color="secondary" onClick={this.props.toggle}>Cancel</Button>
+            <Button color="secondary" onClick={this.props.cancel}>Cancel</Button>
             <Button className='submitButton' color='primary' onClick={(event) => this.handleSubmit(event, actionName)}>Submit</Button>
           </ModalFooter>
         </div>
@@ -281,7 +284,7 @@ class MembersModal extends Component {
         <div>
           <ModalHeader toggle={this.props.toggle}>{this.getTitle()}</ModalHeader>
           <ModalFooter>
-            <Button color="info" onClick={this.props.toggle}>No</Button>
+            <Button color="info" onClick={this.props.cancel}>No</Button>
             <Button className='submitButton' color='danger' onClick={(event) => this.handleSubmit(event, actionName)}>Yes</Button>
           </ModalFooter>
         </div>

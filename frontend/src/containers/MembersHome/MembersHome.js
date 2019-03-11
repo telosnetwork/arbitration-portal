@@ -61,14 +61,20 @@ class MembersHome extends Component {
   }
   onDeleteClaim(casefile, claim) {
     return () => {
-      // TODO
+      this.props.setSelectedCase(casefile.case_id);
+      this.props.setSelectedClaim(claim.claim_id);
+      this.setState({
+        memberAction: 'deleteclaim',
+      });
     }
   }
   closeAction() {
     return () => {
       this.setState({
         memberAction: null,
-      })
+      });
+      this.props.setSelectedCase(null);
+      this.props.setSelectedClaim(null);
     }
   }
 
@@ -153,7 +159,7 @@ class MembersHome extends Component {
           toggle={this.closeAction()}
           centered
         >
-          <MembersModal actionName={this.state.memberAction} toggle={this.closeAction()}/>
+          <MembersModal actionName={this.state.memberAction} cancel={this.closeAction()}/>
         </Modal>
 
       </Container>
