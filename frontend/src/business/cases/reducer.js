@@ -24,6 +24,13 @@ const initialState = {
 function setCases(state, action) {
 
   const caseList = action.cases.map(c => Object.assign({}, emptyCase, c));
+
+  caseList.forEach(casefile => {
+    casefile.unread_claims.forEach(c => c.claim_status = 'unread');
+    casefile.accepted_claims.forEach(c => c.claim_status = 'accepted');
+    casefile.claims = [].concat(casefile.unread_claims).concat(casefile.accepted_claims);
+  });
+
   return {
     ...state,
     caseList,

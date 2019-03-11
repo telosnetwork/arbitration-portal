@@ -2,11 +2,12 @@ import React, { Component }      from 'react';
 
 // Components
 import MembersModal from  '../MembersModal';
+import { Modal, Table, Container, Row, Col, Button } from 'reactstrap';
 
 // Redux
 import { connect }               from 'react-redux';
 import { CasesActions, ClaimsActions } from 'business/actions';
-import { ClaimsSelectors, CasesSelectors } from 'business/selectors';
+import { CasesSelectors } from 'business/selectors';
 
 class MembersHome extends Component {
 
@@ -21,12 +22,18 @@ class MembersHome extends Component {
 
   onNewCase() {
     return () => {
-      // TODO
+      this.props.setSelectedCase(null);
+      this.setState({
+        memberAction: 'filecase',
+      })
     }
   }
   onDeleteCasefile(casefile) {
     return () => {
-      // TODO
+      this.props.setSelectedCase(casefile.case_id);
+      this.setState({
+        memberAction: 'deletecase',
+      });
     }
   }
   onRespondCasefile(casefile) {
@@ -41,7 +48,10 @@ class MembersHome extends Component {
   }
   onReadyCasefile(casefile) {
     return () => {
-      // TODO
+      this.props.setSelectedCase(casefile.case_id);
+      this.setState({
+        memberAction: 'readycase',
+      });
     }
   }
   onAddClaim(casefile) {
@@ -49,90 +59,104 @@ class MembersHome extends Component {
       this.props.setSelectedCase(casefile.case_id);
       this.setState({
         memberAction: 'addclaim',
-      })
+      });
     }
   }
   onDeleteClaim(casefile, claim) {
     return () => {
-      // TODO
+      this.props.setSelectedCase(casefile.case_id);
+      this.props.setSelectedClaim(claim.claim_id);
+      this.setState({
+        memberAction: 'deleteclaim',
+      });
     }
   }
   closeAction() {
     return () => {
       this.setState({
         memberAction: null,
-      })
+      });
+      this.props.setSelectedCase(null);
+      this.props.setSelectedClaim(null);
     }
   }
 
-  renderUnreadClaim(casefile, claim) {
+  renderClaim(casefile, claim) {
     return (
-      <div>
-        <span>Claim: {claim.claim_id}</span>
-        <span>Unread</span>
-        <div onClick={this.onDeleteClaim(casefile, claim)}>Delete</div>
-      </div>
+      <tr key={claim._id}>
+        <td className="claim-col">Claim: {claim.claim_id}</td>
+        <td>
+          {claim.claim_status === 'unread' && 'Unread'}
+          {claim.claim_status === 'accepted' && 'Accepted'}
+        </td>
+        <td>
+          {claim.claim_status === 'unread' && <Button color="danger" onClick={this.onDeleteClaim(casefile, claim)}>Delete</Button>}
+        </td>
+      </tr>
     );
   }
-
-  renderAcceptedClaim(casefile, claim) {
-    return (
-      <div>
-        <span>Claim: {claim.claim_id}</span>
-        <span>Accepted</span>
-      </div>
-    );
-  }
-
   renderCase(casefile) {
-    return (
-      <div>
-        <span>Case: {casefile.case_id}</span>
-        <span>Status: {casefile.case_status}</span>
-        <div onClick={this.onRespondCasefile(casefile)}>Respond</div>
-        <div onClick={this.onEditCasefile(casefile)}>Edit</div>
-        <div onClick={this.onDeleteCasefile(casefile)}>Delete</div>
+    return [
+      <tr key={casefile._id}>
+        <th scope="row">
+          {casefile.case_id}
+        </th>
+        <td>
+          {casefile.case_status}
+        </td>
+        <td>
+          <Button color="info" onClick={this.onRespondCasefile(casefile)}>Respond</Button>
+          <Button color="warning" onClick={this.onEditCasefile(casefile)}>Edit</Button>
+          <Button color="danger" onClick={this.onDeleteCasefile(casefile)}>Delete</Button>
+        </td>
+      </tr>,
+      ...casefile.claims.map(claim => this.renderClaim(casefile, claim)),
+      <tr key="caseactions">
+        <td>
+          <Button color="primary" onClick={this.onAddClaim(casefile)}>Add claim</Button>
+        </td>
+        <td>
+          <Button color="success" onClick={this.onReadyCasefile(casefile)}>Submit for arbitration</Button>
+        </td>
+        <td/>
+      </tr>,
+    ];
 
-        <ul>
-          {casefile.unread_claims.map(claim =>
-            <li key={claim._id}>{this.renderUnreadClaim(casefile, claim)}</li>
-          )}
-        </ul>
-
-        <ul>
-          {casefile.accepted_claims.map(claim =>
-            <li key={claim._id}>{this.renderAcceptedClaim(casefile, claim)}</li>
-          )}
-        </ul>
-
-        <div onClick={this.onAddClaim(casefile)}>Add claim</div>
-        <div onClick={this.onReadyCasefile(casefile)}>Submit for arbitration</div>
-
-      </div>
-    );
   }
 
   render() {
 
     return (
-      <div className='MemberContent'>
+      <Container>
 
-        <div onClick={this.onNewCase()}>New case</div>
+        <Row>
+          <Col>
+            <Button color="primary" onClick={this.onNewCase()}>New case</Button>
+          </Col>
+        </Row>
 
-        <ul>
-          {this.props.cases.map(c => <li key={c._id}>{this.renderCase(c)}</li>)}
-        </ul>
+        <Table hover>
+          <thead>
+          <tr>
+            <th sm="4">Case ID</th>
+            <th sm="4">Status</th>
+            <th sm="4">Actions</th>
+          </tr>
+          </thead>
+          <tbody>
+          {this.props.cases.map(this.renderCase.bind(this))}
+          </tbody>
+        </Table>
 
-        {this.state.memberAction ?
-          <div className="action-modal">
+        <Modal
+          isOpen={!!this.state.memberAction}
+          toggle={this.closeAction()}
+          centered
+        >
+          <MembersModal actionName={this.state.memberAction} cancel={this.closeAction()}/>
+        </Modal>
 
-            <div onClick={this.closeAction()}>X</div>
-
-            <MembersModal actionName={this.state.memberAction} />
-
-          </div> : null}
-
-      </div>
+      </Container>
     )
   }
 }
