@@ -200,8 +200,8 @@ class MembersModal extends Component {
           {formElement.label}
         </Label>
         <Col sm={8}>
-        {this.renderAutoInput(formElement)}
-        {formElement.text && <FormText color="muted">{formElement.text}</FormText>}
+          {this.renderAutoInput(formElement)}
+          {formElement.text && <FormText color="muted">{formElement.text}</FormText>}
         </Col>
       </FormGroup>
     ));
@@ -219,6 +219,12 @@ class MembersModal extends Component {
     ];
   }
 
+  renderDeleteCase() {
+    return [
+      this.renderAutoForm(),
+    ];
+  }
+
   renderForm(actionName) {
     switch (actionName) {
       case 'filecase': {
@@ -226,6 +232,9 @@ class MembersModal extends Component {
       }
       case 'addclaim': {
         return this.renderAddCaseForm();
+      }
+      case 'deletecase': {
+        return this.renderDeleteCase();
       }
     }
   }
@@ -238,6 +247,9 @@ class MembersModal extends Component {
       case 'addclaim': {
         return 'Add a new claim';
       }
+      case 'deletecase': {
+        return 'Are you sure you want to delete this case ?';
+      }
     }
     return '';
   }
@@ -247,21 +259,34 @@ class MembersModal extends Component {
     const { actionName } = this.props;
     if(!actionName) return null;
 
-    return (
-      <div>
-        <ModalHeader toggle={this.props.toggle}>{this.getTitle()}</ModalHeader>
-        <ModalBody>
-          <Form onSubmit={(event) => this.handleSubmit(event, actionName)}>
-            {this.renderForm(actionName)}
-            {this.state.loading && <Spinner className='submitSpinner' type='grow' color='primary' />}
-          </Form>
-        </ModalBody>
-        <ModalFooter>
-          <Button color="secondary" onClick={this.props.toggle}>Cancel</Button>
-          <Button className='submitButton' color='primary' onClick={(event) => this.handleSubmit(event, actionName)}>Submit</Button>
-        </ModalFooter>
-      </div>
-    );
+    if(actionName === 'filecase' || actionName === 'addclaim' || actionName === 'respond') {
+      return (
+        <div>
+          <ModalHeader toggle={this.props.toggle}>{this.getTitle()}</ModalHeader>
+          <ModalBody>
+            <Form onSubmit={(event) => this.handleSubmit(event, actionName)}>
+              {this.renderForm(actionName)}
+              {this.state.loading && <Spinner className='submitSpinner' type='grow' color='primary' />}
+            </Form>
+          </ModalBody>
+          <ModalFooter>
+            <Button color="secondary" onClick={this.props.toggle}>Cancel</Button>
+            <Button className='submitButton' color='primary' onClick={(event) => this.handleSubmit(event, actionName)}>Submit</Button>
+          </ModalFooter>
+        </div>
+      );
+    }
+    else if (actionName === 'deletecase' || actionName === 'deleteclaim') {
+      return (
+        <div>
+          <ModalHeader toggle={this.props.toggle}>{this.getTitle()}</ModalHeader>
+          <ModalFooter>
+            <Button color="info" onClick={this.props.toggle}>No</Button>
+            <Button className='submitButton' color='danger' onClick={(event) => this.handleSubmit(event, actionName)}>Yes</Button>
+          </ModalFooter>
+        </div>
+      );
+    }
   }
 
 }

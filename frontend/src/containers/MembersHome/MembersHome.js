@@ -30,7 +30,10 @@ class MembersHome extends Component {
   }
   onDeleteCasefile(casefile) {
     return () => {
-      // TODO
+      this.props.setSelectedCase(casefile.case_id);
+      this.setState({
+        memberAction: 'deletecase',
+      });
     }
   }
   onRespondCasefile(casefile) {
@@ -53,7 +56,7 @@ class MembersHome extends Component {
       this.props.setSelectedCase(casefile.case_id);
       this.setState({
         memberAction: 'addclaim',
-      })
+      });
     }
   }
   onDeleteClaim(casefile, claim) {
