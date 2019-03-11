@@ -1,22 +1,13 @@
 import React, { Component }      from 'react';
-import axios                     from 'axios';
-
-// Utilities
-import ScatterBridge             from '../../utils/scatterBridge';
-// import IOClient               from '../../utils/io-client';
-// import { updateBalances }     from '../../utils/updateBalances';
-// import { updateCases }        from '../../utils/updateCases';
 
 // Components
-import Uploader                  from '../Uploader';
-import BlockConsole              from '../BlockConsole';
+import IPFSInput                  from '../../components/IPFSInput';
+import { ModalHeader, ModalBody, ModalFooter, Col, Button, Spinner, Form, FormGroup, Label, CustomInput, Input, FormText, FormFeedback  } from 'reactstrap';
 
 // Redux
 import { connect }               from 'react-redux';
 import { CasesSelectors, ClaimsSelectors } from 'business/selectors';
 
-import { Row, Col } from 'reactstrap';
-import { Button, Spinner, Form, FormGroup, Label, CustomInput, Input, FormText, FormFeedback } from 'reactstrap';
 
 class MembersModal extends Component {
 
@@ -47,13 +38,6 @@ class MembersModal extends Component {
         }
       },
       filecase: {
-        claimant: {
-          label: 'Claimant:',
-          value: '',
-          type: 'text',
-          placeholder: 'account_name',
-          text: 'Please input a valid TELOS account name'
-        },
         claim_link: {
           label: 'Claim Link:',
           value: '',
@@ -77,19 +61,11 @@ class MembersModal extends Component {
         }
       },
       addclaim: {
-        claimant: {
-          label: 'Claimant:',
-          value: '',
-          type: 'text',
-          placeholder: 'account_name',
-          text: 'Please input a valid TELOS account name'
-        },
         claim_link: {
           label: 'Claim Link:',
           value: '',
           type: 'text',
           placeholder: 'ipfs_link',
-          text: 'Please input a valid IPFS link',
           special: 'ipfs',
         }
       },
@@ -179,65 +155,70 @@ class MembersModal extends Component {
 
   }
 
-  renderForm(actionName) {
+  renderAutoInput(formElement) {
+
+    switch(formElement.special) {
+      case 'ipfs': {
+        return <IPFSInput/>;
+      }
+    }
+
+    return (
+      <Input type={formElement.type} value={formElement.value} placeholder={formElement.placeholder}
+             onChange={(event) => this.inputChangedHandler(event, this.props.actionName, formElement.id)}/>
+    );
+
+  }
+
+  renderAutoForm() {
+    const { actionName } = this.props;
 
     const form = this.formArrays[actionName];
 
     return form.map(formElement => (
-      <FormGroup className='formgroup' key={formElement.id} row>
+      <FormGroup key={formElement.id} row>
         <Label for={formElement.id} sm={1}>{formElement.label}</Label>
         <Col sm={11}>
-          <div>
-            <Input type={formElement.type} value={formElement.value} placeholder={formElement.placeholder}
-                   onChange={(event) => this.inputChangedHandler(event, actionName, formElement.id)}/>
-            {formElement.special === 'ipfs' ? <Uploader/> : null }
-          </div>
+          {this.renderAutoInput(formElement)}
           <FormFeedback>...</FormFeedback>
-          <FormText>{formElement.text}</FormText>
+          {formElement.text && <FormText>{formElement.text}</FormText>}
         </Col>
       </FormGroup>
     ));
-
   }
 
-  renderActionHeader() {
+  renderFileCaseForm() {
+    return [
+      this.renderAutoForm(),
+    ];
+  }
 
-    const { actionName } = this.props;
-
-    let content = null;
-
-    if(actionName === 'addclaim') {
-      content = (
-        <div>
-          Case ID: {this.props.case.case_id}
-        </div>
-      );
+  renderForm(actionName) {
+    switch (actionName) {
+      case 'addclaim': {
+        return this.renderFileCaseForm();
+      }
     }
-
-    return (
-      <div>
-        Action: {this.props.actionName}
-        {content}
-      </div>
-    );
   }
 
   render() {
 
     const { actionName } = this.props;
+    if(!actionName) return null;
 
     return (
       <div>
-        {this.renderActionHeader()}
-        <Row>
-          <Col sm='12'>
-            <Form onSubmit={(event) => this.handleSubmit(event, actionName)}>
-              {this.renderForm(actionName)}
-              {this.state.loading && <Spinner className='submitSpinner' type='grow' color='primary' />}
-              <Button className='submitButton' color='primary' onClick={(event) => this.handleSubmit(event, actionName)}>Submit</Button>
-            </Form>
-          </Col>
-        </Row>
+        <ModalHeader toggle={this.props.toggle}>{actionName}</ModalHeader>
+        <ModalBody>
+          <Form onSubmit={(event) => this.handleSubmit(event, actionName)}>
+            {this.renderForm(actionName)}
+            {this.state.loading && <Spinner className='submitSpinner' type='grow' color='primary' />}
+          </Form>
+        </ModalBody>
+        <ModalFooter>
+          <Button className='submitButton' color='primary' onClick={(event) => this.handleSubmit(event, actionName)}>Submit</Button>
+          <Button color="secondary" onClick={this.props.toggle}>Cancel</Button>
+        </ModalFooter>
       </div>
     );
   }

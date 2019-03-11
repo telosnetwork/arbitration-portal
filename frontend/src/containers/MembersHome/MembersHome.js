@@ -2,7 +2,7 @@ import React, { Component }      from 'react';
 
 // Components
 import MembersModal from  '../MembersModal';
-import { Container, Row, Col, Button } from 'reactstrap';
+import { Modal, ModalHeader, ModalBody, ModalFooter, Table, Container, Row, Col, Button } from 'reactstrap';
 
 // Redux
 import { connect }               from 'react-redux';
@@ -68,63 +68,54 @@ class MembersHome extends Component {
 
   renderUnreadClaim(casefile, claim) {
     return (
-      <Row key={claim._id}>
-        <Col sm="4">Claim: {claim.claim_id}</Col>
-        <Col sm="4">Unread</Col>
-        <Col sm="4">
+      <tr key={claim._id}>
+        <td className="claim-col">Claim: {claim.claim_id}</td>
+        <td>Unread</td>
+        <td>
           <Button color="danger" onClick={this.onDeleteClaim(casefile, claim)}>Delete</Button>
-        </Col>
-      </Row>
+        </td>
+      </tr>
     );
   }
 
   renderAcceptedClaim(casefile, claim) {
     return (
-      <Row key={claim._id}>
-        <Col sm="4">Claim: {claim.claim_id}</Col>
-        <Col sm="4">Accepted</Col>
-        <Col sm="4"></Col>
-      </Row>
+      <tr key={claim._id}>
+        <th scope="row">Claim: {claim.claim_id}</th>
+        <td>Accepted</td>
+        <td></td>
+      </tr>
     );
   }
 
   renderCase(casefile) {
-    return (
-      <Row key={casefile._id}>
-        <Container>
-          <Row>
-            <Col sm="4">{casefile.case_id}</Col>
-            <Col sm="4">{casefile.case_status}</Col>
-            <Col sm="4">
-              <Button color="info" onClick={this.onRespondCasefile(casefile)}>Respond</Button>
-              <Button color="warning" onClick={this.onEditCasefile(casefile)}>Edit</Button>
-              <Button color="danger" onClick={this.onDeleteCasefile(casefile)}>Delete</Button>
-            </Col>
-          </Row>
-          <Row>
-            <Col>
-              <Container>
-                {casefile.unread_claims.map(claim => this.renderUnreadClaim(casefile, claim))}
-              </Container>
-            </Col>
-          </Row>
-          <Row>
-            <Col>
-              <Container>
-                {casefile.accepted_claims.map(claim => this.renderAcceptedClaim(casefile, claim))}
-              </Container>
-            </Col>
-          </Row>
-          <Row>
-            <Button color="primary" onClick={this.onAddClaim(casefile)}>Add claim</Button>
-          </Row>
-          <Row>
-            <Button color="success" onClick={this.onReadyCasefile(casefile)}>Submit for arbitration</Button>
-          </Row>
-        </Container>
+    return [
+      <tr key={casefile._id}>
+        <th scope="row">
+          {casefile.case_id}
+        </th>
+        <td>
+          {casefile.case_status}
+        </td>
+        <td>
+          <Button color="info" onClick={this.onRespondCasefile(casefile)}>Respond</Button>
+          <Button color="warning" onClick={this.onEditCasefile(casefile)}>Edit</Button>
+          <Button color="danger" onClick={this.onDeleteCasefile(casefile)}>Delete</Button>
+        </td>
+      </tr>,
+      ...casefile.unread_claims.map(claim => this.renderUnreadClaim(casefile, claim)),
+      ...casefile.accepted_claims.map(claim => this.renderAcceptedClaim(casefile, claim)),
+      <tr key="caseactions">
+        <td>
+          <Button color="primary" onClick={this.onAddClaim(casefile)}>Add claim</Button>
+        </td>
+        <td>
+          <Button color="success" onClick={this.onReadyCasefile(casefile)}>Submit for arbitration</Button>
+        </td>
+        <td/>
+      </tr>,
+    ];
 
-      </Row>
-    );
   }
 
   render() {
@@ -138,26 +129,22 @@ class MembersHome extends Component {
           </Col>
         </Row>
 
-        <Row>
-          <Col sm="4">Case ID</Col>
-          <Col sm="4">Status</Col>
-          <Col sm="4">Actions</Col>
-        </Row>
+        <Table hover>
+          <thead>
+          <tr>
+            <th sm="4">Case ID</th>
+            <th sm="4">Status</th>
+            <th sm="4">Actions</th>
+          </tr>
+          </thead>
+          <tbody>
+          {this.props.cases.map(this.renderCase.bind(this))}
+          </tbody>
+        </Table>
 
-        <Row>
-          <Container>
-            {this.props.cases.map(this.renderCase.bind(this))}
-          </Container>
-        </Row>
-
-        {this.state.memberAction ?
-          <div className="action-modal">
-
-            <div onClick={this.closeAction()}>X</div>
-
-            <MembersModal actionName={this.state.memberAction} />
-
-          </div> : null}
+        <Modal isOpen={!!this.state.memberAction} toggle={this.closeAction()}>
+          <MembersModal actionName={this.state.memberAction} toggle={this.closeAction()}/>
+        </Modal>
 
       </Container>
     )
