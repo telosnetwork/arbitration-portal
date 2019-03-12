@@ -87,17 +87,21 @@ class MembersModal extends Component {
 
     this.form = this.formArrays[this.props.actionName];
 
-    const defaultFormValues = this.form.reduce((acc, formElement) =>
-        ({
-          ...acc,
-          [formElement.id]: formElement.value || '',
-        }),
-      {}
-    );
+    if(this.form) {
 
-    this.state = {
-      formValues: defaultFormValues,
-    };
+      const defaultFormValues = this.form.reduce((acc, formElement) =>
+          ({
+            ...acc,
+            [formElement.id]: formElement.value || '',
+          }),
+        {}
+      );
+
+      this.state = {
+        formValues: defaultFormValues,
+      };
+
+    }
 
   }
 
