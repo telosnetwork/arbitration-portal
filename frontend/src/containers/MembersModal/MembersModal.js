@@ -138,6 +138,22 @@ class MembersModal extends Component {
         this.props.addClaim(payload);
         break;
       }
+      case 'deletecase': {
+        this.props.deleteCase(payload.case_id);
+        break;
+      }
+      case 'deleteclaim': {
+        this.props.deleteClaim(payload.case_id, payload.claim_id);
+        break;
+      }
+      case 'readycase': {
+        this.props.readyCase(payload.case_id);
+        break;
+      }
+      case 'respondclaim': {
+        this.props.respondClaim(payload);
+        break;
+      }
       default: {
         throw new Error('Unknown action to handle');
       }
@@ -377,6 +393,10 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = {
   fileCase: CasesActions.fileCase,
   addClaim: CasesActions.addClaim,
+  deleteCase: CasesActions.deleteCase,
+  deleteClaim: CasesActions.deleteClaim,
+  readyCase: CasesActions.readyCase,
+  respondClaim: CasesActions.respondClaim,
 };
 
 // Export a redux connected component

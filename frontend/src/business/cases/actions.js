@@ -32,3 +32,28 @@ export function addClaim(claimData) {
     claimData,
   }
 }
+export function deleteCase(case_id) {
+  return {
+    type: ActionTypes.DELETE_CASE,
+    case_id,
+  }
+}
+export function deleteClaim(case_id, claim_id) {
+  return {
+    type: ActionTypes.DELETE_CLAIM,
+    case_id,
+    claim_id,
+  }
+}
+export function readyCase(case_id) {
+  return {
+    type: ActionTypes.READY_CASE,
+    case_id,
+  }
+}
+export function respondClaim(responseData) {
+  return {
+    type: ActionTypes.RESPOND_CLAIM,
+    responseData,
+  }
+}
