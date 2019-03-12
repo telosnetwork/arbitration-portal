@@ -1,11 +1,17 @@
-import claimsSaga from './cases/saga';
+import { all } from 'redux-saga/effects';
+
+import claimsSaga from './claims/saga';
 import casesSaga from './cases/saga';
-import arbitrators from './arbitrators/saga';
+import arbitratorsSaga from './arbitrators/saga';
+import authenticationSaga from './authentication/saga';
 
 export default function* rootSaga() {
 
-  yield claimsSaga();
-  yield casesSaga();
-  yield arbitrators();
+  yield all([
+    authenticationSaga(),
+    claimsSaga(),
+    casesSaga(),
+    arbitratorsSaga(),
+  ]);
 
 }

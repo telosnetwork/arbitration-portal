@@ -3,6 +3,8 @@
  */
 
 export default {
+
+  LOGIN:                'LOGIN',
   SET_BALANCES:         'SET_BALANCES',
   SET_JOINEDCASES:      'SET_JOINEDCASES',
   SET_TRANSFERS:        'SET_TRANSFERS',
