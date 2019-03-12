@@ -1,75 +1,70 @@
-import React, { Component }      from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 
 // Components
-import IPFSInput                  from '../../components/IPFSInput';
-import { Container, Row, ModalHeader, ModalBody, ModalFooter, Col, Button, Spinner, Form, FormGroup, Label, Input, FormText  } from 'reactstrap';
+import IPFSInput from '../../components/IPFSInput';
+import { Container, Row, ModalHeader, ModalBody, ModalFooter, Col, Button, Spinner, Form, FormGroup, Label, Input, FormText } from 'reactstrap';
 
 // Redux
 import { connect }               from 'react-redux';
+import { CasesActions } from 'business/actions';
 import { CasesSelectors, ClaimsSelectors } from 'business/selectors';
 
+const languageCodes = {
+  ENGL: '0',
+  FRCH: '1',
+  GRMN: '2',
+  KREA: '3',
+  JAPN: '4',
+  CHNA: '5',
+  SPAN: '6',
+  PGSE: '7',
+  SWED: '8'
+};
+const forms = {
+  filecase: {
+    respondant: {
+      label: 'Respondant:',
+      value: '',
+      type: 'text',
+      placeholder: 'account_name',
+      text: 'Please input a valid TELOS account name'
+    },
+    claim_link: {
+      label: 'Claim file:',
+      placeholder: 'ipfs_link',
+      special: 'ipfs',
+      text: 'Please select a file to upload'
+    },
+    lang_codes: {
+      label: 'Language Codes:',
+      value: '',
+      special: 'languages',
+      text: 'Please select from the following language codes'
+    },
+  },
+  addclaim: {
+    claim_link: {
+      label: 'Claim file:',
+      placeholder: 'ipfs_link',
+      special: 'ipfs',
+      text: 'Please select a file to upload'
+    }
+  },
+  respondclaim: {
+    response_link: {
+      label: 'Response file:',
+      placeholder: 'ipfs_link',
+      special: 'ipfs',
+      text: 'Please select a file to upload'
+    }
+  },
+};
 
 class MembersModal extends Component {
 
   constructor(props) {
     super(props);
-
-    this.state = {};
-
-    this.languageCodes = {
-      ENGL: '0',
-      FRCH: '1',
-      GRMN: '2',
-      KREA: '3',
-      JAPN: '4',
-      CHNA: '5',
-      SPAN: '6',
-      PGSE: '7',
-      SWED: '8'
-    };
-    const forms = {
-      filecase: {
-        respondant: {
-          label: 'Respondant:',
-          value: '',
-          type: 'text',
-          placeholder: 'account_name',
-          text: 'Please input a valid TELOS account name'
-        },
-        claim_link: {
-          label: 'Claim file:',
-          placeholder: 'ipfs_link',
-          special: 'ipfs',
-          text: 'Please select a file to upload'
-        },
-        lang_codes: {
-          label: 'Language Codes:',
-          value: '',
-          special: 'languages',
-          text: 'Please select from the following language codes'
-        },
-      },
-      addclaim: {
-        claim_link: {
-          label: 'Claim file:',
-          placeholder: 'ipfs_link',
-          special: 'ipfs',
-          text: 'Please select a file to upload'
-        }
-      },
-      respondclaim: {
-        response_link: {
-          label: 'Response file:',
-          placeholder: 'ipfs_link',
-          special: 'ipfs',
-          text: 'Please select a file to upload'
-        }
-      },
-    };
-
-    /**
-     * Member Actions Form Builder
-     */
 
     this.formArrays = Object.keys(forms).reduce(
       (accForms, formName) => ({
@@ -90,13 +85,56 @@ class MembersModal extends Component {
       {}
     );
 
+    this.form = this.formArrays[this.props.actionName];
+
+    const defaultFormValues = this.form.reduce((acc, formElement) =>
+        ({
+          ...acc,
+          [formElement.id]: formElement.value || '',
+        }),
+      {}
+    );
+
+    this.state = {
+      formValues: defaultFormValues,
+    };
+
   }
 
-  inputChangedHandler(){
-
+  inputChangedHandler(formElementId) {
+    return event => {
+      this.setState({
+        formValues: {
+          ...this.state.formValues,
+          [formElementId]: event.target.value,
+        },
+      });
+    };
   }
 
-  handleSubmit(event, actionName) {
+  handleSubmit = () => {
+
+    const payload = {};
+    if(this.props.case) {
+      payload.case_id = this.props.case.case_id;
+    }
+    if(this.props.claim) {
+      payload.claim_id = this.props.claim.claim_id;
+    }
+
+    switch(this.props.actionName) {
+      case 'filecase': {
+        const caseData = {
+          ...payload,
+          ...this.state.formValues,
+        };
+        this.props.fileCase(caseData);
+        break;
+      }
+      default: {
+        throw new Error('Unknown action to handle');
+      }
+    }
 
   }
 
@@ -104,7 +142,11 @@ class MembersModal extends Component {
 
     switch(formElement.special) {
       case 'ipfs': {
-        return <IPFSInput/>;
+        return (
+          <IPFSInput
+            name={formElement.id}
+          />
+        );
       }
       case 'languages': {
         return (
@@ -113,8 +155,8 @@ class MembersModal extends Component {
             name="formElement.id"
             multiple
           >
-            {Object.keys(this.languageCodes).map(language =>
-              <option key={language} value={this.languageCodes[language]}>{language}</option>
+            {Object.keys(languageCodes).map(language =>
+              <option key={language} value={languageCodes[language]}>{language}</option>
             )}
           </Input>
         );
@@ -124,9 +166,9 @@ class MembersModal extends Component {
           <Input
             name={formElement.id}
             type={formElement.type}
-            value={formElement.value}
+            value={this.state.formValues[formElement.id]}
             placeholder={formElement.placeholder}
-            onChange={(event) => this.inputChangedHandler(event, this.props.actionName, formElement.id)}
+            onChange={this.inputChangedHandler(formElement.id)}
           />
         );
       }
@@ -135,11 +177,7 @@ class MembersModal extends Component {
   }
 
   renderAutoForm() {
-    const { actionName } = this.props;
-
-    const form = this.formArrays[actionName];
-
-    return form.map(formElement => (
+    return this.form.map(formElement => (
       <FormGroup key={formElement.id} row>
         <Label key={formElement.id} sm={4}>
           {formElement.label}
@@ -230,7 +268,7 @@ class MembersModal extends Component {
             <Col sm={10}>
               {this.getTitle()}
             </Col>
-            { this.props.case &&
+            {this.props.case &&
             <Col sm={2}>
               Case #{this.props.case.case_id}
             </Col>
@@ -268,7 +306,7 @@ class MembersModal extends Component {
 
       rendered.push(
         <ModalBody key="form">
-          <Form onSubmit={(event) => this.handleSubmit(event, actionName)}>
+          <Form onSubmit={this.handleSubmit}>
             {this.renderForm(actionName)}
             {this.state.loading && <Spinner className='submitSpinner' type='grow' color='primary' />}
           </Form>
@@ -277,7 +315,7 @@ class MembersModal extends Component {
       rendered.push(
         <ModalFooter key="footer">
           <Button color="secondary" onClick={this.props.cancel}>Cancel</Button>
-          <Button color='primary' onClick={(event) => this.handleSubmit(event, actionName)}>Submit</Button>
+          <Button color='primary' onClick={this.handleSubmit}>Submit</Button>
         </ModalFooter>
       );
 
@@ -287,7 +325,7 @@ class MembersModal extends Component {
       rendered.push(
         <ModalFooter key="footer">
           <Button color="info" onClick={this.props.cancel}>No</Button>
-          <Button color='danger' onClick={(event) => this.handleSubmit(event, actionName)}>Yes</Button>
+          <Button color='danger' onClick={this.handleSubmit}>Yes</Button>
         </ModalFooter>
       );
 
@@ -302,7 +340,7 @@ class MembersModal extends Component {
       rendered.push(
         <ModalFooter key="footer">
           <Button color="info" onClick={this.props.cancel}>Cancel</Button>
-          <Button color='success' onClick={(event) => this.handleSubmit(event, actionName)}>Deposit</Button>
+          <Button color='success' onClick={this.handleSubmit}>Deposit</Button>
         </ModalFooter>
       );
 
@@ -314,12 +352,21 @@ class MembersModal extends Component {
 
 }
 
+MembersModal.propTypes = {
+  actionName: PropTypes.string,
+  case: PropTypes.object,
+  claim: PropTypes.object,
+  cancel: PropTypes.func,
+  fileCase: PropTypes.func,
+};
+
 const mapStateToProps = state => ({
   case: CasesSelectors.getSelectedCase(state),
   claim: ClaimsSelectors.getSelectedClaim(state),
 });
 
 const mapDispatchToProps = {
+  fileCase: CasesActions.fileCase,
 };
 
 // Export a redux connected component
