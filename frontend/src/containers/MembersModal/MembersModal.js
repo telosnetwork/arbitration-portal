@@ -127,6 +127,7 @@ class MembersModal extends Component {
         const caseData = {
           ...payload,
           ...this.state.formValues,
+          lang_codes: [this.state.formValues.lang_codes || '0'] // TODO fix multiple selector
         };
         this.props.fileCase(caseData);
         break;
@@ -145,6 +146,7 @@ class MembersModal extends Component {
         return (
           <IPFSInput
             name={formElement.id}
+            onChange={this.inputChangedHandler(formElement.id)}
           />
         );
       }
@@ -154,6 +156,7 @@ class MembersModal extends Component {
             type="select"
             name="formElement.id"
             multiple
+            onChange={this.inputChangedHandler(formElement.id)}
           >
             {Object.keys(languageCodes).map(language =>
               <option key={language} value={languageCodes[language]}>{language}</option>

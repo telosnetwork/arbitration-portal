@@ -8,6 +8,7 @@ import { Modal, Table, Container, Row, Col, Button } from 'reactstrap';
 import { connect }               from 'react-redux';
 import { CasesActions, ClaimsActions } from 'business/actions';
 import { CasesSelectors } from 'business/selectors';
+import {AuthenticationSelectors} from "../../business/selectors";
 
 class MembersHome extends Component {
 
@@ -126,6 +127,15 @@ class MembersHome extends Component {
 
   render() {
 
+    if(!this.props.isLogin) {
+      return (
+        <Container>
+          <Row>
+            Please login first
+          </Row>
+        </Container>
+      );
+    }
     return (
       <Container>
 
@@ -162,6 +172,7 @@ class MembersHome extends Component {
 }
 
 const mapStateToProps = state => ({
+  isLogin: AuthenticationSelectors.isLogin(state),
   cases: CasesSelectors.getCases(state),
 });
 

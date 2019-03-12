@@ -19,6 +19,11 @@ class Login extends Component {
     };
   }
 
+  componentDidMount() {
+    // TODO remove this, just for dev
+    this.props.login();
+  }
+
   toggleModal = () => {
     this.setState(prevState => ({
       modal: !prevState.modal

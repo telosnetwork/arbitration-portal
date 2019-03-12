@@ -10,7 +10,7 @@ export function* fileCase({ caseData }) {
   const account = yield select(AuthenticationSelectors.account);
   console.log(caseData, account);
 
-  const claimant = account.account_name;
+  const claimant = account.name;
   const { claim_link, lang_codes, respondant } = caseData;
 
   const actionData = {
@@ -19,23 +19,24 @@ export function* fileCase({ caseData }) {
     lang_codes: lang_codes,
     respondant: respondant,
   };
-  console.log(actionData);
 
-  /*
-  let actions = yield this.eosio.makeAction(
+  const eosio = yield select(AuthenticationSelectors.eosio);
+
+  let actions = yield eosio.makeAction(
     process.env.REACT_APP_EOSIO_CONTRACT_ACCOUNT,
     'filecase',
     actionData,
   );
   console.log(actions);
-  let result = yield this.eosio.sendTx(actions);
+
+  let result = yield eosio.sendTx(actions);
   console.log('Results: ', result);
   if (result) {
     alert(`FileCase Successful`);
   } else {
     alert(`FileCase Unsuccessful`);
   }
-*/
+
 }
 export function* fetchCases() {
 
