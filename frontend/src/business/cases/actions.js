@@ -19,3 +19,10 @@ export function setSelectedCase(case_id) {
     case_id,
   }
 }
+
+export function fileCase(caseData) {
+  return {
+    type: ActionTypes.FILE_CASE,
+    caseData,
+  }
+}
