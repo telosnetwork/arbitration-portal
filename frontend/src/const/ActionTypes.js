@@ -15,6 +15,7 @@ export default {
   FETCH_CASES:          'FETCH_CASES',
   SET_SELECTED_CASE:    'SET_SELECTED_CASE',
   FILE_CASE:            'FILE_CASE',
+  ADD_CLAIM:            'ADD_CLAIM',
 
   // Claims
   SET_CLAIMS:        'SET_CLAIMS',

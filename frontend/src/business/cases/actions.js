@@ -26,3 +26,9 @@ export function fileCase(caseData) {
     caseData,
   }
 }
+export function addClaim(claimData) {
+  return {
+    type: ActionTypes.ADD_CLAIM,
+    claimData,
+  }
+}

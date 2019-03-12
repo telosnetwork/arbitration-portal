@@ -14,10 +14,10 @@ export function* fileCase({ caseData }) {
   const { claim_link, lang_codes, respondant } = caseData;
 
   const actionData = {
-    claimant:   claimant,
-    claim_link: claim_link,
-    lang_codes: lang_codes,
-    respondant: respondant,
+    claimant,
+    claim_link,
+    lang_codes,
+    respondant,
   };
 
   const eosio = yield select(AuthenticationSelectors.eosio);
@@ -38,6 +38,41 @@ export function* fileCase({ caseData }) {
   }
 
 }
+
+// TODO Factorize
+export function* addClaim({ claimData }) {
+
+  const account = yield select(AuthenticationSelectors.account);
+  console.log(claimData, account);
+
+  const claimant = account.name;
+  const { case_id, claim_link } = claimData;
+
+  const actionData = {
+    case_id,
+    claimant,
+    claim_link,
+  };
+
+  const eosio = yield select(AuthenticationSelectors.eosio);
+
+  let actions = yield eosio.makeAction(
+    process.env.REACT_APP_EOSIO_CONTRACT_ACCOUNT,
+    'addclaim',
+    actionData,
+  );
+  console.log(actions);
+
+  let result = yield eosio.sendTx(actions);
+  console.log('Results: ', result);
+  if (result) {
+    alert(`Addclaim Successful`);
+  } else {
+    alert(`Addclaim Unsuccessful`);
+  }
+
+}
+
 export function* fetchCases() {
 
   let cases = yield api.getCases();
@@ -49,5 +84,6 @@ export default function* casesSaga() {
 
   yield takeEvery(ActionTypes.FETCH_CASES, fetchCases);
   yield takeEvery(ActionTypes.FILE_CASE, fileCase);
+  yield takeEvery(ActionTypes.ADD_CLAIM, addClaim);
 
 }

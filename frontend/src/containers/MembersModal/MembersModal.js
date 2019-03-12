@@ -114,7 +114,10 @@ class MembersModal extends Component {
 
   handleSubmit = () => {
 
-    const payload = {};
+    const payload = {
+      ...this.state.formValues,
+    };
+
     if(this.props.case) {
       payload.case_id = this.props.case.case_id;
     }
@@ -126,10 +129,13 @@ class MembersModal extends Component {
       case 'filecase': {
         const caseData = {
           ...payload,
-          ...this.state.formValues,
           lang_codes: [this.state.formValues.lang_codes || '0'] // TODO fix multiple selector
         };
         this.props.fileCase(caseData);
+        break;
+      }
+      case 'addclaim': {
+        this.props.addClaim(payload);
         break;
       }
       default: {
@@ -370,6 +376,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = {
   fileCase: CasesActions.fileCase,
+  addClaim: CasesActions.addClaim,
 };
 
 // Export a redux connected component

@@ -44,10 +44,12 @@ class IPFSInput extends Component {
         console.log('Response: ', response);
         ipfsId = response[0].hash;
         console.log('IPFS ID: ' , ipfsId);
-        this.setState({added_file_hash: ipfsId, loading: false});
+        const fileUrl = `ipfs.io/ipfs/${ipfsId}`;
+
+        this.setState({added_file_hash: fileUrl, loading: false});
         this.props.onChange && this.props.onChange({
           target: {
-            value: ipfsId,
+            value: fileUrl,
           }
         })
       }).catch((err) => {
@@ -90,8 +92,8 @@ class IPFSInput extends Component {
       <div className='uploadForm'>
         {this.state.added_file_hash ?
           <div>
-            <a className="ipfs-url" href={'https://ipfs.io/ipfs/' + this.state.added_file_hash}>
-              https://ipfs.io/ipfs/{this.state.added_file_hash}
+            <a className="ipfs-url" href={'https://' + this.state.added_file_hash}>
+              {this.state.added_file_hash}
             </a>
             <Button>Remove</Button>
           </div>
