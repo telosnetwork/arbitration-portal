@@ -46,11 +46,6 @@ class MembersHome extends Component {
       });
     }
   }
-  onEditCasefile(casefile) {
-    return () => {
-      // TODO
-    }
-  }
   onReadyCasefile(casefile) {
     return () => {
       this.props.setSelectedCase(casefile.case_id);
@@ -93,6 +88,7 @@ class MembersHome extends Component {
         <td>
           {claim.claim_status === 'unread' && 'Unread'}
           {claim.claim_status === 'accepted' && 'Accepted'}
+          {claim.claim_status === 'dismissed' && 'Declined'}
         </td>
         <td>
           <Button color="info" onClick={this.onRespondClaim(casefile, claim)}>Respond</Button>
@@ -111,7 +107,6 @@ class MembersHome extends Component {
           {casefile.case_status}
         </td>
         <td>
-          <Button color="warning" onClick={this.onEditCasefile(casefile)}>Edit</Button>
           <Button color="danger" onClick={this.onDeleteCasefile(casefile)}>Delete</Button>
         </td>
       </tr>,

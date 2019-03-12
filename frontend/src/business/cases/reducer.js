@@ -13,6 +13,7 @@ const emptyCase = {
   required_langs:    null,
   unread_claims:     [],
   accepted_claims:   [],
+  dismiss_claims:   [],
   case_ruling:       ''
 };
 
@@ -28,7 +29,8 @@ function setCases(state, action) {
   caseList.forEach(casefile => {
     casefile.unread_claims.forEach(c => c.claim_status = 'unread');
     casefile.accepted_claims.forEach(c => c.claim_status = 'accepted');
-    casefile.claims = [].concat(casefile.unread_claims).concat(casefile.accepted_claims);
+    casefile.dismiss_claims.forEach(c => c.claim_status = 'dismissed');
+    casefile.claims = [].concat(casefile.unread_claims).concat(casefile.accepted_claims).concat(casefile.dismiss_claims);
   });
 
   return {
