@@ -8,7 +8,7 @@ import Case from '../../models/case.model';
  export const listCase = async (req, res) => {
     let case_id     = req.query.case_id;
     let case_status = req.query.case_status;
-    let claimant    = req.query.claimant;
+    let claimant    = req.query.member;
     let respondant  = req.query.respondant;
 
     try {
