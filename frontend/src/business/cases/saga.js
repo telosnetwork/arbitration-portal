@@ -5,6 +5,8 @@ import * as api     from 'utils/api-client';
 import * as actions from './actions';
 import { AuthenticationSelectors } from '../selectors';
 
+// TODO All this things should be done in a contract wrapper outside of the saga, and the saga should call them
+
 export function* sendAction({ action, actionData }) {
 
   const eosio = yield select(AuthenticationSelectors.eosio);

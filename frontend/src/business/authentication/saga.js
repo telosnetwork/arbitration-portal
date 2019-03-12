@@ -1,4 +1,4 @@
-import { put, takeEvery, select } from 'redux-saga/effects';
+import { put, takeEvery } from 'redux-saga/effects';
 import { ActionTypes }    from 'const';
 
 import ScatterBridge             from 'utils/scatterBridge';

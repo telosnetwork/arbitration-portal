@@ -114,6 +114,8 @@ class MembersModal extends Component {
 
   handleSubmit = () => {
 
+    // TODO handle loading and closing of the modal
+
     const payload = {
       ...this.state.formValues,
     };
