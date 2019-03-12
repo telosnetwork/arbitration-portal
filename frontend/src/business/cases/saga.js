@@ -5,26 +5,13 @@ import * as api     from 'utils/api-client';
 import * as actions from './actions';
 import { AuthenticationSelectors } from '../selectors';
 
-export function* fileCase({ caseData }) {
-
-  const account = yield select(AuthenticationSelectors.account);
-  console.log(caseData, account);
-
-  const claimant = account.name;
-  const { claim_link, lang_codes, respondant } = caseData;
-
-  const actionData = {
-    claimant,
-    claim_link,
-    lang_codes,
-    respondant,
-  };
+export function* sendAction({ action, actionData }) {
 
   const eosio = yield select(AuthenticationSelectors.eosio);
 
   let actions = yield eosio.makeAction(
     process.env.REACT_APP_EOSIO_CONTRACT_ACCOUNT,
-    'filecase',
+    action,
     actionData,
   );
   console.log(actions);
@@ -39,11 +26,28 @@ export function* fileCase({ caseData }) {
 
 }
 
+export function* fileCase({ caseData }) {
+
+  const account = yield select(AuthenticationSelectors.account);
+
+  const claimant = account.name;
+  const { claim_link, lang_codes, respondant } = caseData;
+
+  const actionData = {
+    claimant,
+    claim_link,
+    lang_codes,
+    respondant,
+  };
+
+  yield sendAction({ action: 'filecase', actionData })
+
+}
+
 // TODO Factorize
 export function* addClaim({ claimData }) {
 
   const account = yield select(AuthenticationSelectors.account);
-  console.log(claimData, account);
 
   const claimant = account.name;
   const { case_id, claim_link } = claimData;
@@ -54,22 +58,7 @@ export function* addClaim({ claimData }) {
     claim_link,
   };
 
-  const eosio = yield select(AuthenticationSelectors.eosio);
-
-  let actions = yield eosio.makeAction(
-    process.env.REACT_APP_EOSIO_CONTRACT_ACCOUNT,
-    'addclaim',
-    actionData,
-  );
-  console.log(actions);
-
-  let result = yield eosio.sendTx(actions);
-  console.log('Results: ', result);
-  if (result) {
-    alert(`Addclaim Successful`);
-  } else {
-    alert(`Addclaim Unsuccessful`);
-  }
+  yield sendAction({ action: 'addclaim', actionData })
 
 }
 
