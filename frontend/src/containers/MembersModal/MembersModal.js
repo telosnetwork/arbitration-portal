@@ -225,22 +225,31 @@ class MembersModal extends Component {
   renderHeader() {
     return [
       <ModalHeader key="header" toggle={this.props.toggle}>
-        {this.getTitle()}
+        <Container>
+          <Row>
+            <Col sm={10}>
+              {this.getTitle()}
+            </Col>
+            { this.props.case &&
+            <Col sm={2}>
+              Case #{this.props.case.case_id}
+            </Col>
+            }
+          </Row>
+        </Container>
       </ModalHeader>,
-      this.props.case &&
+      this.props.case && // TODO change styling of that
       <ModalBody key="information">
         <Container>
-          <Row><Col>
-            Case ID: {this.props.case.case_id}
-            <br/>
+          <Row>
             Case status: {this.props.case.case_status}
-          </Col></Row>
+          </Row>
           {this.props.claim &&
-          <Row><Col>
+          <Row>
             Claim ID: {this.props.claim.claim_id}
             <br/>
             Claim status: {this.props.claim.claim_id}
-          </Col></Row>
+          </Row>
           }
         </Container>
       </ModalBody>
