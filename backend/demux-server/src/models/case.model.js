@@ -63,8 +63,14 @@ try {
             type: ClaimSchema
         }],
         accepted_claims: [{
-            type:    Number,
-            default: 0
+            type: ClaimSchema
+        }],
+        // accepted_claims: [{
+        //     type:    Number,
+        //     default: 0
+        // }],
+        dismiss_claims: [{
+            type: ClaimSchema
         }],
         case_ruling: {
             type:    String,
