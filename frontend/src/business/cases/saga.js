@@ -11,14 +11,14 @@ export function* sendAction({ action, actionData }) {
 
   const eosio = yield select(AuthenticationSelectors.eosio);
 
-  let actions = yield eosio.makeAction(
+  let actionObject = yield eosio.makeAction(
     process.env.REACT_APP_EOSIO_CONTRACT_ACCOUNT,
     action,
     actionData,
   );
-  console.log(actions);
+  console.log(actionObject);
 
-  let result = yield eosio.sendTx(actions);
+  let result = yield eosio.sendTx(actionObject);
   console.log('Results: ', result);
   if (result) {
     alert(`FileCase Successful`);

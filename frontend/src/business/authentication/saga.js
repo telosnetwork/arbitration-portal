@@ -10,9 +10,7 @@ export function* login() {
   const appName = process.env.REACT_APP_NAME;
   const network = {
     blockchain: `${process.env.REACT_APP_BLOCKCHAIN}`,
-    protocol:   `${process.env.REACT_APP_PROTOCOL}`,
-    host:       `${process.env.REACT_APP_HOST}`,
-    port:       `${process.env.REACT_APP_PORT}`,
+    node_uri:   `${process.env.REACT_APP_NODE_URI}`,
     chainId:    `${process.env.REACT_APP_CHAINID}`
   };
   const eosio = new ScatterBridge(network, appName);
