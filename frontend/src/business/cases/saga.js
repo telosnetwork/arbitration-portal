@@ -139,6 +139,21 @@ export function* fetchCases() {
 
 }
 
+// When any of this websocket message will be received, all the cases will be updated
+// TODO make a custom behaviour for certain.
+// For now it works because it just refetches everything and we get a clean state
+// Typically we should filter actions that corresponds to us (events are sent to everyone, so if someone else update, we update all but our cases didnt change)
+const updatingActions = [
+  'fileCaseAction',
+  'shredCaseAction',
+  'deleteCaseAction',
+  'advanceCaseAction',
+  'readyCaseAction',
+  'addClaimAction',
+  'acceptClaimAction',
+  'removeClaimAction',
+];
+
 function initWebsocket() {
   return eventChannel(emitter => {
 
@@ -157,8 +172,7 @@ function initWebsocket() {
 
     }
 
-    listenAction('fileCaseAction');
-    listenAction('addClaimAction');
+    updatingActions.forEach(listenAction)
 
     return () => {
       client.off();
@@ -169,13 +183,10 @@ function initWebsocket() {
 
 export function* handleWebsocket({ payload }) {
 
-  const { actionName, data } = payload;
+  const { actionName } = payload;
 
-  switch(actionName) {
-    case 'addClaimAction':
-    case 'fileCaseAction': {
-      yield put(actions.fetchCases());
-    }
+  if(updatingActions.indexOf(actionName) !== -1) {
+    yield put(actions.fetchCases());
   }
 
 }
