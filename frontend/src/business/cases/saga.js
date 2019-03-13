@@ -6,10 +6,22 @@ import * as api     from 'utils/api-client';
 import IoClient from 'utils/io-client';
 import * as actions from './actions';
 import { AuthenticationSelectors } from '../selectors';
+import { ClaimsActions } from '../actions';
 
 // TODO All this things should be done in a contract wrapper outside of the saga, and the saga should call them
 
+export function* finishAction() {
+
+  yield put(actions.setMemberAction(null));
+  yield put(actions.setMemberActionLoading(false));
+  yield put(actions.setSelectedCase(null));
+  yield put(ClaimsActions.setSelectedClaim(null));
+
+}
+
 export function* sendAction({ action, actionData }) {
+
+  yield put(actions.setMemberActionLoading(true));
 
   const eosio = yield select(AuthenticationSelectors.eosio);
 
@@ -27,6 +39,8 @@ export function* sendAction({ action, actionData }) {
   } else {
     alert(`FileCase Unsuccessful`);
   }
+
+  yield finishAction();
 
 }
 

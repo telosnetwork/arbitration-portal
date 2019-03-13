@@ -73,3 +73,10 @@ export function setMemberAction(actionName) {
   }
 }
 
+export function setMemberActionLoading(loading) {
+  return {
+    type: ActionTypes.SET_MEMBER_ACTION_LOADING,
+    loading: !!loading,
+  }
+}
+

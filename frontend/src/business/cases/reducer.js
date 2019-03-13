@@ -22,6 +22,7 @@ const initialState = {
   respondantCases: [],
   selectedCaseId: null,
   memberAction: null, // TODO Move somewhere else
+  memberActionLoading: false, // TODO Move somewhere else
 };
 
 function setClaimantCases(state, action) {
@@ -69,12 +70,16 @@ function setSelectedCase(state, action) {
 }
 
 function setMemberAction(state, { actionName }) {
-
   return {
     ...state,
     memberAction: actionName,
   };
-
+}
+function setMemberActionLoading(state, { loading }) {
+  return {
+    ...state,
+    memberActionLoading: loading,
+  };
 }
 
 export const reducer = createReducer(initialState, {
@@ -82,4 +87,5 @@ export const reducer = createReducer(initialState, {
   [ActionTypes.SET_RESPONDANT_CASES]: setRespondantCases,
   [ActionTypes.SET_SELECTED_CASE]: setSelectedCase,
   [ActionTypes.SET_MEMBER_ACTION]: setMemberAction,
+  [ActionTypes.SET_MEMBER_ACTION_LOADING]: setMemberActionLoading,
 });

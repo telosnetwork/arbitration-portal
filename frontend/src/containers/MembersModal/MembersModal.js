@@ -332,6 +332,19 @@ class MembersModal extends Component {
     const { actionName } = this.props;
     if(!actionName) return null;
 
+    if(this.props.memberActionLoading) {
+      return (
+        <div>
+          <ModalHeader>
+            Sending transaction ...
+          </ModalHeader>
+          <ModalBody className="loading-body">
+            <Spinner className="spinner" />
+          </ModalBody>
+        </div>
+      );
+    }
+
     const rendered = [];
     rendered.push(...this.renderHeader());
 
@@ -395,6 +408,7 @@ MembersModal.propTypes = {
 
 const mapStateToProps = state => ({
   case: CasesSelectors.getSelectedCase(state),
+  memberActionLoading: CasesSelectors.memberActionLoading(state),
   claim: ClaimsSelectors.getSelectedClaim(state),
 });
 
