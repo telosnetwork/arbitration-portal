@@ -8,10 +8,12 @@ import { Modal, Table, Container, Row, Col, Button } from 'reactstrap';
 import { connect }               from 'react-redux';
 import { CasesActions, ClaimsActions } from 'business/actions';
 import { CasesSelectors } from 'business/selectors';
+import {AuthenticationSelectors} from "../../business/selectors";
 
 class MembersHome extends Component {
 
   constructor(props) {
+
     super(props);
 
     this.state = {
@@ -36,14 +38,13 @@ class MembersHome extends Component {
       });
     }
   }
-  onRespondCasefile(casefile) {
+  onRespondClaim(casefile, claim) {
     return () => {
-      // TODO
-    }
-  }
-  onEditCasefile(casefile) {
-    return () => {
-      // TODO
+      this.props.setSelectedCase(casefile.case_id);
+      this.props.setSelectedClaim(claim.claim_id);
+      this.setState({
+        memberAction: 'respondclaim',
+      });
     }
   }
   onReadyCasefile(casefile) {
@@ -88,8 +89,10 @@ class MembersHome extends Component {
         <td>
           {claim.claim_status === 'unread' && 'Unread'}
           {claim.claim_status === 'accepted' && 'Accepted'}
+          {claim.claim_status === 'dismissed' && 'Declined'}
         </td>
         <td>
+          <Button color="info" onClick={this.onRespondClaim(casefile, claim)}>Respond</Button>
           {claim.claim_status === 'unread' && <Button color="danger" onClick={this.onDeleteClaim(casefile, claim)}>Delete</Button>}
         </td>
       </tr>
@@ -105,8 +108,6 @@ class MembersHome extends Component {
           {casefile.case_status}
         </td>
         <td>
-          <Button color="info" onClick={this.onRespondCasefile(casefile)}>Respond</Button>
-          <Button color="warning" onClick={this.onEditCasefile(casefile)}>Edit</Button>
           <Button color="danger" onClick={this.onDeleteCasefile(casefile)}>Delete</Button>
         </td>
       </tr>,
@@ -126,6 +127,15 @@ class MembersHome extends Component {
 
   render() {
 
+    if(!this.props.isLogin) {
+      return (
+        <Container>
+          <Row>
+            Please login first
+          </Row>
+        </Container>
+      );
+    }
     return (
       <Container>
 
@@ -162,6 +172,7 @@ class MembersHome extends Component {
 }
 
 const mapStateToProps = state => ({
+  isLogin: AuthenticationSelectors.isLogin(state),
   cases: CasesSelectors.getCases(state),
 });
 

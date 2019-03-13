@@ -1,131 +1,70 @@
-import React, { Component }      from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 
 // Components
-import IPFSInput                  from '../../components/IPFSInput';
-import { Container, Row, ModalHeader, ModalBody, ModalFooter, Col, Button, Spinner, Form, FormGroup, Label, Input, FormText  } from 'reactstrap';
+import IPFSInput from '../../components/IPFSInput';
+import { Container, Row, ModalHeader, ModalBody, ModalFooter, Col, Button, Spinner, Form, FormGroup, Label, Input, FormText } from 'reactstrap';
 
 // Redux
 import { connect }               from 'react-redux';
+import { CasesActions } from 'business/actions';
 import { CasesSelectors, ClaimsSelectors } from 'business/selectors';
 
+const languageCodes = {
+  ENGL: '0',
+  FRCH: '1',
+  GRMN: '2',
+  KREA: '3',
+  JAPN: '4',
+  CHNA: '5',
+  SPAN: '6',
+  PGSE: '7',
+  SWED: '8'
+};
+const forms = {
+  filecase: {
+    respondant: {
+      label: 'Respondant:',
+      value: '',
+      type: 'text',
+      placeholder: 'account_name',
+      text: 'Please input a valid TELOS account name'
+    },
+    claim_link: {
+      label: 'Claim file:',
+      placeholder: 'ipfs_link',
+      special: 'ipfs',
+      text: 'Please select a file to upload'
+    },
+    lang_codes: {
+      label: 'Language Codes:',
+      value: '',
+      special: 'languages',
+      text: 'Please select from the following language codes'
+    },
+  },
+  addclaim: {
+    claim_link: {
+      label: 'Claim file:',
+      placeholder: 'ipfs_link',
+      special: 'ipfs',
+      text: 'Please select a file to upload'
+    }
+  },
+  respondclaim: {
+    response_link: {
+      label: 'Response file:',
+      placeholder: 'ipfs_link',
+      special: 'ipfs',
+      text: 'Please select a file to upload'
+    }
+  },
+};
 
 class MembersModal extends Component {
 
   constructor(props) {
     super(props);
-
-    this.state = {};
-
-    this.languageCodes = {
-      ENGL: '0',
-      FRCH: '1',
-      GRMN: '2',
-      KREA: '3',
-      JAPN: '4',
-      CHNA: '5',
-      SPAN: '6',
-      PGSE: '7',
-      SWED: '8'
-    };
-    const forms = {
-      withdraw: {
-        owner: {
-          label: 'Owner:',
-          value: '',
-          type: 'text',
-          placeholder: 'account_name',
-          text: 'Please input a valid TELOS account name'
-        }
-      },
-      filecase: {
-        respondant: {
-          label: 'Respondant:',
-          value: '',
-          type: 'text',
-          placeholder: 'account_name',
-          text: 'Please input a valid TELOS account name'
-        },
-        claim_link: {
-          label: 'Claim Link:',
-          placeholder: 'ipfs_link',
-          special: 'ipfs',
-          text: 'Please select a file to upload'
-        },
-        lang_codes: {
-          label: 'Language Codes:',
-          value: '',
-          special: 'languages',
-          text: 'Please select from the following language codes'
-        },
-      },
-      addclaim: {
-        claim_link: {
-          label: 'Claim Link:',
-          placeholder: 'ipfs_link',
-          special: 'ipfs',
-          text: 'Please select a file to upload'
-        }
-      },
-      removeclaim: {
-        case_id: {
-          label: 'Case ID:',
-          value: '',
-          type: 'number',
-          placeholder: '0',
-          text: 'Please input a valid case ID'
-        },
-        claimant: {
-          label: 'Claimant:',
-          value: '',
-          type: 'text',
-          placeholder: 'account_name',
-          text: 'Please input a valid TELOS account name'
-        },
-        claim_hash: {
-          label: 'Claim Hash:',
-          value: '',
-          type: 'text',
-          placeholder: 'ipfs_link',
-          text: 'Please input a valid IPFS link'
-        }
-      },
-      shredcase: {
-        case_id: {
-          label: 'Case ID:',
-          value: '',
-          type: 'number',
-          placeholder: '0',
-          text: 'Please input a valid case ID'
-        },
-        claimant: {
-          label: 'Claimant:',
-          value: '',
-          type: 'text',
-          placeholder: 'account_name',
-          text: 'Please input a valid TELOS account name'
-        },
-      },
-      readycase: {
-        case_id: {
-          label: 'Case ID:',
-          value: '',
-          type: 'number',
-          placeholder: '0',
-          text: 'Please input a valid case ID'
-        },
-        claimant: {
-          label: 'Claimant:',
-          value: '',
-          type: 'text',
-          placeholder: 'account_name',
-          text: 'Please input a valid TELOS account name'
-        },
-      }
-    };
-
-    /**
-     * Member Actions Form Builder
-     */
 
     this.formArrays = Object.keys(forms).reduce(
       (accForms, formName) => ({
@@ -146,13 +85,85 @@ class MembersModal extends Component {
       {}
     );
 
+    this.form = this.formArrays[this.props.actionName];
+
+    if(this.form) {
+
+      const defaultFormValues = this.form.reduce((acc, formElement) =>
+          ({
+            ...acc,
+            [formElement.id]: formElement.value || '',
+          }),
+        {}
+      );
+
+      this.state = {
+        formValues: defaultFormValues,
+      };
+
+    }
+
   }
 
-  inputChangedHandler(){
-
+  inputChangedHandler(formElementId) {
+    return event => {
+      this.setState({
+        formValues: {
+          ...this.state.formValues,
+          [formElementId]: event.target.value,
+        },
+      });
+    };
   }
 
-  handleSubmit(event, actionName) {
+  handleSubmit = () => {
+
+    // TODO handle loading and closing of the modal
+
+    const payload = {
+      ...this.state.formValues,
+    };
+
+    if(this.props.case) {
+      payload.case_id = this.props.case.case_id;
+    }
+    if(this.props.claim) {
+      payload.claim_id = this.props.claim.claim_id;
+    }
+
+    switch(this.props.actionName) {
+      case 'filecase': {
+        const caseData = {
+          ...payload,
+          lang_codes: [this.state.formValues.lang_codes || '0'] // TODO fix multiple selector
+        };
+        this.props.fileCase(caseData);
+        break;
+      }
+      case 'addclaim': {
+        this.props.addClaim(payload);
+        break;
+      }
+      case 'deletecase': {
+        this.props.deleteCase(payload.case_id);
+        break;
+      }
+      case 'deleteclaim': {
+        this.props.deleteClaim(payload.case_id, payload.claim_id);
+        break;
+      }
+      case 'readycase': {
+        this.props.readyCase(payload.case_id);
+        break;
+      }
+      case 'respondclaim': {
+        this.props.respondClaim(payload);
+        break;
+      }
+      default: {
+        throw new Error('Unknown action to handle');
+      }
+    }
 
   }
 
@@ -160,7 +171,12 @@ class MembersModal extends Component {
 
     switch(formElement.special) {
       case 'ipfs': {
-        return <IPFSInput/>;
+        return (
+          <IPFSInput
+            name={formElement.id}
+            onChange={this.inputChangedHandler(formElement.id)}
+          />
+        );
       }
       case 'languages': {
         return (
@@ -168,9 +184,10 @@ class MembersModal extends Component {
             type="select"
             name="formElement.id"
             multiple
+            onChange={this.inputChangedHandler(formElement.id)}
           >
-            {Object.keys(this.languageCodes).map(language =>
-              <option key={language} value={this.languageCodes[language]}>{language}</option>
+            {Object.keys(languageCodes).map(language =>
+              <option key={language} value={languageCodes[language]}>{language}</option>
             )}
           </Input>
         );
@@ -178,12 +195,12 @@ class MembersModal extends Component {
       default: {
         return (
           <Input
-          name={formElement.id}
-          type={formElement.type}
-          value={formElement.value}
-          placeholder={formElement.placeholder}
-          onChange={(event) => this.inputChangedHandler(event, this.props.actionName, formElement.id)}
-        />
+            name={formElement.id}
+            type={formElement.type}
+            value={this.state.formValues[formElement.id]}
+            placeholder={formElement.placeholder}
+            onChange={this.inputChangedHandler(formElement.id)}
+          />
         );
       }
     }
@@ -191,11 +208,7 @@ class MembersModal extends Component {
   }
 
   renderAutoForm() {
-    const { actionName } = this.props;
-
-    const form = this.formArrays[actionName];
-
-    return form.map(formElement => (
+    return this.form.map(formElement => (
       <FormGroup key={formElement.id} row>
         <Label key={formElement.id} sm={4}>
           {formElement.label}
@@ -226,6 +239,12 @@ class MembersModal extends Component {
     ];
   }
 
+  renderRespondClaim() {
+    return [
+      this.renderAutoForm(),
+    ];
+  }
+
   renderForm(actionName) {
     switch (actionName) {
       case 'filecase': {
@@ -236,6 +255,9 @@ class MembersModal extends Component {
       }
       case 'deletecase': {
         return this.renderDeleteCase();
+      }
+      case 'respondclaim': {
+        return this.renderRespondClaim();
       }
       default: {
         return null;
@@ -260,10 +282,47 @@ class MembersModal extends Component {
       case 'readycase': {
         return 'Ready case';
       }
+      case 'respondclaim': {
+        return 'Respond to claim';
+      }
       default: {
         return '';
       }
     }
+  }
+
+  renderHeader() {
+    return [
+      <ModalHeader key="header" toggle={this.props.toggle}>
+        <Container>
+          <Row>
+            <Col sm={10}>
+              {this.getTitle()}
+            </Col>
+            {this.props.case &&
+            <Col sm={2}>
+              Case #{this.props.case.case_id}
+            </Col>
+            }
+          </Row>
+        </Container>
+      </ModalHeader>,
+      this.props.case && // TODO change styling of that
+      <ModalBody key="information">
+        <Container>
+          <Row>
+            Case status: {this.props.case.case_status}
+          </Row>
+          {this.props.claim &&
+          <Row>
+            Claim ID: {this.props.claim.claim_id}
+            <br/>
+            Claim status: {this.props.claim.claim_id}
+          </Row>
+          }
+        </Container>
+      </ModalBody>
+    ];
   }
 
   render() {
@@ -271,70 +330,66 @@ class MembersModal extends Component {
     const { actionName } = this.props;
     if(!actionName) return null;
 
-    if(actionName === 'filecase' || actionName === 'addclaim' || actionName === 'respond') {
-      return (
-        <div>
-          <ModalHeader toggle={this.props.toggle}>{this.getTitle()}</ModalHeader>
-          <ModalBody>
-            <Form onSubmit={(event) => this.handleSubmit(event, actionName)}>
-              {this.renderForm(actionName)}
-              {this.state.loading && <Spinner className='submitSpinner' type='grow' color='primary' />}
-            </Form>
-          </ModalBody>
-          <ModalFooter>
-            <Button color="secondary" onClick={this.props.cancel}>Cancel</Button>
-            <Button color='primary' onClick={(event) => this.handleSubmit(event, actionName)}>Submit</Button>
-          </ModalFooter>
-        </div>
+    const rendered = [];
+    rendered.push(...this.renderHeader());
+
+    if(actionName === 'filecase' || actionName === 'addclaim' || actionName === 'respondclaim') {
+
+      rendered.push(
+        <ModalBody key="form">
+          <Form onSubmit={this.handleSubmit}>
+            {this.renderForm(actionName)}
+            {this.state.loading && <Spinner className='submitSpinner' type='grow' color='primary' />}
+          </Form>
+        </ModalBody>
       );
+      rendered.push(
+        <ModalFooter key="footer">
+          <Button color="secondary" onClick={this.props.cancel}>Cancel</Button>
+          <Button color='primary' onClick={this.handleSubmit}>Submit</Button>
+        </ModalFooter>
+      );
+
     }
     else if (actionName === 'deletecase' || actionName === 'deleteclaim') {
-      return (
-        <div>
-          <ModalHeader toggle={this.props.toggle}>{this.getTitle()}</ModalHeader>
-          <ModalBody>
-            <Container>
-              <Row><Col>
-                Case ID: {this.props.case.case_id}
-                <br/>
-                Case status: {this.props.case.case_status}
-              </Col></Row>
-              {actionName === 'deleteclaim' &&
-              <Row><Col>
-                Claim ID: {this.props.claim.claim_id}
-                <br/>
-                Claim status: {this.props.claim.claim_id}
-              </Col></Row>
-              }
-            </Container>
-          </ModalBody>
-          <ModalFooter>
-            <Button color="info" onClick={this.props.cancel}>No</Button>
-            <Button color='danger' onClick={(event) => this.handleSubmit(event, actionName)}>Yes</Button>
-          </ModalFooter>
-        </div>
+
+      rendered.push(
+        <ModalFooter key="footer">
+          <Button color="info" onClick={this.props.cancel}>No</Button>
+          <Button color='danger' onClick={this.handleSubmit}>Yes</Button>
+        </ModalFooter>
       );
+
     }
     else if (actionName === 'readycase') {
-      return (
-        <div>
-          <ModalHeader toggle={this.props.toggle}>{this.getTitle()}</ModalHeader>
-          <ModalBody>
-            In order to ready the case, you need to make a deposit of 100 TLOS.
-          </ModalBody>
-          <ModalFooter>
-            <Button color="info" onClick={this.props.cancel}>Cancel</Button>
-            <Button color='success' onClick={(event) => this.handleSubmit(event, actionName)}>Deposit</Button>
-          </ModalFooter>
-        </div>
+
+      rendered.push(
+        <ModalBody key="description">
+          In order to ready the case, you need to make a deposit of 100 TLOS.
+        </ModalBody>
       );
+      rendered.push(
+        <ModalFooter key="footer">
+          <Button color="info" onClick={this.props.cancel}>Cancel</Button>
+          <Button color='success' onClick={this.handleSubmit}>Deposit</Button>
+        </ModalFooter>
+      );
+
     }
-    else {
-      return null;
-    }
+
+    return rendered;
+
   }
 
 }
+
+MembersModal.propTypes = {
+  actionName: PropTypes.string,
+  case: PropTypes.object,
+  claim: PropTypes.object,
+  cancel: PropTypes.func,
+  fileCase: PropTypes.func,
+};
 
 const mapStateToProps = state => ({
   case: CasesSelectors.getSelectedCase(state),
@@ -342,6 +397,12 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = {
+  fileCase: CasesActions.fileCase,
+  addClaim: CasesActions.addClaim,
+  deleteCase: CasesActions.deleteCase,
+  deleteClaim: CasesActions.deleteClaim,
+  readyCase: CasesActions.readyCase,
+  respondClaim: CasesActions.respondClaim,
 };
 
 // Export a redux connected component

@@ -1,4 +1,5 @@
 import React, { Component }        from 'react';
+import PropTypes from 'prop-types';
 import ipfsClient                  from 'ipfs-http-client';
 
 // Create a Stream from a File which enables uploads of large files without allocation mem multiple times
@@ -43,7 +44,14 @@ class IPFSInput extends Component {
         console.log('Response: ', response);
         ipfsId = response[0].hash;
         console.log('IPFS ID: ' , ipfsId);
-        this.setState({added_file_hash: ipfsId, loading: false});
+        const fileUrl = `ipfs.io/ipfs/${ipfsId}`;
+
+        this.setState({added_file_hash: fileUrl, loading: false});
+        this.props.onChange && this.props.onChange({
+          target: {
+            value: fileUrl,
+          }
+        })
       }).catch((err) => {
       console.error(err);
     });
@@ -84,8 +92,8 @@ class IPFSInput extends Component {
       <div className='uploadForm'>
         {this.state.added_file_hash ?
           <div>
-            <a className="ipfs-url" href={'https://ipfs.io/ipfs/' + this.state.added_file_hash}>
-              https://ipfs.io/ipfs/{this.state.added_file_hash}
+            <a className="ipfs-url" href={'https://' + this.state.added_file_hash}>
+              {this.state.added_file_hash}
             </a>
             <Button>Remove</Button>
           </div>
@@ -99,5 +107,9 @@ class IPFSInput extends Component {
     );
   }
 }
+
+IPFSInput.propTypes = {
+  onChange: PropTypes.func,
+};
 
 export default IPFSInput;

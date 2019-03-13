@@ -1,4 +1,4 @@
-import { put, takeEvery } from 'redux-saga/effect';
+import { put, takeEvery } from 'redux-saga/effects';
 import { ActionTypes }    from 'const';
 
 import * as api     from 'utils/api-client';
@@ -11,8 +11,8 @@ export function* fetchClaims() {
 
 }
 
-export default function* usersSaga() {
+export default function* claimsSaga() {
 
-    yield takeEvery(ActionTypes.FETCH_CLAIMS, fetchClaims);
+  yield takeEvery(ActionTypes.FETCH_CLAIMS, fetchClaims);
 
 }

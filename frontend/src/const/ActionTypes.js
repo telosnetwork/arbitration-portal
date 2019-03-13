@@ -3,6 +3,8 @@
  */
 
 export default {
+
+  LOGIN:                'LOGIN',
   SET_BALANCES:         'SET_BALANCES',
   SET_JOINEDCASES:      'SET_JOINEDCASES',
   SET_TRANSFERS:        'SET_TRANSFERS',
@@ -12,7 +14,13 @@ export default {
   SET_CASES:            'SET_CASES',
   FETCH_CASES:          'FETCH_CASES',
   SET_SELECTED_CASE:    'SET_SELECTED_CASE',
-  
+  FILE_CASE:            'FILE_CASE',
+  DELETE_CASE:          'DELETE_CASE',
+  ADD_CLAIM:            'ADD_CLAIM',
+  DELETE_CLAIM:         'DELETE_CLAIM',
+  READY_CASE:           'READY_CASE',
+  RESPOND_CLAIM:           'RESPOND_CLAIM',
+
   // Claims
   SET_CLAIMS:        'SET_CLAIMS',
   FETCH_CLAIMS:      'FETCH_CLAIMS',

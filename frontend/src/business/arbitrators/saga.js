@@ -11,7 +11,7 @@ export function* fetchArbitrators() {
 
 }
 
-export default function* usersSaga() {
+export default function* arbitratorsSaga() {
 
   yield takeEvery(ActionTypes.FETCH_ARBITRATORS, fetchArbitrators);
 
