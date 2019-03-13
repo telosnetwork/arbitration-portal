@@ -2,7 +2,7 @@ import React, { Component }      from 'react';
 
 // Components
 import MembersModal from  '../MembersModal';
-import { Modal, Table, Container, Row, Col, Button } from 'reactstrap';
+import { Jumbotron, Modal, Table, Container, Row, Col, Button } from 'reactstrap';
 
 // Redux
 import { connect }               from 'react-redux';
@@ -131,7 +131,9 @@ class MembersHome extends Component {
       return (
         <Container>
           <Row>
+            <Col xs="12">
             Please login first
+            </Col>
           </Row>
         </Container>
       );
@@ -139,24 +141,26 @@ class MembersHome extends Component {
     return (
       <Container>
 
-        <Row>
-          <Col>
-            <Button color="primary" onClick={this.onNewCase()}>New case</Button>
-          </Col>
-        </Row>
+        <Jumbotron className="members-home-jumbo">
 
-        <Table hover>
-          <thead>
-          <tr>
-            <th sm="4">Case ID</th>
-            <th sm="4">Status</th>
-            <th sm="4">Actions</th>
-          </tr>
-          </thead>
-          <tbody>
-          {this.props.cases.map(this.renderCase.bind(this))}
-          </tbody>
-        </Table>
+          <Row className="top-actions">
+            <Button color="primary" onClick={this.onNewCase()} className="new-case-btn">New case</Button>
+          </Row>
+
+          <Table hover>
+            <thead>
+            <tr>
+              <th sm="4">Case ID</th>
+              <th sm="4">Status</th>
+              <th sm="4">Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            {this.props.cases.map(this.renderCase.bind(this))}
+            </tbody>
+          </Table>
+        </Jumbotron>
+
 
         <Modal
           isOpen={!!this.state.memberAction}
