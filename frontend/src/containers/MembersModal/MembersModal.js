@@ -116,55 +116,57 @@ class MembersModal extends Component {
     };
   }
 
-  handleSubmit = () => {
+  handleSubmit() {
+    return () => {
 
-    // TODO handle loading and closing of the modal
+      // TODO handle loading and closing of the modal
 
-    const payload = {
-      ...this.state.formValues,
+      const payload = {
+        ...this.state.formValues,
+      };
+
+      if (this.props.case) {
+        payload.case_id = this.props.case.case_id;
+      }
+      if (this.props.claim) {
+        payload.claim_id = this.props.claim.claim_id;
+      }
+
+      switch (this.props.actionName) {
+        case 'filecase': {
+          const caseData = {
+            ...payload,
+            lang_codes: [this.state.formValues.lang_codes || '0'] // TODO fix multiple selector
+          };
+          this.props.fileCase(caseData);
+          break;
+        }
+        case 'addclaim': {
+          this.props.addClaim(payload);
+          break;
+        }
+        case 'deletecase': {
+          this.props.deleteCase(payload.case_id);
+          break;
+        }
+        case 'deleteclaim': {
+          this.props.deleteClaim(payload.case_id, payload.claim_id);
+          break;
+        }
+        case 'readycase': {
+          this.props.readyCase(payload.case_id);
+          break;
+        }
+        case 'respondclaim': {
+          this.props.respondClaim(payload);
+          break;
+        }
+        default: {
+          throw new Error('Unknown action to handle');
+        }
+      }
+
     };
-
-    if(this.props.case) {
-      payload.case_id = this.props.case.case_id;
-    }
-    if(this.props.claim) {
-      payload.claim_id = this.props.claim.claim_id;
-    }
-
-    switch(this.props.actionName) {
-      case 'filecase': {
-        const caseData = {
-          ...payload,
-          lang_codes: [this.state.formValues.lang_codes || '0'] // TODO fix multiple selector
-        };
-        this.props.fileCase(caseData);
-        break;
-      }
-      case 'addclaim': {
-        this.props.addClaim(payload);
-        break;
-      }
-      case 'deletecase': {
-        this.props.deleteCase(payload.case_id);
-        break;
-      }
-      case 'deleteclaim': {
-        this.props.deleteClaim(payload.case_id, payload.claim_id);
-        break;
-      }
-      case 'readycase': {
-        this.props.readyCase(payload.case_id);
-        break;
-      }
-      case 'respondclaim': {
-        this.props.respondClaim(payload);
-        break;
-      }
-      default: {
-        throw new Error('Unknown action to handle');
-      }
-    }
-
   }
 
   renderAutoInput(formElement) {
@@ -337,7 +339,7 @@ class MembersModal extends Component {
 
       rendered.push(
         <ModalBody key="form">
-          <Form onSubmit={this.handleSubmit}>
+          <Form onSubmit={this.handleSubmit()}>
             {this.renderForm(actionName)}
             {this.state.loading && <Spinner className='submitSpinner' type='grow' color='primary' />}
           </Form>
@@ -346,7 +348,7 @@ class MembersModal extends Component {
       rendered.push(
         <ModalFooter key="footer">
           <Button color="secondary" onClick={this.props.cancel}>Cancel</Button>
-          <Button color='primary' onClick={this.handleSubmit}>Submit</Button>
+          <Button color='primary' onClick={this.handleSubmit()}>Submit</Button>
         </ModalFooter>
       );
 
@@ -356,7 +358,7 @@ class MembersModal extends Component {
       rendered.push(
         <ModalFooter key="footer">
           <Button color="info" onClick={this.props.cancel}>No</Button>
-          <Button color='danger' onClick={this.handleSubmit}>Yes</Button>
+          <Button color='danger' onClick={this.handleSubmit()}>Yes</Button>
         </ModalFooter>
       );
 
@@ -371,7 +373,7 @@ class MembersModal extends Component {
       rendered.push(
         <ModalFooter key="footer">
           <Button color="info" onClick={this.props.cancel}>Cancel</Button>
-          <Button color='success' onClick={this.handleSubmit}>Deposit</Button>
+          <Button color='success' onClick={this.handleSubmit()}>Deposit</Button>
         </ModalFooter>
       );
 

@@ -1,7 +1,9 @@
-import { put, takeEvery, select } from 'redux-saga/effects';
+import { call, take, put, takeEvery, select } from 'redux-saga/effects';
+import { eventChannel } from 'redux-saga';
 import { ActionTypes }    from 'const';
 
 import * as api     from 'utils/api-client';
+import IoClient from 'utils/io-client';
 import * as actions from './actions';
 import { AuthenticationSelectors } from '../selectors';
 
@@ -137,6 +139,58 @@ export function* fetchCases() {
 
 }
 
+function initWebsocket() {
+  return eventChannel(emitter => {
+
+    const client = new IoClient();
+
+    function listenAction(actionName) {
+
+      client.onMessage(actionName, data => {
+        console.log('received message', actionName, data);
+        const payload = {
+          actionName,
+          data,
+        };
+        emitter({ type: 'HANDLE_WEBSOCKET', payload })
+      });
+
+    }
+
+    listenAction('fileCaseAction');
+    listenAction('addClaimAction');
+
+    return () => {
+      client.off();
+    };
+
+  })
+}
+
+export function* handleWebsocket({ payload }) {
+
+  const { actionName, data } = payload;
+
+  switch(actionName) {
+    case 'addClaimAction':
+    case 'fileCaseAction': {
+      yield put(actions.fetchCases());
+    }
+  }
+
+}
+
+
+export function* listenWebsocket() {
+
+  const channel = yield call(initWebsocket);
+  while (true) {
+    const action = yield take(channel);
+    yield put(action);
+  }
+
+}
+
 export default function* casesSaga() {
 
   yield takeEvery(ActionTypes.FETCH_CASES, fetchCases);
@@ -146,5 +200,7 @@ export default function* casesSaga() {
   yield takeEvery(ActionTypes.DELETE_CLAIM, deleteClaim);
   yield takeEvery(ActionTypes.READY_CASE, readyCase);
   yield takeEvery(ActionTypes.RESPOND_CLAIM, respondClaim);
+  yield takeEvery(ActionTypes.LISTEN_WEBSOCKET, listenWebsocket);
+  yield takeEvery(ActionTypes.HANDLE_WEBSOCKET, handleWebsocket);
 
 }
