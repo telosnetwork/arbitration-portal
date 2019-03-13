@@ -176,6 +176,7 @@ class MembersModal extends Component {
         return (
           <IPFSInput
             name={formElement.id}
+            value={this.state.formValues[formElement.id]}
             onChange={this.inputChangedHandler(formElement.id)}
           />
         );

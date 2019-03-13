@@ -13,7 +13,6 @@ class IPFSInput extends Component {
     super(props);
 
     this.state = {
-      added_file_hash: null,
       loading: false,
     };
 
@@ -46,8 +45,8 @@ class IPFSInput extends Component {
         console.log('IPFS ID: ' , ipfsId);
         const fileUrl = `ipfs.io/ipfs/${ipfsId}`;
 
-        this.setState({added_file_hash: fileUrl, loading: false});
-        this.props.onChange && this.props.onChange({
+        this.setState({loading: false});
+        this.props.onChange({
           target: {
             value: fileUrl,
           }
@@ -57,31 +56,14 @@ class IPFSInput extends Component {
     });
   }
 
-  // Add File to IPFS and wrap it in a Dir to keep the original filename
-  saveToIpfsWithFilename = (file) => {
-    let ipfsId = '';
-
-    const fileStream = fileReaderPullStream(file);
-
-    const fileDetails = {
-      path:    file.name,
-      content: fileStream
-    };
-
-    const options = {
-      wrapWithDirectory: true,
-      progress: (prog) => console.log(`Received: ${prog}`)
-    };
-
-    this.ipfs.add(fileDetails, options)
-      .then((response) => {
-        console.log('Response: ', response);
-        ipfsId = response[response.length - 1].hash
-        console.log('IPFS ID: ' , ipfsId);
-        this.setState({added_file_hash: ipfsId, loading: false});
-      }).catch((err) => {
-      console.error(err);
-    });
+  reset() {
+    return () => {
+      this.props.onChange({
+        target: {
+          value: null,
+        }
+      })
+    }
   }
 
   render() {
@@ -90,12 +72,12 @@ class IPFSInput extends Component {
     }
     return (
       <div className='uploadForm'>
-        {this.state.added_file_hash ?
+        {this.props.value ?
           <div>
-            <a className="ipfs-url" href={'https://' + this.state.added_file_hash}>
-              {this.state.added_file_hash}
+            <a className="ipfs-url" href={'https://' + this.props.value}>
+              {this.props.value}
             </a>
-            <Button>Remove</Button>
+            <Button onClick={this.reset()}>Remove</Button>
           </div>
           :
           <label>
@@ -110,6 +92,7 @@ class IPFSInput extends Component {
 
 IPFSInput.propTypes = {
   onChange: PropTypes.func,
+  value: PropTypes.string,
 };
 
 export default IPFSInput;
