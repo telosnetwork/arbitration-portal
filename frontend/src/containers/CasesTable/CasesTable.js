@@ -44,6 +44,13 @@ class CasesTable extends Component {
     }
   }
 
+  isClaimant() {
+    return this.props.memberType === 'claimant';
+  }
+  isRespondant() {
+    return this.props.memberType === 'respondant';
+  }
+
   renderClaim(casefile, claim) {
     return (
       <tr key={claim._id}>
@@ -54,8 +61,8 @@ class CasesTable extends Component {
           {claim.claim_status === 'dismissed' && 'Declined'}
         </td>
         <td>
-          <Button color="info" onClick={this.onRespondClaim(casefile, claim)}>Respond</Button>
-          {claim.claim_status === 'unread' && <Button color="danger" onClick={this.onDeleteClaim(casefile, claim)}>Delete</Button>}
+          {this.isRespondant() && <Button color="info" onClick={this.onRespondClaim(casefile, claim)}>Respond</Button>}
+          {claim.claim_status === 'unread' && this.isClaimant() && <Button color="danger" onClick={this.onDeleteClaim(casefile, claim)}>Delete</Button>}
         </td>
       </tr>
     );
@@ -70,16 +77,16 @@ class CasesTable extends Component {
           {casefile.case_status}
         </td>
         <td>
-          <Button color="danger" onClick={this.onDeleteCasefile(casefile)}>Delete</Button>
+          {this.isClaimant() && <Button color="danger" onClick={this.onDeleteCasefile(casefile)}>Delete</Button>}
         </td>
       </tr>,
       ...casefile.claims.map(claim => this.renderClaim(casefile, claim)),
       <tr key="caseactions">
         <td>
-          <Button color="primary" onClick={this.onAddClaim(casefile)}>Add claim</Button>
+          {this.isClaimant() && <Button color="primary" onClick={this.onAddClaim(casefile)}>Add claim</Button>}
         </td>
         <td>
-          <Button color="success" onClick={this.onReadyCasefile(casefile)}>Submit for arbitration</Button>
+            {this.isClaimant() && <Button color="success" onClick={this.onReadyCasefile(casefile)}>Submit for arbitration</Button>}
         </td>
         <td/>
       </tr>,
