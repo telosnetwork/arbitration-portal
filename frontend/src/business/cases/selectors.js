@@ -3,11 +3,23 @@ import { selectProperty } from 'utils/redux';
 
 import { STATE_KEY } from './reducer';
 
-export const getCases = selectProperty([STATE_KEY, 'caseList'], []);
-export const getSelectedCaseId = selectProperty([STATE_KEY, 'selectedCaseId'], []);
+export const memberAction = selectProperty([STATE_KEY, 'memberAction'], null);
+export const getClaimantCases = selectProperty([STATE_KEY, 'claimantCases'], []);
+export const getRespondantCases = selectProperty([STATE_KEY, 'respondantCases'], []);
+export const getSelectedCaseId = selectProperty([STATE_KEY, 'selectedCaseId'], null);
+
+function lookFor(arrays, filter) {
+  const founds = arrays.map(array => array.filter(filter)).flatten();
+  return founds[0];
+}
 
 export const getSelectedCase = createSelector(
-  getCases,
+  getClaimantCases,
+  getRespondantCases,
   getSelectedCaseId,
-  (cases, caseId) => caseId !== undefined ? cases.find(c => c.case_id === caseId) : null,
+  (claimantCases, respondantCases, caseId) => {
+    if(!caseId) return null;
+
+    return lookFor([claimantCases, respondantCases], c => c.case_id === caseId);
+  }
 );

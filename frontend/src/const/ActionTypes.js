@@ -11,7 +11,8 @@ export default {
   SET_AUTH:             'SET_AUTH',
 
   // Cases
-  SET_CASES:            'SET_CASES',
+  SET_CLAIMANT_CASES:            'SET_CLAIMANT_CASES',
+  SET_RESPONDANT_CASES:            'SET_RESPONDANT_CASES',
   FETCH_CASES:          'FETCH_CASES',
   SET_SELECTED_CASE:    'SET_SELECTED_CASE',
   FILE_CASE:            'FILE_CASE',
@@ -29,4 +30,8 @@ export default {
   // Arbitrators
   SET_ARBITRATORS:  'SET_ARBITRATORS',
   FETCH_ARBITRATORS:'FETCH_ARBITRATORS',
+
+  // UI
+  SET_MEMBER_ACTION:  'SET_MEMBER_ACTION',
+
 };

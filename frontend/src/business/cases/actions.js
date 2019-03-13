@@ -6,9 +6,17 @@ export function fetchCases() {
     };
 }
 
-export function setCases(cases) {
+export function setClaimantCases(cases) {
     return {
-        type: ActionTypes.SET_CASES,
+        type: ActionTypes.SET_CLAIMANT_CASES,
+        cases,
+    }
+}
+
+
+export function setRespondantCases(cases) {
+    return {
+        type: ActionTypes.SET_RESPONDANT_CASES,
         cases,
     }
 }
@@ -57,3 +65,11 @@ export function respondClaim(responseData) {
     responseData,
   }
 }
+
+export function setMemberAction(actionName) {
+  return {
+    type: ActionTypes.SET_MEMBER_ACTION,
+    actionName,
+  }
+}
+

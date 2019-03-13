@@ -119,8 +119,21 @@ export function* respondClaim({ responseData }) {
 
 export function* fetchCases() {
 
-  let cases = yield api.getCases();
-  yield put(actions.setCases(cases));
+  const account = yield select(AuthenticationSelectors.account);
+  if(!account) throw new Error('Must be logged in first')
+  const memberName = account.name;
+
+  // TODO parallel
+
+  let claimantCases = yield api.getCases({
+    claimant: memberName,
+  });
+  yield put(actions.setClaimantCases(claimantCases));
+
+  let respondantCases = yield api.getCases({
+    respondant: memberName,
+  });
+  yield put(actions.setRespondantCases(respondantCases));
 
 }
 
