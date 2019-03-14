@@ -76,8 +76,14 @@ class CasesTable extends Component {
     return this.props.memberType === 'respondant';
   }
 
-  openClaim(claim) {
+  openSummary(claim) {
     window.open(`https://${claim.claim_summary}`);
+  }
+  openResponse(claim) {
+    window.open(`https://${claim.response_link}`);
+  }
+  openDecision(claim) {
+    window.open(`https://${claim.decision_link}`);
   }
 
 
@@ -98,8 +104,10 @@ class CasesTable extends Component {
           {claim.claim_status === 'dismissed' && 'Declined'}
         </td>
         <td>
-          <Button color="primary" onClick={() => this.openClaim(claim)}>Read</Button>
-          {this.isRespondant() && <Button color="info" onClick={this.onRespondClaim(casefile, claim)}>Respond</Button>}
+          <Button color="primary" onClick={() => this.openSummary(claim)}>Summary</Button>
+          {!!claim.decision_link && <Button color="primary" onClick={() => this.openResponse(claim)}>Response</Button>}
+          {!!claim.response_link && <Button color="primary" onClick={() => this.openDecision(claim)}>Decision</Button>}
+          {this.isRespondant()   && <Button color="info"    onClick={this.onRespondClaim(casefile, claim)}>Respond</Button>}
           {claim.claim_status === 'unread' && this.isClaimant() && <Button color="danger" onClick={this.onRemoveClaim(casefile, claim)}>Remove</Button>}
         </td>
       </tr>
