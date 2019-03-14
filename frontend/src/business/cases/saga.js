@@ -161,11 +161,22 @@ const updatingActions = [
   'fileCaseAction',
   'shredCaseAction',
   'deleteCaseAction',
+  'dismissCaseAction',
   'advanceCaseAction',
   'readyCaseAction',
+
   'addClaimAction',
   'acceptClaimAction',
   'removeClaimAction',
+  'dismissClaimAction',
+
+  'addArbsAction',
+  'assignToCaseAction',
+  'newArbStatusAction',
+  'recuseAction',
+  'respondAction',
+  'setLangCodesAction',
+  'setRulingAction',
 ];
 
 function initWebsocket() {
