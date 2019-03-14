@@ -9,6 +9,7 @@ import { connect }               from 'react-redux';
 import { CasesActions, ClaimsActions } from 'business/actions';
 import { CasesSelectors } from 'business/selectors';
 import CaseStatus from 'const/CaseStatus';
+import DecisionClass from 'const/DecisionClass';
 
 class CasesTable extends Component {
 
@@ -103,6 +104,9 @@ class CasesTable extends Component {
           {claim.claim_status === 'accepted' && 'Accepted'}
           {claim.claim_status === 'dismissed' && 'Declined'}
         </td>
+        <td>
+          {DecisionClass[claim.decision_class] || '-'}
+        </td>
         <td align="right">
           <Button color="primary" onClick={() => this.openSummary(claim)}>Summary</Button>
           {!!claim.decision_link && <Button color="primary" onClick={() => this.openResponse(claim)}>Response</Button>}
@@ -121,9 +125,10 @@ class CasesTable extends Component {
           <Table hover>
             <thead>
             <tr>
-              <th sm="4">Claim ID</th>
-              <th sm="4">Status</th>
-              <th sm="4" style={{textAlign: 'right'}}>Actions</th>
+              <th sm="1">Claim ID</th>
+              <th sm="3">Status</th>
+              <th sm="3">Decision</th>
+              <th sm="5" style={{textAlign: 'right'}}>Actions</th>
             </tr>
             </thead>
             <tbody>
