@@ -30,6 +30,7 @@ function setClaimantCases(state, action) {
   const claimantCases = action.cases.map(c => Object.assign({}, emptyCase, c));
 
   claimantCases.forEach(casefile => {
+    //casefile.case_id += 10;
     casefile.unread_claims.forEach(c => c.claim_status = 'unread');
     casefile.accepted_claims.forEach(c => c.claim_status = 'accepted');
     casefile.dismiss_claims.forEach(c => c.claim_status = 'dismissed');

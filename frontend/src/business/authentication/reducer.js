@@ -7,6 +7,7 @@ const initialState = {
   isLogin: false,
   account: null,
   eosio: null,
+  arbitrationContract: null,
 };
 
 function setAuth(state, action) {
@@ -14,6 +15,7 @@ function setAuth(state, action) {
     isLogin: action.isLogin,
     account: action.account,
     eosio: action.eosio,
+    arbitrationContract: action.arbitrationContract,
   });
 }
 

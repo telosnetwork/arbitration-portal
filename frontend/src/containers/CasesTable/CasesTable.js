@@ -8,13 +8,39 @@ import { Jumbotron, Table, Container, Row, Button } from 'reactstrap';
 import { connect }               from 'react-redux';
 import { CasesActions, ClaimsActions } from 'business/actions';
 import { CasesSelectors } from 'business/selectors';
+import CaseStatus from 'const/CaseStatus';
+import DecisionClass from 'const/DecisionClass';
 
 class CasesTable extends Component {
 
-  onDeleteCasefile(casefile) {
+  constructor(props) {
+
+    super(props);
+
+    this.state = {
+      caseClaimsOpen: {},
+    };
+
+  }
+
+  openCaseClaims(casefileId) {
+    const open = this.state.caseClaimsOpen[casefileId] !== undefined ?
+      !this.state.caseClaimsOpen[casefileId] :
+      true;
+
+    this.setState({
+      caseClaimsOpen: {
+        ...this.state.caseClaimsOpen,
+        [casefileId]: open,
+      },
+    });
+  }
+
+
+  onShredCasefile(casefile) {
     return () => {
       this.props.setSelectedCase(casefile.case_id);
-      this.props.setMemberAction('deletecase');
+      this.props.setMemberAction('shredcase');
     }
   }
   onRespondClaim(casefile, claim) {
@@ -24,10 +50,10 @@ class CasesTable extends Component {
       this.props.setMemberAction('respondclaim');
     }
   }
-  onReadyCasefile(casefile) {
+  onSubmitCasefile(casefile) {
     return () => {
       this.props.setSelectedCase(casefile.case_id);
-      this.props.setMemberAction('readycase');
+      this.props.setMemberAction('submitcasefile');
     }
   }
   onAddClaim(casefile) {
@@ -36,11 +62,11 @@ class CasesTable extends Component {
       this.props.setMemberAction('addclaim');
     }
   }
-  onDeleteClaim(casefile, claim) {
+  onRemoveClaim(casefile, claim) {
     return () => {
       this.props.setSelectedCase(casefile.case_id);
       this.props.setSelectedClaim(claim.claim_id);
-      this.props.setMemberAction('deleteclaim');
+      this.props.setMemberAction('removeclaim');
     }
   }
 
@@ -51,45 +77,117 @@ class CasesTable extends Component {
     return this.props.memberType === 'respondant';
   }
 
+  openSummary(claim) {
+    window.open(`https://${claim.claim_summary}`);
+  }
+  openResponse(claim) {
+    window.open(`https://${claim.response_link}`);
+  }
+  openDecision(claim) {
+    window.open(`https://${claim.decision_link}`);
+  }
+
+
   renderClaim(casefile, claim) {
     return (
       <tr key={claim._id}>
-        <td className="claim-col">Claim: {claim.claim_id}</td>
+        <td className="claim-col">
+          Claim #{claim.claim_status === 'accepted' ? `${claim.claim_id}` : '-'}
+        </td>
         <td>
           {claim.claim_status === 'unread' && 'Unread'}
           {claim.claim_status === 'accepted' && 'Accepted'}
           {claim.claim_status === 'dismissed' && 'Declined'}
         </td>
         <td>
-          {this.isRespondant() && <Button color="info" onClick={this.onRespondClaim(casefile, claim)}>Respond</Button>}
-          {claim.claim_status === 'unread' && this.isClaimant() && <Button color="danger" onClick={this.onDeleteClaim(casefile, claim)}>Delete</Button>}
+          {DecisionClass[claim.decision_class] || '-'}
+        </td>
+        <td align="right">
+          <Button color="primary" onClick={() => this.openSummary(claim)}>Summary</Button>
+          {!!claim.decision_link && <Button color="primary" onClick={() => this.openResponse(claim)}>Response</Button>}
+          {!!claim.response_link && <Button color="primary" onClick={() => this.openDecision(claim)}>Decision</Button>}
+          {this.isRespondant()   && <Button color="info"    onClick={this.onRespondClaim(casefile, claim)}>Respond</Button>}
+          {claim.claim_status === 'unread' && this.isClaimant() && <Button color="danger" onClick={this.onRemoveClaim(casefile, claim)}>Remove</Button>}
         </td>
       </tr>
     );
   }
+
+  renderClaims(casefile) {
+    return (
+      <tr key="claims">
+        <td colSpan="6">
+          <Table hover>
+            <thead>
+            <tr>
+              <th sm="1">Claim ID</th>
+              <th sm="3">Status</th>
+              <th sm="3">Decision</th>
+              <th sm="5" style={{textAlign: 'right'}}>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            {casefile.claims.map(claim => this.renderClaim(casefile, claim))}
+            </tbody>
+          </Table>
+        </td>
+      </tr>
+    );
+  }
+
   renderCase(casefile) {
+
+    const claims = this.state.caseClaimsOpen[casefile._id] ?
+      this.renderClaims(casefile) :
+      null;
+
     return [
       <tr key={casefile._id}>
         <th scope="row">
           {casefile.case_id}
         </th>
         <td>
-          {casefile.case_status}
+          {CaseStatus[casefile.case_status]}
         </td>
         <td>
-          {this.isClaimant() && <Button color="danger" onClick={this.onDeleteCasefile(casefile)}>Delete</Button>}
+          {casefile.arbitrators.length > 0 ?
+            casefile.arbitrators.join(',') :
+            '-'
+          }
+        </td>
+        <td>
+          {casefile.approvals.length > 0 ?
+            casefile.approvals.join(',') :
+            '-'
+          }
+        </td>
+        <td>
+          {casefile.case_ruling ? casefile.case_ruling : '-'}
+        </td>
+        <td align="right">
+          {this.isClaimant() && casefile.case_status === 0 &&
+          <Button color="danger" onClick={this.onShredCasefile(casefile)}>Shred</Button>
+          }
         </td>
       </tr>,
-      ...casefile.claims.map(claim => this.renderClaim(casefile, claim)),
       <tr key="caseactions">
         <td>
-          {this.isClaimant() && <Button color="primary" onClick={this.onAddClaim(casefile)}>Add claim</Button>}
+          <Button color={this.state.caseClaimsOpen[casefile._id] ? 'warning' : 'info'} onClick={() => this.openCaseClaims(casefile._id)}>
+            {this.state.caseClaimsOpen[casefile._id] ? 'Hide claims' : 'Show claims'}
+          </Button>
         </td>
         <td>
-            {this.isClaimant() && <Button color="success" onClick={this.onReadyCasefile(casefile)}>Submit for arbitration</Button>}
+          {this.isClaimant() && casefile.case_status === 0  &&
+          <Button color="primary" onClick={this.onAddClaim(casefile)}>Add claim</Button>
+          }
         </td>
-        <td/>
+        <td align="right">
+          {this.isClaimant() && casefile.case_status === 0 &&
+          <Button color="success" onClick={this.onSubmitCasefile(casefile)}>Submit for arbitration</Button>
+          }
+        </td>
       </tr>,
+      claims,
     ];
 
   }
@@ -105,12 +203,15 @@ class CasesTable extends Component {
             {this.props.memberType === 'claimant' && "Claimant cases"}
             {this.props.memberType === 'respondant' && "Respondant cases"}
           </Row>
-          <Table hover>
+          <Table>
             <thead>
             <tr>
-              <th sm="4">Case ID</th>
-              <th sm="4">Status</th>
-              <th sm="4">Actions</th>
+              <th sm="1">Case ID</th>
+              <th sm="1">Status</th>
+              <th sm="3">Arbitrators</th>
+              <th sm="3">Approvals</th>
+              <th sm="1">Case ruling</th>
+              <th sm="3" style={{textAlign: 'right'}}>Actions</th>
             </tr>
             </thead>
             <tbody>

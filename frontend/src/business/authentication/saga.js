@@ -2,6 +2,7 @@ import { put, takeEvery } from 'redux-saga/effects';
 import { ActionTypes }    from 'const';
 
 import ScatterBridge             from 'utils/scatterBridge';
+import ArbitrationContract        from 'utils/arbitrationContract';
 
 import { AuthenticationActions } from '../actions';
 
@@ -18,10 +19,13 @@ export function* login() {
   yield eosio.connect();
   yield eosio.login();
 
+  const arbitrationContract = new ArbitrationContract(eosio);
+
   yield put(AuthenticationActions.setAuthentication({
     isLogin: !!eosio.currentAccount,
     account: eosio.currentAccount,
     eosio,
+    arbitrationContract,
   }));
 
   yield put(AuthenticationActions.listenWebsocket());

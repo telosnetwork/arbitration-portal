@@ -67,6 +67,15 @@ export default class ScatterBridge {
     alert('Logout Successful');
   }
 
+  makeAction = async (contract, actionName, data, perm = { actor: this.currentAccount.name, permission: this.currentAccount.authority }) => {
+    return {
+      account: contract,
+      name: actionName,
+      authorization: [perm],
+      data: data
+    };
+  }
+
   async sendTx (actions) {
     if (!actions) {
       throw new Error('Invalid actions');
@@ -80,12 +89,64 @@ export default class ScatterBridge {
     return response;
   }
 
-  makeAction = async (contract, actionName, data, perm = { actor: this.currentAccount.name, permission: this.currentAccount.authority }) => {
-    return {
-      account: contract,
-      name: actionName,
-      authorization: [perm],
-      data: data
+
+  async createAndSendAction(contract, actionName, actionData) {
+
+    let actionObject = await this.makeAction(
+      contract,
+      actionName,
+      actionData,
+    );
+    console.log(actionObject);
+
+    let result = await this.sendTx(actionObject);
+    console.log('Send tx result: ', result);
+
+    if (result) {
+      return result;
+    } else {
+      throw new Error('Error in sending action')
+    }
+
+  }
+
+  async getTable(code, table, scope, limit = 10) {
+
+    let result = await this.rpc.get_table_rows({
+      code,
+      table,
+      scope,
+      limit,
+      json:  true
+    });
+
+    return result.rows;
+  }
+
+  async transfer({ from, to, quantity, memo = '' }) {
+
+    const actionData =  {
+      from,
+      to,
+      quantity,
+      memo,
     };
+
+    await this.createAndSendAction(
+      'eosio.token',
+      'transfer',
+      actionData
+    );
+
+  }
+
+  static parseBalance(balanceString) {
+    const [value, token] = balanceString.split(' ');
+
+    return {
+      token,
+      value,
+    };
+
   }
 }

@@ -10,6 +10,8 @@ import { connect }               from 'react-redux';
 import { CasesActions } from 'business/actions';
 import { CasesSelectors, ClaimsSelectors } from 'business/selectors';
 
+import CaseStatus from 'const/CaseStatus';
+
 const languageCodes = {
   ENGL: '0',
   FRCH: '1',
@@ -101,6 +103,8 @@ class MembersModal extends Component {
         formValues: defaultFormValues,
       };
 
+    } else {
+      this.state = {};
     }
 
   }
@@ -119,52 +123,8 @@ class MembersModal extends Component {
   handleSubmit() {
     return () => {
 
-      // TODO handle loading and closing of the modal
-
-      const payload = {
-        ...this.state.formValues,
-      };
-
-      if (this.props.case) {
-        payload.case_id = this.props.case.case_id;
-      }
-      if (this.props.claim) {
-        payload.claim_id = this.props.claim.claim_id;
-      }
-
-      switch (this.props.actionName) {
-        case 'filecase': {
-          const caseData = {
-            ...payload,
-            lang_codes: [this.state.formValues.lang_codes || '0'] // TODO fix multiple selector
-          };
-          this.props.fileCase(caseData);
-          break;
-        }
-        case 'addclaim': {
-          this.props.addClaim(payload);
-          break;
-        }
-        case 'deletecase': {
-          this.props.deleteCase(payload.case_id);
-          break;
-        }
-        case 'deleteclaim': {
-          this.props.deleteClaim(payload.case_id, payload.claim_id);
-          break;
-        }
-        case 'readycase': {
-          this.props.readyCase(payload.case_id);
-          break;
-        }
-        case 'respondclaim': {
-          this.props.respondClaim(payload);
-          break;
-        }
-        default: {
-          throw new Error('Unknown action to handle');
-        }
-      }
+      const formValues = this.state.formValues || {};
+      this.props.executeAction(this.props.actionName, formValues);
 
     };
   }
@@ -224,50 +184,6 @@ class MembersModal extends Component {
     ));
   }
 
-  renderFileCaseForm() {
-    return [
-      this.renderAutoForm(),
-    ];
-  }
-
-  renderAddCaseForm() {
-    return [
-      this.renderAutoForm(),
-    ];
-  }
-
-  renderDeleteCase() {
-    return [
-      this.renderAutoForm(),
-    ];
-  }
-
-  renderRespondClaim() {
-    return [
-      this.renderAutoForm(),
-    ];
-  }
-
-  renderForm(actionName) {
-    switch (actionName) {
-      case 'filecase': {
-        return this.renderFileCaseForm();
-      }
-      case 'addclaim': {
-        return this.renderAddCaseForm();
-      }
-      case 'deletecase': {
-        return this.renderDeleteCase();
-      }
-      case 'respondclaim': {
-        return this.renderRespondClaim();
-      }
-      default: {
-        return null;
-      }
-    }
-  }
-
   getTitle() {
     switch (this.props.actionName) {
       case 'filecase': {
@@ -276,14 +192,14 @@ class MembersModal extends Component {
       case 'addclaim': {
         return 'Add a new claim';
       }
-      case 'deletecase': {
-        return 'Are you sure you want to delete this case ?';
+      case 'shredcase': {
+        return 'Are you sure you want to shred this case ?';
       }
-      case 'deleteclaim': {
-        return 'Are you sure you want to delete this claim ?';
+      case 'removeclaim': {
+        return 'Are you sure you want to remove this claim ?';
       }
-      case 'readycase': {
-        return 'Ready case';
+      case 'submitcasefile': {
+        return 'Submit case for arbitration';
       }
       case 'respondclaim': {
         return 'Respond to claim';
@@ -299,30 +215,26 @@ class MembersModal extends Component {
       <ModalHeader key="header" toggle={this.props.toggle}>
         <Container>
           <Row>
-            <Col sm={10}>
+            <Col sm={7}>
               {this.getTitle()}
             </Col>
             {this.props.case &&
-            <Col sm={2}>
-              Case #{this.props.case.case_id}
+            <Col sm={5} style={{textAlign: 'end'}}>
+              Case #{this.props.case.case_id} &nbsp;
+              <i className="case-status text-muted">({CaseStatus[this.props.case.case_status]})</i>
             </Col>
             }
           </Row>
         </Container>
       </ModalHeader>,
-      this.props.case && // TODO change styling of that
+      this.props.claim && // TODO change styling of that
       <ModalBody key="information">
         <Container>
-          <Row>
-            Case status: {this.props.case.case_status}
-          </Row>
-          {this.props.claim &&
           <Row>
             Claim ID: {this.props.claim.claim_id}
             <br/>
             Claim status: {this.props.claim.claim_id}
           </Row>
-          }
         </Container>
       </ModalBody>
     ];
@@ -354,7 +266,7 @@ class MembersModal extends Component {
       rendered.push(
         <ModalBody key="form">
           <Form onSubmit={this.handleSubmit()}>
-            {this.renderForm(actionName)}
+            {this.renderAutoForm()}
             {this.state.loading && <Spinner className='submitSpinner' type='grow' color='primary' />}
           </Form>
         </ModalBody>
@@ -367,7 +279,7 @@ class MembersModal extends Component {
       );
 
     }
-    else if (actionName === 'deletecase' || actionName === 'deleteclaim') {
+    else if (actionName === 'shredcase' || actionName === 'removeclaim') {
 
       rendered.push(
         <ModalFooter key="footer">
@@ -377,17 +289,20 @@ class MembersModal extends Component {
       );
 
     }
-    else if (actionName === 'readycase') {
+    else if (actionName === 'submitcasefile') {
 
+      // TODO get and display account's balance on the contract
       rendered.push(
         <ModalBody key="description">
           In order to ready the case, you need to make a deposit of 100 TLOS.
+          <br/>
+          If your balance on the contract is lower than 100 TLOS, a transfer will automatically be created.
         </ModalBody>
       );
       rendered.push(
         <ModalFooter key="footer">
           <Button color="info" onClick={this.props.cancel}>Cancel</Button>
-          <Button color='success' onClick={this.handleSubmit()}>Deposit</Button>
+          <Button color='success' onClick={this.handleSubmit()}>Submit</Button>
         </ModalFooter>
       );
 
@@ -414,12 +329,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = {
-  fileCase: CasesActions.fileCase,
-  addClaim: CasesActions.addClaim,
-  deleteCase: CasesActions.deleteCase,
-  deleteClaim: CasesActions.deleteClaim,
-  readyCase: CasesActions.readyCase,
-  respondClaim: CasesActions.respondClaim,
+  executeAction: CasesActions.executeAction,
 };
 
 // Export a redux connected component
