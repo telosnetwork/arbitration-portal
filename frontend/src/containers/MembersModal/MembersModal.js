@@ -154,7 +154,7 @@ class MembersModal extends Component {
           break;
         }
         case 'removeclaim': {
-          this.props.removeClaim(payload.case_id, payload.claim_id);
+          this.props.removeClaim(this.props.case, this.props.claim);
           break;
         }
         case 'readycase': {

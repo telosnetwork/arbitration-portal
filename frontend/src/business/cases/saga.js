@@ -5,7 +5,7 @@ import { ActionTypes }    from 'const';
 import * as api     from 'utils/api-client';
 import IoClient from 'utils/io-client';
 import * as actions from './actions';
-import { AuthenticationSelectors } from '../selectors';
+import {AuthenticationSelectors, ClaimsSelectors} from '../selectors';
 import { ClaimsActions } from '../actions';
 
 // TODO All this things should be done in a contract wrapper outside of the saga, and the saga should call them
@@ -115,11 +115,15 @@ export function* deleteClaim({ case_id, claim_id }) {
 }
 
 
-export function* removeClaim({ case_id, claim_id }) {
+export function* removeClaim({ casefile, claim }) {
+
+  const account = yield select(AuthenticationSelectors.account);
+  const claimant = account.name;
 
   const actionData = {
-    case_id,
-    claim_id,
+    claimant,
+    case_id: casefile.case_id,
+    claim_hash: claim.claim_summary,
   };
 
   yield sendAction({ action: 'removeclaim', actionData })

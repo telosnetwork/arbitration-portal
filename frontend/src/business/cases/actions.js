@@ -59,11 +59,11 @@ export function deleteClaim(case_id, claim_id) {
     claim_id,
   }
 }
-export function removeClaim(case_id, claim_id) {
+export function removeClaim(casefile, claim) {
   return {
     type: ActionTypes.REMOVE_CLAIM,
-    case_id,
-    claim_id,
+    casefile,
+    claim,
   }
 }
 export function readyCase(case_id) {
