@@ -117,7 +117,7 @@ class CasesTable extends Component {
   renderClaims(casefile) {
     return (
       <tr key="claims">
-        <td colSpan="3">
+        <td colSpan="6">
           <Table hover>
             <thead>
             <tr>
@@ -148,6 +148,21 @@ class CasesTable extends Component {
         </th>
         <td>
           {CaseStatus[casefile.case_status]}
+        </td>
+        <td>
+          {casefile.arbitrators.length > 0 ?
+            casefile.arbitrators.join(',') :
+            '-'
+          }
+        </td>
+        <td>
+          {casefile.approvals.length > 0 ?
+            casefile.approvals.join(',') :
+            '-'
+          }
+        </td>
+        <td>
+          {casefile.case_ruling ? casefile.case_ruling : '-'}
         </td>
         <td align="right">
           {this.isClaimant() && casefile.case_status === 0 &&
@@ -187,9 +202,12 @@ class CasesTable extends Component {
           <Table>
             <thead>
             <tr>
-              <th sm="4">Case ID</th>
-              <th sm="4">Status</th>
-              <th sm="4" style={{textAlign: 'right'}}>Actions</th>
+              <th sm="1">Case ID</th>
+              <th sm="1">Status</th>
+              <th sm="3">Arbitrators</th>
+              <th sm="3">Approvals</th>
+              <th sm="1">Case ruling</th>
+              <th sm="3" style={{textAlign: 'right'}}>Actions</th>
             </tr>
             </thead>
             <tbody>
