@@ -43,7 +43,7 @@ class ActionHandler extends AbstractActionHandler {
         blockHash:          blockInfo.blockHash,
         isReplay:           isReplay,
         handlerVersionName: handlerVersionName
-      }, { upsert: true }).exec()
+      }, { upsert: true }).exec();
     } catch (err) {
       console.error(err);
     }
@@ -78,6 +78,13 @@ class ActionHandler extends AbstractActionHandler {
       for (const n of toDelete) {
         delete stateHist[n]
       }
+
+      await models.blockIndexState.updateOne({
+        blockNumber:        stateHist[blockNumber].blockNumber,
+        blockHash:          stateHist[blockNumber].blockHash,
+        isReplay:           stateHist[blockNumber].isReplay,
+        handlerVersionName: stateHist[blockNumber].handlerVersionName
+      }, { upsert: true }).exec();
     } catch (err) {
       console.error(err);
     }
