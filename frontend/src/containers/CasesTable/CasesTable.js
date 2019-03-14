@@ -12,6 +12,30 @@ import CaseStatus from 'const/CaseStatus';
 
 class CasesTable extends Component {
 
+  constructor(props) {
+
+    super(props);
+
+    this.state = {
+      caseClaimsOpen: {},
+    };
+
+  }
+
+  openCaseClaims(casefileId) {
+    const open = this.state.caseClaimsOpen[casefileId] !== undefined ?
+      !this.state.caseClaimsOpen[casefileId] :
+      true;
+
+    this.setState({
+      caseClaimsOpen: {
+        ...this.state.caseClaimsOpen,
+        [casefileId]: open,
+      },
+    });
+  }
+
+
   onShredCasefile(casefile) {
     return () => {
       this.props.setSelectedCase(casefile.case_id);
@@ -52,6 +76,11 @@ class CasesTable extends Component {
     return this.props.memberType === 'respondant';
   }
 
+  openClaim(claim) {
+    window.open(`https://${claim.claim_summary}`);
+  }
+
+
   renderClaim(casefile, claim) {
     return (
       <tr key={claim._id}>
@@ -69,6 +98,7 @@ class CasesTable extends Component {
           {claim.claim_status === 'dismissed' && 'Declined'}
         </td>
         <td>
+          <Button color="primary" onClick={() => this.openClaim(claim)}>Read</Button>
           {this.isRespondant() && <Button color="info" onClick={this.onRespondClaim(casefile, claim)}>Respond</Button>}
           {claim.claim_status === 'unread' && this.isClaimant() && <Button color="danger" onClick={this.onRemoveClaim(casefile, claim)}>Remove</Button>}
         </td>
@@ -76,6 +106,11 @@ class CasesTable extends Component {
     );
   }
   renderCase(casefile) {
+
+    const claims = this.state.caseClaimsOpen[casefile._id] ?
+      casefile.claims.map(claim => this.renderClaim(casefile, claim)) :
+      [];
+
     return [
       <tr key={casefile._id}>
         <th scope="row">
@@ -90,15 +125,19 @@ class CasesTable extends Component {
           }
         </td>
       </tr>,
-      ...casefile.claims.map(claim => this.renderClaim(casefile, claim)),
+      claims,
       <tr key="caseactions">
+        <td>
+          <Button color={this.state.caseClaimsOpen[casefile._id] ? 'warning' : 'info'} onClick={() => this.openCaseClaims(casefile._id)}>
+            {this.state.caseClaimsOpen[casefile._id] ? 'Hide cases' : 'Show cases'}
+          </Button>
+        </td>
         <td>
           {this.isClaimant() && <Button color="primary" onClick={this.onAddClaim(casefile)}>Add claim</Button>}
         </td>
         <td>
           {this.isClaimant() && <Button color="success" onClick={this.onReadyCasefile(casefile)}>Submit for arbitration</Button>}
         </td>
-        <td/>
       </tr>,
     ];
 
