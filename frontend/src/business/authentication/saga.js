@@ -24,6 +24,8 @@ export function* login() {
     eosio,
   }));
 
+  yield put(AuthenticationActions.listenWebsocket());
+
 }
 
 export default function* authenticationSaga() {

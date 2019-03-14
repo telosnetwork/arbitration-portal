@@ -1,3 +1,16 @@
 .claim-col {
   margin-left: 20px;
 }
+
+.members-home-jumbo {
+  padding-top: 2rem;
+}
+
+.top-actions {
+  justify-content: center;
+  margin: 2rem;
+}
+
+.new-case-btn {
+  flex: 0.5;
+}

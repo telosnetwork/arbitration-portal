@@ -1,5 +1,11 @@
 import { ActionTypes } from 'const';
 
+export function listenWebsocket() {
+  return {
+    type: ActionTypes.LISTEN_WEBSOCKET,
+  }
+}
+
 export function login() {
   return {
     type: ActionTypes.LOGIN,

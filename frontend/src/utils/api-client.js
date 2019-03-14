@@ -17,7 +17,7 @@ export async function call({ path='', params={}, method='GET'}) {
 
 }
 
-export async function getCases(caseId, caseStatus, claimant, respondant) {
+export async function getCases({ caseId, caseStatus, claimant, respondant }) {
     const params = {};
     if (caseId) {
         params.case_id = caseId;

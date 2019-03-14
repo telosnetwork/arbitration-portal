@@ -18,15 +18,18 @@ const emptyCase = {
 };
 
 const initialState = {
-  caseList: [],
-  selectedCaseId: null
+  claimantCases: [],
+  respondantCases: [],
+  selectedCaseId: null,
+  memberAction: null, // TODO Move somewhere else
+  memberActionLoading: false, // TODO Move somewhere else
 };
 
-function setCases(state, action) {
+function setClaimantCases(state, action) {
 
-  const caseList = action.cases.map(c => Object.assign({}, emptyCase, c));
+  const claimantCases = action.cases.map(c => Object.assign({}, emptyCase, c));
 
-  caseList.forEach(casefile => {
+  claimantCases.forEach(casefile => {
     casefile.unread_claims.forEach(c => c.claim_status = 'unread');
     casefile.accepted_claims.forEach(c => c.claim_status = 'accepted');
     casefile.dismiss_claims.forEach(c => c.claim_status = 'dismissed');
@@ -35,7 +38,24 @@ function setCases(state, action) {
 
   return {
     ...state,
-    caseList,
+    claimantCases,
+  };
+
+}
+function setRespondantCases(state, action) {
+
+  const respondantCases = action.cases.map(c => Object.assign({}, emptyCase, c));
+
+  respondantCases.forEach(casefile => {
+    casefile.unread_claims.forEach(c => c.claim_status = 'unread');
+    casefile.accepted_claims.forEach(c => c.claim_status = 'accepted');
+    casefile.dismiss_claims.forEach(c => c.claim_status = 'dismissed');
+    casefile.claims = [].concat(casefile.unread_claims).concat(casefile.accepted_claims).concat(casefile.dismiss_claims);
+  });
+
+  return {
+    ...state,
+    respondantCases,
   };
 
 }
@@ -49,7 +69,23 @@ function setSelectedCase(state, action) {
 
 }
 
+function setMemberAction(state, { actionName }) {
+  return {
+    ...state,
+    memberAction: actionName,
+  };
+}
+function setMemberActionLoading(state, { loading }) {
+  return {
+    ...state,
+    memberActionLoading: loading,
+  };
+}
+
 export const reducer = createReducer(initialState, {
-  [ActionTypes.SET_CASES]: setCases,
+  [ActionTypes.SET_CLAIMANT_CASES]: setClaimantCases,
+  [ActionTypes.SET_RESPONDANT_CASES]: setRespondantCases,
   [ActionTypes.SET_SELECTED_CASE]: setSelectedCase,
+  [ActionTypes.SET_MEMBER_ACTION]: setMemberAction,
+  [ActionTypes.SET_MEMBER_ACTION_LOADING]: setMemberActionLoading,
 });
