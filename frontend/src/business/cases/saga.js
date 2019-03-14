@@ -131,6 +131,7 @@ export function* fetchCases() {
   if(!account) throw new Error('Must be logged in first to fetch cases');
   const memberName = account.name;
 
+  /*
   const [ claimantCases, respondantCases ]  = yield all([
     call(api.getCases, { claimant: memberName }),
     call(api.getCases, { respondant: memberName }),
@@ -138,11 +139,16 @@ export function* fetchCases() {
 
   yield put(actions.setRespondantCases(respondantCases));
   yield put(actions.setClaimantCases(claimantCases));
+  */
 
   // TODO remove when demux indexes are ok
   const arbitrationContract = yield select(AuthenticationSelectors.arbitrationContract);
   const data = yield arbitrationContract.getCases();
-  console.log(data );
+  const claimantCases = data.filter(c => c.claimant === memberName);
+  const respondantCases = data.filter(c => c.respondant === memberName);
+  yield put(actions.setClaimantCases(claimantCases));
+  yield put(actions.setRespondantCases(respondantCases));
+
 
 }
 

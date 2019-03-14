@@ -7,7 +7,6 @@ import { Jumbotron, Table, Container, Row, Button } from 'reactstrap';
 // Redux
 import { connect }               from 'react-redux';
 import { CasesActions, ClaimsActions } from 'business/actions';
-import { CasesSelectors } from 'business/selectors';
 import CaseStatus from 'const/CaseStatus';
 import DecisionClass from 'const/DecisionClass';
 
@@ -25,8 +24,7 @@ class CasesTable extends Component {
 
   openCaseClaims(casefileId) {
     const open = this.state.caseClaimsOpen[casefileId] !== undefined ?
-      !this.state.caseClaimsOpen[casefileId] :
-      true;
+      !this.state.caseClaimsOpen[casefileId] : true;
 
     this.setState({
       caseClaimsOpen: {
@@ -90,7 +88,7 @@ class CasesTable extends Component {
 
   renderClaim(casefile, claim) {
     return (
-      <tr key={claim._id}>
+      <tr key={claim.claim_id}>
         <td className="claim-col">
           Claim #{claim.claim_status === 'accepted' ? `${claim.claim_id}` : '-'}
         </td>
@@ -107,7 +105,8 @@ class CasesTable extends Component {
           {!!claim.decision_link && <Button color="primary" onClick={() => this.openResponse(claim)}>Response</Button>}
           {!!claim.response_link && <Button color="primary" onClick={() => this.openDecision(claim)}>Decision</Button>}
           {this.isRespondant()   && <Button color="info"    onClick={this.onRespondClaim(casefile, claim)}>Respond</Button>}
-          {claim.claim_status === 'unread' && this.isClaimant() && <Button color="danger" onClick={this.onRemoveClaim(casefile, claim)}>Remove</Button>}
+          {claim.claim_status === 'unread' && casefile.case_status === 0 &&
+          this.isClaimant() && <Button color="danger" onClick={this.onRemoveClaim(casefile, claim)}>Remove</Button>}
         </td>
       </tr>
     );
@@ -137,12 +136,12 @@ class CasesTable extends Component {
 
   renderCase(casefile) {
 
-    const claims = this.state.caseClaimsOpen[casefile._id] ?
+    const claims = this.state.caseClaimsOpen[casefile.case_id] ?
       this.renderClaims(casefile) :
       null;
 
     return [
-      <tr key={casefile._id}>
+      <tr key={casefile.case_id}>
         <th scope="row">
           {casefile.case_id}
         </th>
@@ -162,7 +161,14 @@ class CasesTable extends Component {
           }
         </td>
         <td>
-          {casefile.case_ruling ? casefile.case_ruling : '-'}
+          <div className="case-ruling">
+            {casefile.case_ruling ?
+              <a href={`https://${casefile.case_ruling}`} target="_blank" rel="noopener noreferrer" >
+                {casefile.case_ruling}
+              </a>
+              : '-'
+            }
+          </div>
         </td>
         <td align="right">
           {this.isClaimant() && casefile.case_status === 0 &&
@@ -172,9 +178,13 @@ class CasesTable extends Component {
       </tr>,
       <tr key="caseactions">
         <td>
-          <Button color={this.state.caseClaimsOpen[casefile._id] ? 'warning' : 'info'} onClick={() => this.openCaseClaims(casefile._id)}>
-            {this.state.caseClaimsOpen[casefile._id] ? 'Hide claims' : 'Show claims'}
-          </Button>
+          {casefile.claims.length > 0 ?
+            <Button color={this.state.caseClaimsOpen[casefile.case_id] ? 'warning' : 'info'} onClick={() => this.openCaseClaims(casefile.case_id)}>
+              {this.state.caseClaimsOpen[casefile.case_id] ? 'Hide claims' : 'Show claims'}
+            </Button>
+            :
+            'No claims'
+          }
         </td>
         <td>
           {this.isClaimant() && casefile.case_status === 0  &&
@@ -226,10 +236,6 @@ class CasesTable extends Component {
   }
 }
 
-const mapStateToProps = state => ({
-  claimantCases: CasesSelectors.getClaimantCases(state),
-});
-
 const mapDispatchToProps = {
   setMemberAction: CasesActions.setMemberAction,
   setSelectedCase: CasesActions.setSelectedCase,
@@ -242,4 +248,4 @@ CasesTable.propTypes = {
 };
 
 
-export default connect(mapStateToProps, mapDispatchToProps)(CasesTable);
+export default connect(null, mapDispatchToProps)(CasesTable);
