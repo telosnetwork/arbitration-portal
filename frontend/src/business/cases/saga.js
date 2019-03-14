@@ -141,7 +141,7 @@ export function* fetchCases() {
 
   // TODO remove when demux indexes are ok
   const arbitrationContract = yield select(AuthenticationSelectors.arbitrationContract);
-  const data = yield  arbitrationContract.getAccountCases(account.name);
+  const data = yield arbitrationContract.getCases();
   console.log(data );
 
 }

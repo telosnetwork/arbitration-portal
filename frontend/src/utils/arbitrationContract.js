@@ -165,12 +165,22 @@ class ArbitrationContract {
 
   }
 
-  async getAccountCases() {
+  async getCases() {
 
-    // TODO use demux server ?
     const rows = await this.eosio.getTable(
       contractAddress,
       'casefiles',
+      contractAddress,
+      100,
+    );
+    return rows;
+
+  }
+  async getClaims() {
+
+    const rows = await this.eosio.getTable(
+      contractAddress,
+      'claims',
       contractAddress,
       100,
     );
