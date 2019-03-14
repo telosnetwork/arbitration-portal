@@ -12,10 +12,10 @@ import CaseStatus from 'const/CaseStatus';
 
 class CasesTable extends Component {
 
-  onDeleteCasefile(casefile) {
+  onShredCasefile(casefile) {
     return () => {
       this.props.setSelectedCase(casefile.case_id);
-      this.props.setMemberAction('deletecase');
+      this.props.setMemberAction('shredcase');
     }
   }
   onRespondClaim(casefile, claim) {
@@ -37,11 +37,11 @@ class CasesTable extends Component {
       this.props.setMemberAction('addclaim');
     }
   }
-  onDeleteClaim(casefile, claim) {
+  onRemoveClaim(casefile, claim) {
     return () => {
       this.props.setSelectedCase(casefile.case_id);
       this.props.setSelectedClaim(claim.claim_id);
-      this.props.setMemberAction('deleteclaim');
+      this.props.setMemberAction('removeclaim');
     }
   }
 
@@ -70,7 +70,7 @@ class CasesTable extends Component {
         </td>
         <td>
           {this.isRespondant() && <Button color="info" onClick={this.onRespondClaim(casefile, claim)}>Respond</Button>}
-          {claim.claim_status === 'unread' && this.isClaimant() && <Button color="danger" onClick={this.onDeleteClaim(casefile, claim)}>Delete</Button>}
+          {claim.claim_status === 'unread' && this.isClaimant() && <Button color="danger" onClick={this.onRemoveClaim(casefile, claim)}>Remove</Button>}
         </td>
       </tr>
     );
@@ -86,7 +86,7 @@ class CasesTable extends Component {
         </td>
         <td>
           {this.isClaimant() && casefile.case_status === 0 &&
-          <Button color="danger" onClick={this.onDeleteCasefile(casefile)}>Delete</Button>
+          <Button color="danger" onClick={this.onShredCasefile(casefile)}>Shred</Button>
           }
         </td>
       </tr>,

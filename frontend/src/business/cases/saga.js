@@ -89,6 +89,20 @@ export function* deleteCase({ case_id }) {
 
 }
 
+export function* shredCase({ case_id }) {
+
+  const account = yield select(AuthenticationSelectors.account);
+  const claimant = account.name;
+
+  const actionData = {
+    case_id,
+    claimant,
+  };
+
+  yield sendAction({ action: 'shredcase', actionData })
+
+}
+
 export function* deleteClaim({ case_id, claim_id }) {
 
   const actionData = {
@@ -97,6 +111,18 @@ export function* deleteClaim({ case_id, claim_id }) {
   };
 
   yield sendAction({ action: 'deleteclaim', actionData })
+
+}
+
+
+export function* removeClaim({ case_id, claim_id }) {
+
+  const actionData = {
+    case_id,
+    claim_id,
+  };
+
+  yield sendAction({ action: 'removeclaim', actionData })
 
 }
 
@@ -233,7 +259,9 @@ export default function* casesSaga() {
   yield takeEvery(ActionTypes.FILE_CASE, fileCase);
   yield takeEvery(ActionTypes.ADD_CLAIM, addClaim);
   yield takeEvery(ActionTypes.DELETE_CASE, deleteCase);
+  yield takeEvery(ActionTypes.SHRED_CASE, shredCase);
   yield takeEvery(ActionTypes.DELETE_CLAIM, deleteClaim);
+  yield takeEvery(ActionTypes.REMOVE_CLAIM, removeClaim);
   yield takeEvery(ActionTypes.READY_CASE, readyCase);
   yield takeEvery(ActionTypes.RESPOND_CLAIM, respondClaim);
   yield takeEvery(ActionTypes.LISTEN_WEBSOCKET, listenWebsocket);

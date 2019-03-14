@@ -46,9 +46,22 @@ export function deleteCase(case_id) {
     case_id,
   }
 }
+export function shredCase(case_id) {
+  return {
+    type: ActionTypes.SHRED_CASE,
+    case_id,
+  }
+}
 export function deleteClaim(case_id, claim_id) {
   return {
     type: ActionTypes.DELETE_CLAIM,
+    case_id,
+    claim_id,
+  }
+}
+export function removeClaim(case_id, claim_id) {
+  return {
+    type: ActionTypes.REMOVE_CLAIM,
     case_id,
     claim_id,
   }
