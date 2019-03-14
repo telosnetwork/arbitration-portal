@@ -8,6 +8,7 @@ import { Jumbotron, Table, Container, Row, Button } from 'reactstrap';
 import { connect }               from 'react-redux';
 import { CasesActions, ClaimsActions } from 'business/actions';
 import { CasesSelectors } from 'business/selectors';
+import CaseStatus from 'const/CaseStatus';
 
 class CasesTable extends Component {
 
@@ -54,7 +55,14 @@ class CasesTable extends Component {
   renderClaim(casefile, claim) {
     return (
       <tr key={claim._id}>
-        <td className="claim-col">Claim: {claim.claim_id}</td>
+        <td className="claim-col">
+          <Row style={{ alignItems: 'center' }}>
+            <div className="claim-divider"/>
+            <div>
+              Claim {claim.claim_status === 'accepted' && `#${claim.claim_id}`}
+            </div>
+          </Row>
+        </td>
         <td>
           {claim.claim_status === 'unread' && 'Unread'}
           {claim.claim_status === 'accepted' && 'Accepted'}
@@ -74,10 +82,12 @@ class CasesTable extends Component {
           {casefile.case_id}
         </th>
         <td>
-          {casefile.case_status}
+          {CaseStatus[casefile.case_status]}
         </td>
         <td>
-          {this.isClaimant() && <Button color="danger" onClick={this.onDeleteCasefile(casefile)}>Delete</Button>}
+          {this.isClaimant() && casefile.case_status === 0 &&
+          <Button color="danger" onClick={this.onDeleteCasefile(casefile)}>Delete</Button>
+          }
         </td>
       </tr>,
       ...casefile.claims.map(claim => this.renderClaim(casefile, claim)),
@@ -86,7 +96,7 @@ class CasesTable extends Component {
           {this.isClaimant() && <Button color="primary" onClick={this.onAddClaim(casefile)}>Add claim</Button>}
         </td>
         <td>
-            {this.isClaimant() && <Button color="success" onClick={this.onReadyCasefile(casefile)}>Submit for arbitration</Button>}
+          {this.isClaimant() && <Button color="success" onClick={this.onReadyCasefile(casefile)}>Submit for arbitration</Button>}
         </td>
         <td/>
       </tr>,
