@@ -5,8 +5,8 @@ import { ActionTypes }    from 'const';
 import * as api     from 'utils/api-client';
 import IoClient from 'utils/io-client';
 import * as actions from './actions';
-import { AuthenticationSelectors } from '../selectors';
-import { ClaimsActions } from '../actions';
+import { AuthenticationSelectors, CasesSelectors, ClaimsSelectors } from '../selectors';
+import { CasesActions, ClaimsActions } from '../actions';
 
 // TODO All this things should be done in a contract wrapper outside of the saga, and the saga should call them
 
@@ -23,11 +23,16 @@ export function* executeAction({ actionName, actionData }) {
 
   yield put(actions.setMemberActionLoading(true));
 
-  const arbitrationContract = yield select(AuthenticationSelectors.arbitrationContract);
   const account = yield select(AuthenticationSelectors.account);
+  if(!account) throw new Error('Must be logged in first to execute action');
+
+  const arbitrationContract = yield select(AuthenticationSelectors.arbitrationContract);
+  const casefile = yield select(CasesSelectors.getSelectedCase);
+  const claim = yield select(ClaimsSelectors.getSelectedClaim);
 
   switch(actionName) {
     case 'filecase': {
+
       const casefileData = {
         claimant: account.name,
         claim_link: actionData.claim_link,
@@ -35,7 +40,62 @@ export function* executeAction({ actionName, actionData }) {
         respondant: actionData.respondant,
       };
       yield arbitrationContract.fileCase(casefileData);
+
       break;
+    }
+    case 'shredcase': {
+
+      const data = {
+        case_id: casefile.case_id,
+        claimant: account.name,
+      };
+
+      yield arbitrationContract.shredCase(data);
+      break;
+    }
+    case 'readycase': {
+
+      const data = {
+        case_id: casefile.case_id,
+        claimant: account.name,
+      };
+      yield arbitrationContract.readyCase(data);
+      break;
+
+    }
+    case 'addclaim': {
+
+      const addClaimData = {
+        case_id: casefile.case_id,
+        claimant: account.name,
+        claim_link: actionData.claim_link,
+      };
+      yield arbitrationContract.addClaim(addClaimData);
+
+      break;
+    }
+    case 'removeclaim': {
+
+      const data = {
+        claimant: account.name,
+        case_id: casefile.case_id,
+        claim_hash: claim.claim_summary,
+      };
+      yield arbitrationContract.removeclaim(data);
+      break;
+
+    }
+    case 'respondclaim': {
+
+      const data = {
+        case_id: casefile.case_id,
+        claim_hash: claim.claim_summary,
+        respondant: account.name,
+        response_link: actionData.response_link,
+      };
+      yield arbitrationContract.respondClaim(data);
+      break;
+
     }
     default: {
       throw new Error(`Unknown action ${actionName}`);
@@ -46,170 +106,35 @@ export function* executeAction({ actionName, actionData }) {
 
 }
 
-export function* fileCase({ caseData }) {
-
-  const actionName = 'filecase';
-  const actionData = { caseData };
-  yield executeAction({ actionName, actionData });
-
-}
-
-export function* addClaim({ claimData }) {
-
-  const account = yield select(AuthenticationSelectors.account);
-  const claimant = account.name;
-
-  const { case_id, claim_link } = claimData;
-
-  const actionData = {
-    case_id,
-    claimant,
-    claim_link,
-  };
-
-  yield executeAction({ action: 'addclaim', actionData })
-
-}
-
-export function* deleteCase({ case_id }) {
-
-  const actionData = {
-    case_id,
-  };
-
-  yield executeAction({ action: 'deletecase', actionData })
-
-}
-
-export function* shredCase({ case_id }) {
-
-  const account = yield select(AuthenticationSelectors.account);
-  const claimant = account.name;
-
-  const actionData = {
-    case_id,
-    claimant,
-  };
-
-  yield executeAction({ action: 'shredcase', actionData })
-
-}
-
-export function* deleteClaim({ case_id, claim_id }) {
-
-  const actionData = {
-    case_id,
-    claim_id,
-  };
-
-  yield executeAction({ action: 'deleteclaim', actionData })
-
-}
-
-export function* removeClaim({ casefile, claim }) {
-
-  const account = yield select(AuthenticationSelectors.account);
-  const claimant = account.name;
-
-  const actionData = {
-    claimant,
-    case_id: casefile.case_id,
-    claim_hash: claim.claim_summary,
-  };
-
-  yield executeAction({ action: 'removeclaim', actionData })
-
-}
-
-export function* readyCase({ case_id }) {
-
-  const arbitratorContract = yield select(AuthenticationSelectors.arbitratorContract);
-
-  const account = yield select(AuthenticationSelectors.account);
-  const claimant = account.name;
-
-  const actionData = {
-    case_id,
-    claimant,
-  };
-
-
-  yield arbitratorContract.executeAction({ action: 'readycase', actionData })
-
-}
-
-export function* getAccountBalance() {
-
-  const eosio = yield select(AuthenticationSelectors.eosio);
-  const account = yield select(AuthenticationSelectors.account);
-
-  // TODO use demux ?
-  const balanceRows = yield eosio.getTable('eosio.arb', 'accounts', account.name, 1);
-  const balanceString = balanceRows[0] ? balanceRows[0].balance : '0.0000 TLOS';
-  const balance = eosio.constructor.parseBalance(balanceString);
-
-  return balance;
-
-}
-export function* deposit() {
-
-  const eosio = yield select(AuthenticationSelectors.eosio);
-  const account = yield select(AuthenticationSelectors.account);
-
-  const actionData =  {
-    from: account.name,
-    to: 'eosio.arb',
-    quantity: '100.0000 TLOS',
-    memo: 'Deposit for arbitration',
-  };
-
-  yield eosio.createAndSendAction(
-    'eosio.token',
-    'transfer',
-    actionData
-  );
-
-}
-
-export function* submitCasefile({ case_id }) {
+export function* submitCasefile(case_id) {
 
   yield put(actions.setMemberActionLoading(true));
 
-  const balance = yield getAccountBalance();
-  if(parseFloat(balance) < 100) {
-    yield deposit();
+  const account = yield select(AuthenticationSelectors.account);
+  if(!account) throw new Error('Must be logged in first to execute action');
+
+  const arbitrationContract = yield select(AuthenticationSelectors.arbitrationContract);
+  const balance = yield arbitrationContract.getAccountBalance(account.name);
+
+  if(parseFloat(balance.value) < 100) {
+    yield arbitrationContract.deposit(account.name);
   }
 
-  yield readyCase({ case_id });
+  yield executeAction({
+    actionName: 'readycase',
+    actionData: {
+      case_id
+    },
+  });
 
   yield finishAction();
-
-}
-
-export function* respondClaim({ responseData }) {
-
-  const account = yield select(AuthenticationSelectors.account);
-  const respondant = account.name;
-
-  const claim_hash = ''; // TODO ???
-
-  const { case_id, response_link } = responseData;
-
-  const actionData = {
-    case_id,
-    claim_hash,
-    respondant,
-    response_link,
-  };
-
-  yield executeAction({ action: 'respond', actionData })
 
 }
 
 export function* fetchCases() {
 
   const account = yield select(AuthenticationSelectors.account);
-  if(!account) throw new Error('Must be logged in first')
+  if(!account) throw new Error('Must be logged in first to fetch cases');
   const memberName = account.name;
 
   const [ claimantCases, respondantCases ]  = yield all([
@@ -299,19 +224,10 @@ export default function* casesSaga() {
 
   yield takeEvery(ActionTypes.FETCH_CASES, fetchCases);
 
-  yield takeEvery(ActionTypes.FILE_CASE, fileCase);
-  yield takeEvery(ActionTypes.ADD_CLAIM, addClaim);
-  yield takeEvery(ActionTypes.DELETE_CASE, deleteCase);
-  yield takeEvery(ActionTypes.SHRED_CASE, shredCase);
-  yield takeEvery(ActionTypes.DELETE_CLAIM, deleteClaim);
-  yield takeEvery(ActionTypes.REMOVE_CLAIM, removeClaim);
-  yield takeEvery(ActionTypes.READY_CASE, readyCase);
-  yield takeEvery(ActionTypes.RESPOND_CLAIM, respondClaim);
-  yield takeEvery(ActionTypes.SUBMIT_CASEFILE, submitCasefile);
-
   yield takeEvery(ActionTypes.LISTEN_WEBSOCKET, listenWebsocket);
   yield takeEvery(ActionTypes.HANDLE_WEBSOCKET, handleWebsocket);
 
   yield takeEvery(ActionTypes.EXECUTE_ACTION, executeAction);
+  yield takeEvery(ActionTypes.SUBMIT_CASEFILE, submitCasefile);
 
 }

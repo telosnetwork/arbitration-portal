@@ -67,6 +67,15 @@ export default class ScatterBridge {
     alert('Logout Successful');
   }
 
+  makeAction = async (contract, actionName, data, perm = { actor: this.currentAccount.name, permission: this.currentAccount.authority }) => {
+    return {
+      account: contract,
+      name: actionName,
+      authorization: [perm],
+      data: data
+    };
+  }
+
   async sendTx (actions) {
     if (!actions) {
       throw new Error('Invalid actions');
@@ -80,14 +89,6 @@ export default class ScatterBridge {
     return response;
   }
 
-  makeAction = async (contract, actionName, data, perm = { actor: this.currentAccount.name, permission: this.currentAccount.authority }) => {
-    return {
-      account: contract,
-      name: actionName,
-      authorization: [perm],
-      data: data
-    };
-  }
 
   async createAndSendAction(contract, actionName, actionData) {
 
@@ -120,6 +121,23 @@ export default class ScatterBridge {
     });
 
     return result.rows;
+  }
+
+  async transfer({ from, to, quantity, memo = '' }) {
+
+    const actionData =  {
+      from,
+      to,
+      quantity,
+      memo,
+    };
+
+    await this.createAndSendAction(
+      'eosio.token',
+      'transfer',
+      actionData
+    );
+
   }
 
   static parseBalance(balanceString) {
