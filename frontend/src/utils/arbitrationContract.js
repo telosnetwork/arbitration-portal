@@ -165,6 +165,19 @@ class ArbitrationContract {
 
   }
 
+  async getAccountCases() {
+
+    // TODO use demux server ?
+    const rows = await this.eosio.getTable(
+      contractAddress,
+      'casefiles',
+      contractAddress,
+      100,
+    );
+    return rows;
+
+  }
+
 }
 
 export default ArbitrationContract;

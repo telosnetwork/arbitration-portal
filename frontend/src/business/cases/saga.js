@@ -71,7 +71,6 @@ export function* executeAction({ actionName, actionData }) {
         claim_link: actionData.claim_link,
       };
       yield arbitrationContract.addClaim(addClaimData);
-
       break;
     }
     case 'removeclaim': {
@@ -114,37 +113,13 @@ export function* executeAction({ actionName, actionData }) {
         claimant: account.name,
       };
       yield arbitrationContract.readyCase(data);
+      break;
 
     }
     default: {
       throw new Error(`Unknown action ${actionName}`);
     }
   }
-
-  yield finishAction();
-
-}
-
-export function* submitCasefile(case_id) {
-
-  yield put(actions.setMemberActionLoading(true));
-
-  const account = yield select(AuthenticationSelectors.account);
-  if(!account) throw new Error('Must be logged in first to execute action');
-
-  const arbitrationContract = yield select(AuthenticationSelectors.arbitrationContract);
-  const balance = yield arbitrationContract.getAccountBalance(account.name);
-
-  if(parseFloat(balance.value) < 100) {
-    yield arbitrationContract.deposit(account.name);
-  }
-
-  yield executeAction({
-    actionName: 'readycase',
-    actionData: {
-      case_id
-    },
-  });
 
   yield finishAction();
 
@@ -163,6 +138,11 @@ export function* fetchCases() {
 
   yield put(actions.setRespondantCases(respondantCases));
   yield put(actions.setClaimantCases(claimantCases));
+
+  // TODO remove when demux indexes are ok
+  const arbitrationContract = yield select(AuthenticationSelectors.arbitrationContract);
+  const data = yield  arbitrationContract.getAccountCases(account.name);
+  console.log(data );
 
 }
 
@@ -247,6 +227,5 @@ export default function* casesSaga() {
   yield takeEvery(ActionTypes.HANDLE_WEBSOCKET, handleWebsocket);
 
   yield takeEvery(ActionTypes.EXECUTE_ACTION, executeAction);
-  yield takeEvery(ActionTypes.SUBMIT_CASEFILE, submitCasefile);
 
 }
