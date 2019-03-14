@@ -123,58 +123,8 @@ class MembersModal extends Component {
   handleSubmit() {
     return () => {
 
-      // TODO handle loading and closing of the modal
-
-      const payload = {
-        ...(this.state.formValues || {}),
-      };
-
-      if (this.props.case) {
-        payload.case_id = this.props.case.case_id;
-      }
-      if (this.props.claim) {
-        payload.claim_id = this.props.claim.claim_id;
-      }
-
       const formValues = this.state.formValues || {};
-
       this.props.executeAction(this.props.actionName, formValues);
-
-      return;
-
-      switch (this.props.actionName) {
-        case 'filecase': {
-          const caseData = {
-            ...payload,
-            lang_codes: [this.state.formValues.lang_codes || '0'] // TODO fix multiple selector
-          };
-          this.props.fileCase(caseData);
-          break;
-        }
-        case 'addclaim': {
-          this.props.addClaim(payload);
-          break;
-        }
-        case 'shredcase': {
-          this.props.shredCase(payload.case_id);
-          break;
-        }
-        case 'removeclaim': {
-          this.props.removeClaim(this.props.case, this.props.claim);
-          break;
-        }
-        case 'submitcasefile': {
-          this.props.submitCasefile(payload.case_id);
-          break;
-        }
-        case 'respondclaim': {
-          this.props.respondClaim(payload);
-          break;
-        }
-        default: {
-          throw new Error('Unknown action to handle');
-        }
-      }
 
     };
   }
@@ -380,12 +330,6 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = {
   executeAction: CasesActions.executeAction,
-  fileCase: CasesActions.fileCase,
-  addClaim: CasesActions.addClaim,
-  shredCase: CasesActions.shredCase,
-  removeClaim: CasesActions.removeClaim,
-  submitCasefile: CasesActions.submitCasefile,
-  respondClaim: CasesActions.respondClaim,
 };
 
 // Export a redux connected component

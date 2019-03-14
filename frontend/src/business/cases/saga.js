@@ -6,7 +6,7 @@ import * as api     from 'utils/api-client';
 import IoClient from 'utils/io-client';
 import * as actions from './actions';
 import { AuthenticationSelectors, CasesSelectors, ClaimsSelectors } from '../selectors';
-import { CasesActions, ClaimsActions } from '../actions';
+import { ClaimsActions } from '../actions';
 
 // TODO All this things should be done in a contract wrapper outside of the saga, and the saga should call them
 
@@ -81,7 +81,7 @@ export function* executeAction({ actionName, actionData }) {
         case_id: casefile.case_id,
         claim_hash: claim.claim_summary,
       };
-      yield arbitrationContract.removeclaim(data);
+      yield arbitrationContract.removeClaim(data);
       break;
 
     }
@@ -95,6 +95,25 @@ export function* executeAction({ actionName, actionData }) {
       };
       yield arbitrationContract.respondClaim(data);
       break;
+
+    }
+    case 'submitcasefile': {
+
+      const account = yield select(AuthenticationSelectors.account);
+      if(!account) throw new Error('Must be logged in first to execute action');
+
+      const arbitrationContract = yield select(AuthenticationSelectors.arbitrationContract);
+      const balance = yield arbitrationContract.getAccountBalance(account.name);
+
+      if(parseFloat(balance.value) < 100) {
+        yield arbitrationContract.deposit(account.name);
+      }
+
+      const data = {
+        case_id: casefile.case_id,
+        claimant: account.name,
+      };
+      yield arbitrationContract.readyCase(data);
 
     }
     default: {
