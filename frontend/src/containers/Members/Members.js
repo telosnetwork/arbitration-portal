@@ -8,7 +8,7 @@ import ScatterBridge             from '../../utils/scatterBridge';
 // import { updateCases }        from '../../utils/updateCases';
 
 // Components
-import IPFSInput                  from '../../components/IPFSInput';
+import Uploader                  from '../Uploader';
 import BlockConsole              from '../BlockConsole';
 
 // Redux
@@ -657,7 +657,7 @@ class Members extends Component {
                                                     {formElement.id === 'claim_link' ?                                                        
                                                         <div>
                                                             <Input type={formElement.type} value={formElement.value} placeholder={formElement.placeholder} onChange={(event) => this.inputChangedHandler(event, tabElement.id, formElement.id)} />
-                                                            <IPFSInput />
+                                                            <Uploader />
                                                         </div>
                                                     : null}
                                                     {formElement.id !== 'lang_codes' && formElement.id !== 'claim_link' ? 
@@ -678,7 +678,7 @@ class Members extends Component {
                                                      {formElement.id === 'claim_link' ?                                                        
                                                         <div>
                                                             <Input type={formElement.type} value={formElement.value} placeholder={formElement.placeholder} onChange={(event) => this.inputChangedHandler(event, tabElement.id, formElement.id)} />
-                                                            <IPFSInput />
+                                                            <Uploader />
                                                         </div>
                                                     : null}
                                                     {formElement.id !== 'claim_link' ?
@@ -699,7 +699,7 @@ class Members extends Component {
                                                     {formElement.id === 'claim_hash' ?
                                                         <div>
                                                             <Input type={formElement.type} value={formElement.value} placeholder={formElement.placeholder} onChange={(event) => this.inputChangedHandler(event, tabElement.id, formElement.id)} />
-                                                            <IPFSInput />
+                                                            <Uploader />
                                                         </div>
                                                     : null}
                                                     {formElement.id !== 'claim_hash' ? 

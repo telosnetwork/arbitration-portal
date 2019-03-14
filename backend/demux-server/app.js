@@ -37,7 +37,7 @@ mongoose.connect(process.env.MONGODB_URL, { useNewUrlParser: true }).then(() => 
          version:    process.env.VERSION,
          endpoint:   process.env.TELOS_ENDPOINT,
          startBlock: parseInt(process.env.STARTING_BLOCK),
-         interval:   100
+         interval:   parseInt(process.env.INTERVAL)
       }));
 
       services.startAll();

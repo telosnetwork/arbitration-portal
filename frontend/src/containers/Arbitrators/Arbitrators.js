@@ -10,7 +10,7 @@ import ScatterBridge             from '../../utils/scatterBridge';
 // import { updateClaims }       from '../../utils/updateClaims';
 
 // Components
-import IPFSInput                  from '../../components/IPFSInput';
+import Uploader                  from '../Uploader';
 import BlockConsole              from '../BlockConsole';
 
 // Redux
@@ -1126,7 +1126,7 @@ class Arbitrators extends Component {
                                                     {formElement.id === 'claim_hash' || formElement.id === 'response_link' ?
                                                         <div>
                                                             <Input type={formElement.type} value={formElement.value} placeholder={formElement.placeholder} onChange={(event) => this.inputChangedHandler(event, tabElement.id, formElement.id)} />
-                                                            <IPFSInput  />
+                                                            <Uploader  />
                                                         </div>
                                                     : null}
                                                     {formElement.id !== 'claim_hash' && formElement.id !== 'response_link' ?
@@ -1173,7 +1173,7 @@ class Arbitrators extends Component {
                                                     {formElement.id === 'claim_hash' ? 
                                                         <div>
                                                             <Input type={formElement.type} value={formElement.value} placeholder={formElement.placeholder} onChange={(event) => this.inputChangedHandler(event, tabElement.id, formElement.id)} />
-                                                            <IPFSInput />
+                                                            <Uploader />
                                                         </div>
                                                     : null}
                                                     {formElement.id !== 'claim_hash' ?
@@ -1194,7 +1194,7 @@ class Arbitrators extends Component {
                                                     {formElement.id === 'claim_hash' || formElement.id === 'decision_link' ?
                                                         <div>
                                                             <Input type={formElement.type} value={formElement.value} placeholder={formElement.placeholder} onChange={(event) => this.inputChangedHandler(event, tabElement.id, formElement.id)} />
-                                                            <IPFSInput />
+                                                            <Uploader />
                                                         </div>
                                                     : null}
                                                     {formElement.id !== 'claim_hash' && formElement.id !== 'decision_link' ?
@@ -1215,7 +1215,7 @@ class Arbitrators extends Component {
                                                     {formElement.id === 'case_ruling' ? 
                                                         <div>
                                                             <Input type={formElement.type} value={formElement.value} placeholder={formElement.placeholder} onChange={(event) => this.inputChangedHandler(event, tabElement.id, formElement.id)} />
-                                                            <IPFSInput />
+                                                            <Uploader />
                                                         </div>
                                                     : null}
                                                     {formElement.id !== 'case_ruling' ?
@@ -1249,7 +1249,7 @@ class Arbitrators extends Component {
                                                     {formElement.id === 'ruling_link' ?
                                                         <div>
                                                             <Input type={formElement.type} value={formElement.value} placeholder={formElement.placeholder} onChange={(event) => this.inputChangedHandler(event, tabElement.id, formElement.id)} />
-                                                            <IPFSInput />
+                                                            <Uploader />
                                                         </div>
                                                     : null}
                                                     {formElement.id !== 'ruling_link' ?

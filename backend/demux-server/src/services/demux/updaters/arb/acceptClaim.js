@@ -30,10 +30,10 @@ async function acceptClaimHandler (state, payload, blockInfo, context) {
                 if (claim.claim_summary === payload.data.claim_hash) {
                     response_link  = claim.response_link;
                     accepted_claim = claim;
-                    accepted_claims.push(claim);
                     unread_claims.splice(unread_claims.indexOf(claim), 1);
                 }
             }
+            accepted_claims.push(claim_counter);
 
             await state.case.findOneAndUpdate({ case_id: case_id }, {
                 unread_claims:   unread_claims,
