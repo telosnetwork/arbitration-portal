@@ -157,8 +157,8 @@ class MembersModal extends Component {
           this.props.removeClaim(this.props.case, this.props.claim);
           break;
         }
-        case 'readycase': {
-          this.props.readyCase(payload.case_id);
+        case 'submitcasefile': {
+          this.props.submitCasefile(payload.case_id);
           break;
         }
         case 'respondclaim': {
@@ -242,8 +242,8 @@ class MembersModal extends Component {
       case 'removeclaim': {
         return 'Are you sure you want to remove this claim ?';
       }
-      case 'readycase': {
-        return 'Ready case';
+      case 'submitcasefile': {
+        return 'Submit case for arbitration';
       }
       case 'respondclaim': {
         return 'Respond to claim';
@@ -271,16 +271,14 @@ class MembersModal extends Component {
           </Row>
         </Container>
       </ModalHeader>,
-      this.props.case && // TODO change styling of that
+      this.props.claim && // TODO change styling of that
       <ModalBody key="information">
         <Container>
-          {this.props.claim &&
           <Row>
             Claim ID: {this.props.claim.claim_id}
             <br/>
             Claim status: {this.props.claim.claim_id}
           </Row>
-          }
         </Container>
       </ModalBody>
     ];
@@ -335,7 +333,7 @@ class MembersModal extends Component {
       );
 
     }
-    else if (actionName === 'readycase') {
+    else if (actionName === 'submitcasefile') {
 
       rendered.push(
         <ModalBody key="description">
@@ -345,7 +343,7 @@ class MembersModal extends Component {
       rendered.push(
         <ModalFooter key="footer">
           <Button color="info" onClick={this.props.cancel}>Cancel</Button>
-          <Button color='success' onClick={this.handleSubmit()}>Deposit</Button>
+          <Button color='success' onClick={this.handleSubmit()}>Submit</Button>
         </ModalFooter>
       );
 
@@ -376,7 +374,7 @@ const mapDispatchToProps = {
   addClaim: CasesActions.addClaim,
   shredCase: CasesActions.shredCase,
   removeClaim: CasesActions.removeClaim,
-  readyCase: CasesActions.readyCase,
+  submitCasefile: CasesActions.submitCasefile,
   respondClaim: CasesActions.respondClaim,
 };
 

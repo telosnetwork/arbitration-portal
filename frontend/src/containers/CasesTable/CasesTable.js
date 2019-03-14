@@ -50,10 +50,10 @@ class CasesTable extends Component {
       this.props.setMemberAction('respondclaim');
     }
   }
-  onReadyCasefile(casefile) {
+  onSubmitCasefile(casefile) {
     return () => {
       this.props.setSelectedCase(casefile.case_id);
-      this.props.setMemberAction('readycase');
+      this.props.setMemberAction('submitcasefile');
     }
   }
   onAddClaim(casefile) {
@@ -92,12 +92,7 @@ class CasesTable extends Component {
     return (
       <tr key={claim._id}>
         <td className="claim-col">
-          <Row style={{ alignItems: 'center' }}>
-            <div className="claim-divider"/>
-            <div>
-              Claim {claim.claim_status === 'accepted' && `#${claim.claim_id}`}
-            </div>
-          </Row>
+          Claim #{claim.claim_status === 'accepted' ? `${claim.claim_id}` : '-'}
         </td>
         <td>
           {claim.claim_status === 'unread' && 'Unread'}
@@ -182,10 +177,14 @@ class CasesTable extends Component {
           </Button>
         </td>
         <td>
-          {this.isClaimant() && <Button color="primary" onClick={this.onAddClaim(casefile)}>Add claim</Button>}
+          {this.isClaimant() && casefile.case_status === 0  &&
+          <Button color="primary" onClick={this.onAddClaim(casefile)}>Add claim</Button>
+          }
         </td>
         <td align="right">
-          {this.isClaimant() && <Button color="success" onClick={this.onReadyCasefile(casefile)}>Submit for arbitration</Button>}
+          {this.isClaimant() && casefile.case_status === 0 &&
+          <Button color="success" onClick={this.onSubmitCasefile(casefile)}>Submit for arbitration</Button>
+          }
         </td>
       </tr>,
       claims,
