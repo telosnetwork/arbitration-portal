@@ -99,3 +99,11 @@ export function submitCasefile(case_id) {
     case_id,
   }
 }
+
+export function executeAction(actionName, actionData) {
+  return {
+    type: ActionTypes.EXECUTE_ACTION,
+    actionName,
+    actionData,
+  }
+}

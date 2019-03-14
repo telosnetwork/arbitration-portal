@@ -136,6 +136,12 @@ class MembersModal extends Component {
         payload.claim_id = this.props.claim.claim_id;
       }
 
+      const formValues = this.state.formValues || {};
+
+      this.props.executeAction(this.props.actionName, formValues);
+
+      return;
+
       switch (this.props.actionName) {
         case 'filecase': {
           const caseData = {
@@ -373,6 +379,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = {
+  executeAction: CasesActions.executeAction,
   fileCase: CasesActions.fileCase,
   addClaim: CasesActions.addClaim,
   shredCase: CasesActions.shredCase,

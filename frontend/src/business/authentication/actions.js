@@ -21,11 +21,12 @@ export function logout() {
   }
 }
 
-export function setAuthentication({ isLogin, account, eosio }) {
+export function setAuthentication({ isLogin, account, eosio, arbitrationContract }) {
   return {
     type: ActionTypes.SET_AUTH,
     isLogin,
     account,
     eosio,
+    arbitrationContract,
   }
 }

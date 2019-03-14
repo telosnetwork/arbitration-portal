@@ -19,17 +19,28 @@ export function* finishAction() {
 
 }
 
-export function* executeAction({ action, actionData }) {
+export function* executeAction({ actionName, actionData }) {
 
   yield put(actions.setMemberActionLoading(true));
 
-  const eosio = yield select(AuthenticationSelectors.eosio);
+  const arbitrationContract = yield select(AuthenticationSelectors.arbitrationContract);
+  const account = yield select(AuthenticationSelectors.account);
 
-  yield eosio.createAndSendAction(
-    process.env.REACT_APP_EOSIO_CONTRACT_ACCOUNT,
-    action,
-    actionData
-  );
+  switch(actionName) {
+    case 'filecase': {
+      const casefileData = {
+        claimant: account.name,
+        claim_link: actionData.claim_link,
+        lang_codes: actionData.lang_codes,
+        respondant: actionData.respondant,
+      };
+      yield arbitrationContract.fileCase(casefileData);
+      break;
+    }
+    default: {
+      throw new Error(`Unknown action ${actionName}`);
+    }
+  }
 
   yield finishAction();
 
@@ -37,19 +48,9 @@ export function* executeAction({ action, actionData }) {
 
 export function* fileCase({ caseData }) {
 
-  const account = yield select(AuthenticationSelectors.account);
-
-  const claimant = account.name;
-  const { claim_link, lang_codes, respondant } = caseData;
-
-  const actionData = {
-    claimant,
-    claim_link,
-    lang_codes,
-    respondant,
-  };
-
-  yield executeAction({ action: 'filecase', actionData })
+  const actionName = 'filecase';
+  const actionData = { caseData };
+  yield executeAction({ actionName, actionData });
 
 }
 
@@ -122,6 +123,8 @@ export function* removeClaim({ casefile, claim }) {
 
 export function* readyCase({ case_id }) {
 
+  const arbitratorContract = yield select(AuthenticationSelectors.arbitratorContract);
+
   const account = yield select(AuthenticationSelectors.account);
   const claimant = account.name;
 
@@ -130,7 +133,8 @@ export function* readyCase({ case_id }) {
     claimant,
   };
 
-  yield executeAction({ action: 'readycase', actionData })
+
+  yield arbitratorContract.executeAction({ action: 'readycase', actionData })
 
 }
 
@@ -294,6 +298,7 @@ export function* listenWebsocket() {
 export default function* casesSaga() {
 
   yield takeEvery(ActionTypes.FETCH_CASES, fetchCases);
+
   yield takeEvery(ActionTypes.FILE_CASE, fileCase);
   yield takeEvery(ActionTypes.ADD_CLAIM, addClaim);
   yield takeEvery(ActionTypes.DELETE_CASE, deleteCase);
@@ -302,8 +307,11 @@ export default function* casesSaga() {
   yield takeEvery(ActionTypes.REMOVE_CLAIM, removeClaim);
   yield takeEvery(ActionTypes.READY_CASE, readyCase);
   yield takeEvery(ActionTypes.RESPOND_CLAIM, respondClaim);
+  yield takeEvery(ActionTypes.SUBMIT_CASEFILE, submitCasefile);
+
   yield takeEvery(ActionTypes.LISTEN_WEBSOCKET, listenWebsocket);
   yield takeEvery(ActionTypes.HANDLE_WEBSOCKET, handleWebsocket);
-  yield takeEvery(ActionTypes.SUBMIT_CASEFILE, submitCasefile);
+
+  yield takeEvery(ActionTypes.EXECUTE_ACTION, executeAction);
 
 }
