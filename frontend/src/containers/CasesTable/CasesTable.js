@@ -103,7 +103,7 @@ class CasesTable extends Component {
           {claim.claim_status === 'accepted' && 'Accepted'}
           {claim.claim_status === 'dismissed' && 'Declined'}
         </td>
-        <td>
+        <td align="right">
           <Button color="primary" onClick={() => this.openSummary(claim)}>Summary</Button>
           {!!claim.decision_link && <Button color="primary" onClick={() => this.openResponse(claim)}>Response</Button>}
           {!!claim.response_link && <Button color="primary" onClick={() => this.openDecision(claim)}>Decision</Button>}
@@ -113,11 +113,33 @@ class CasesTable extends Component {
       </tr>
     );
   }
+
+  renderClaims(casefile) {
+    return (
+      <tr key="claims">
+        <td colSpan="3">
+          <Table hover>
+            <thead>
+            <tr>
+              <th sm="4">Claim ID</th>
+              <th sm="4">Status</th>
+              <th sm="4" style={{textAlign: 'right'}}>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            {casefile.claims.map(claim => this.renderClaim(casefile, claim))}
+            </tbody>
+          </Table>
+        </td>
+      </tr>
+    );
+  }
+
   renderCase(casefile) {
 
     const claims = this.state.caseClaimsOpen[casefile._id] ?
-      casefile.claims.map(claim => this.renderClaim(casefile, claim)) :
-      [];
+      this.renderClaims(casefile) :
+      null;
 
     return [
       <tr key={casefile._id}>
@@ -127,26 +149,26 @@ class CasesTable extends Component {
         <td>
           {CaseStatus[casefile.case_status]}
         </td>
-        <td>
+        <td align="right">
           {this.isClaimant() && casefile.case_status === 0 &&
           <Button color="danger" onClick={this.onShredCasefile(casefile)}>Shred</Button>
           }
         </td>
       </tr>,
-      claims,
       <tr key="caseactions">
         <td>
           <Button color={this.state.caseClaimsOpen[casefile._id] ? 'warning' : 'info'} onClick={() => this.openCaseClaims(casefile._id)}>
-            {this.state.caseClaimsOpen[casefile._id] ? 'Hide cases' : 'Show cases'}
+            {this.state.caseClaimsOpen[casefile._id] ? 'Hide claims' : 'Show claims'}
           </Button>
         </td>
         <td>
           {this.isClaimant() && <Button color="primary" onClick={this.onAddClaim(casefile)}>Add claim</Button>}
         </td>
-        <td>
+        <td align="right">
           {this.isClaimant() && <Button color="success" onClick={this.onReadyCasefile(casefile)}>Submit for arbitration</Button>}
         </td>
       </tr>,
+      claims,
     ];
 
   }
@@ -162,12 +184,12 @@ class CasesTable extends Component {
             {this.props.memberType === 'claimant' && "Claimant cases"}
             {this.props.memberType === 'respondant' && "Respondant cases"}
           </Row>
-          <Table hover>
+          <Table>
             <thead>
             <tr>
               <th sm="4">Case ID</th>
               <th sm="4">Status</th>
-              <th sm="4">Actions</th>
+              <th sm="4" style={{textAlign: 'right'}}>Actions</th>
             </tr>
             </thead>
             <tbody>

@@ -5,7 +5,7 @@ import { ActionTypes }    from 'const';
 import * as api     from 'utils/api-client';
 import IoClient from 'utils/io-client';
 import * as actions from './actions';
-import {AuthenticationSelectors, ClaimsSelectors} from '../selectors';
+import { AuthenticationSelectors } from '../selectors';
 import { ClaimsActions } from '../actions';
 
 // TODO All this things should be done in a contract wrapper outside of the saga, and the saga should call them
