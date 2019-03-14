@@ -19,26 +19,17 @@ export function* finishAction() {
 
 }
 
-export function* sendAction({ action, actionData }) {
+export function* executeAction({ action, actionData }) {
 
   yield put(actions.setMemberActionLoading(true));
 
   const eosio = yield select(AuthenticationSelectors.eosio);
 
-  let actionObject = yield eosio.makeAction(
+  yield eosio.createAndSendAction(
     process.env.REACT_APP_EOSIO_CONTRACT_ACCOUNT,
     action,
-    actionData,
+    actionData
   );
-  console.log(actionObject);
-
-  let result = yield eosio.sendTx(actionObject);
-  console.log('Results: ', result);
-  if (result) {
-    alert(`FileCase Successful`);
-  } else {
-    alert(`FileCase Unsuccessful`);
-  }
 
   yield finishAction();
 
@@ -58,7 +49,7 @@ export function* fileCase({ caseData }) {
     respondant,
   };
 
-  yield sendAction({ action: 'filecase', actionData })
+  yield executeAction({ action: 'filecase', actionData })
 
 }
 
@@ -75,7 +66,7 @@ export function* addClaim({ claimData }) {
     claim_link,
   };
 
-  yield sendAction({ action: 'addclaim', actionData })
+  yield executeAction({ action: 'addclaim', actionData })
 
 }
 
@@ -85,7 +76,7 @@ export function* deleteCase({ case_id }) {
     case_id,
   };
 
-  yield sendAction({ action: 'deletecase', actionData })
+  yield executeAction({ action: 'deletecase', actionData })
 
 }
 
@@ -99,7 +90,7 @@ export function* shredCase({ case_id }) {
     claimant,
   };
 
-  yield sendAction({ action: 'shredcase', actionData })
+  yield executeAction({ action: 'shredcase', actionData })
 
 }
 
@@ -110,10 +101,9 @@ export function* deleteClaim({ case_id, claim_id }) {
     claim_id,
   };
 
-  yield sendAction({ action: 'deleteclaim', actionData })
+  yield executeAction({ action: 'deleteclaim', actionData })
 
 }
-
 
 export function* removeClaim({ casefile, claim }) {
 
@@ -126,7 +116,7 @@ export function* removeClaim({ casefile, claim }) {
     claim_hash: claim.claim_summary,
   };
 
-  yield sendAction({ action: 'removeclaim', actionData })
+  yield executeAction({ action: 'removeclaim', actionData })
 
 }
 
@@ -140,9 +130,58 @@ export function* readyCase({ case_id }) {
     claimant,
   };
 
-  yield sendAction({ action: 'readycase', actionData })
+  yield executeAction({ action: 'readycase', actionData })
 
 }
+
+export function* getAccountBalance() {
+
+  const eosio = yield select(AuthenticationSelectors.eosio);
+  const account = yield select(AuthenticationSelectors.account);
+
+  // TODO use demux ?
+  const balanceRows = yield eosio.getTable('eosio.arb', 'accounts', account.name, 1);
+  const balanceString = balanceRows[0] ? balanceRows[0].balance : '0.0000 TLOS';
+  const balance = eosio.constructor.parseBalance(balanceString);
+
+  return balance;
+
+}
+export function* deposit() {
+
+  const eosio = yield select(AuthenticationSelectors.eosio);
+  const account = yield select(AuthenticationSelectors.account);
+
+  const actionData =  {
+    from: account.name,
+    to: 'eosio.arb',
+    quantity: '100.0000 TLOS',
+    memo: 'Deposit for arbitration',
+  };
+
+  yield eosio.createAndSendAction(
+    'eosio.token',
+    'transfer',
+    actionData
+  );
+
+}
+
+export function* submitCasefile({ case_id }) {
+
+  yield put(actions.setMemberActionLoading(true));
+
+  const balance = yield getAccountBalance();
+  if(parseFloat(balance) < 100) {
+    yield deposit();
+  }
+
+  yield readyCase({ case_id });
+
+  yield finishAction();
+
+}
+
 export function* respondClaim({ responseData }) {
 
   const account = yield select(AuthenticationSelectors.account);
@@ -159,7 +198,7 @@ export function* respondClaim({ responseData }) {
     response_link,
   };
 
-  yield sendAction({ action: 'respond', actionData })
+  yield executeAction({ action: 'respond', actionData })
 
 }
 
@@ -242,7 +281,6 @@ export function* handleWebsocket({ payload }) {
 
 }
 
-
 export function* listenWebsocket() {
 
   const channel = yield call(initWebsocket);
@@ -266,5 +304,6 @@ export default function* casesSaga() {
   yield takeEvery(ActionTypes.RESPOND_CLAIM, respondClaim);
   yield takeEvery(ActionTypes.LISTEN_WEBSOCKET, listenWebsocket);
   yield takeEvery(ActionTypes.HANDLE_WEBSOCKET, handleWebsocket);
+  yield takeEvery(ActionTypes.SUBMIT_CASEFILE, submitCasefile);
 
 }

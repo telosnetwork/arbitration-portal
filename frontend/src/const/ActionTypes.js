@@ -24,6 +24,7 @@ export default {
   ADD_CLAIM:            'ADD_CLAIM',
   DELETE_CLAIM:         'DELETE_CLAIM',
   READY_CASE:           'READY_CASE',
+  SUBMIT_CASEFILE:      'SUBMIT_CASEFILE',
   RESPOND_CLAIM:        'RESPOND_CLAIM',
 
   // Claims

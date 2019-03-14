@@ -66,12 +66,6 @@ export function removeClaim(casefile, claim) {
     claim,
   }
 }
-export function readyCase(case_id) {
-  return {
-    type: ActionTypes.READY_CASE,
-    case_id,
-  }
-}
 export function respondClaim(responseData) {
   return {
     type: ActionTypes.RESPOND_CLAIM,
@@ -93,3 +87,15 @@ export function setMemberActionLoading(loading) {
   }
 }
 
+export function readyCase(case_id) {
+  return {
+    type: ActionTypes.READY_CASE,
+    case_id,
+  }
+}
+export function submitCasefile(case_id) {
+  return {
+    type: ActionTypes.SUBMIT_CASEFILE,
+    case_id,
+  }
+}

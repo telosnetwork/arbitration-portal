@@ -88,4 +88,47 @@ export default class ScatterBridge {
       data: data
     };
   }
+
+  async createAndSendAction(contract, actionName, actionData) {
+
+    let actionObject = await this.makeAction(
+      contract,
+      actionName,
+      actionData,
+    );
+    console.log(actionObject);
+
+    let result = await this.sendTx(actionObject);
+    console.log('Send tx result: ', result);
+
+    if (result) {
+      return result;
+    } else {
+      throw new Error('Error in sending action')
+    }
+
+  }
+
+  async getTable(code, table, scope, limit = 10) {
+
+    let result = await this.rpc.get_table_rows({
+      code,
+      table,
+      scope,
+      limit,
+      json:  true
+    });
+
+    return result.rows;
+  }
+
+  static parseBalance(balanceString) {
+    const [value, token] = balanceString.split(' ');
+
+    return {
+      token,
+      value,
+    };
+
+  }
 }

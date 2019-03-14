@@ -335,9 +335,12 @@ class MembersModal extends Component {
     }
     else if (actionName === 'submitcasefile') {
 
+      // TODO get and display account's balance on the contract
       rendered.push(
         <ModalBody key="description">
           In order to ready the case, you need to make a deposit of 100 TLOS.
+          <br/>
+          If your balance on the contract is lower than 100 TLOS, a transfer will automatically be created.
         </ModalBody>
       );
       rendered.push(
