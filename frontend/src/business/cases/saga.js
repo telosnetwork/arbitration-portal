@@ -1,4 +1,4 @@
-import { call, take, put, takeEvery, select } from 'redux-saga/effects';
+import { all, call, take, put, takeEvery, select } from 'redux-saga/effects';
 import { eventChannel } from 'redux-saga';
 import { ActionTypes }    from 'const';
 
@@ -165,17 +165,13 @@ export function* fetchCases() {
   if(!account) throw new Error('Must be logged in first')
   const memberName = account.name;
 
-  // TODO parallel
+  const [ claimantCases, respondantCases ]  = yield all([
+    call(api.getCases, { claimant: memberName }),
+    call(api.getCases, { respondant: memberName }),
+  ]);
 
-  let claimantCases = yield api.getCases({
-    claimant: memberName,
-  });
-  yield put(actions.setClaimantCases(claimantCases));
-
-  let respondantCases = yield api.getCases({
-    respondant: memberName,
-  });
   yield put(actions.setRespondantCases(respondantCases));
+  yield put(actions.setClaimantCases(claimantCases));
 
 }
 
