@@ -1,8 +1,12 @@
-import { createStore, compose } from 'redux';
+import { createStore, compose, applyMiddleware } from 'redux';
+import createSagaMiddleware from 'redux-saga';
+
 import rootReducer              from 'business/reducers';
+import indexSagas              from 'business/sagas';
 
 const initialState = {};
-const enhancers = [];
+const sagaMiddleware = createSagaMiddleware();
+const enhancers = [applyMiddleware(sagaMiddleware)];
 
 // DevTools Extension for debugging in Chrome
 if (process.env.NODE_ENV === 'development') {
@@ -15,12 +19,14 @@ if (process.env.NODE_ENV === 'development') {
 
 const composedEnhancers = compose(
   ...enhancers
-)
+);
 
 const store = createStore(
   rootReducer,
   initialState,
   composedEnhancers
-)
+);
+
+sagaMiddleware.run(indexSagas);
 
 export default store;

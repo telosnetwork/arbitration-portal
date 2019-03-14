@@ -4,23 +4,21 @@ import { createReducer } from 'utils/redux';
 export const STATE_KEY = 'authentication';
 
 const initialState = {
-    isLogin: false,
-    account: null
+  isLogin: false,
+  account: null,
+  eosio: null,
+  arbitrationContract: null,
 };
 
 function setAuth(state, action) {
-    switch (action.type) {
-        case ActionTypes.SET_AUTH: {
-            return Object.assign({}, state, {
-                isLogin: typeof action.isLogin === "undefined" ? !state.isLogin : action.isLogin,
-                account: action.account || initialState.account
-            })
-        }
-        default:
-            return state;
-    }
+  return Object.assign({}, state, {
+    isLogin: action.isLogin,
+    account: action.account,
+    eosio: action.eosio,
+    arbitrationContract: action.arbitrationContract,
+  });
 }
 
 export const reducer = createReducer(initialState, {
-    [ActionTypes.SET_AUTH]: setAuth,
+  [ActionTypes.SET_AUTH]: setAuth,
 });
