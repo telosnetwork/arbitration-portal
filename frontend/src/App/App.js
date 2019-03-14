@@ -5,7 +5,6 @@ import {  Route, Switch }   from 'react-router-dom';
 import Transfers                 from '../containers/Transfers';
 import Arbitrators               from '../containers/Arbitrators';
 import Members                   from '../containers/Members';
-import MembersHome                   from '../containers/MembersHome';
 import NavBar                     from '../containers/NavBar';
 
 // Resources
@@ -42,8 +41,7 @@ class App extends Component {
                 <Switch>
                     <Route exact path='/' render={Home} />
                     <Route exact path='/arbitrators' component={Arbitrators} />
-                    <Route exact path='/members'     component={MembersHome} />
-                    <Route exact path='/members_reg'     component={Members} />
+                    <Route exact path='/members'     component={Members} />
                     <Route exact path='/transfers'   component={Transfers} />
                     <Route render={NotFound}/>
                 </Switch>
