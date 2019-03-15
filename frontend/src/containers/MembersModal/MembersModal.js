@@ -233,7 +233,7 @@ class MembersModal extends Component {
           <Row>
             Claim ID: {this.props.claim.claim_id}
             <br/>
-            Claim status: {this.props.claim.claim_id}
+            Claim status: {this.props.claim.claim_status}
           </Row>
         </Container>
       </ModalBody>
