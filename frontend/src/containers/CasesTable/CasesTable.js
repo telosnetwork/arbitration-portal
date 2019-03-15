@@ -84,6 +84,9 @@ class CasesTable extends Component {
   openDecision(claim) {
     window.open(`https://${claim.decision_link}`);
   }
+  onOpenCaseRuling(casefile) {
+    window.open(`https://${casefile.case_ruling}`);
+  }
 
 
   renderClaim(casefile, claim) {
@@ -102,9 +105,11 @@ class CasesTable extends Component {
         </td>
         <td align="right">
           <Button color="primary" onClick={() => this.openSummary(claim)}>Summary</Button>
-          {!!claim.decision_link && <Button color="primary" onClick={() => this.openResponse(claim)}>Response</Button>}
-          {!!claim.response_link && <Button color="primary" onClick={() => this.openDecision(claim)}>Decision</Button>}
-          {this.isRespondant()   && <Button color="info"    onClick={this.onRespondClaim(casefile, claim)}>Respond</Button>}
+          {!!claim.response_link && <Button color="primary" onClick={() => this.openResponse(claim)}>Response</Button>}
+          {!!claim.decision_link && <Button color="primary" onClick={() => this.openDecision(claim)}>Decision</Button>}
+          {claim.claim_status === 'unread' && casefile.case_status === 2 && this.isRespondant() &&
+          <Button color="info" onClick={this.onRespondClaim(casefile, claim)}>Respond</Button>
+          }
           {claim.claim_status === 'unread' && casefile.case_status === 0 &&
           this.isClaimant() && <Button color="danger" onClick={this.onRemoveClaim(casefile, claim)}>Remove</Button>}
         </td>
@@ -115,7 +120,7 @@ class CasesTable extends Component {
   renderClaims(casefile) {
     return (
       <tr key="claims">
-        <td colSpan="6">
+        <td colSpan="5">
           <Table hover>
             <thead>
             <tr>
@@ -160,19 +165,12 @@ class CasesTable extends Component {
             '-'
           }
         </td>
-        <td>
-          <div className="case-ruling">
-            {casefile.case_ruling ?
-              <a href={`https://${casefile.case_ruling}`} target="_blank" rel="noopener noreferrer" >
-                {casefile.case_ruling}
-              </a>
-              : '-'
-            }
-          </div>
-        </td>
         <td align="right">
           {this.isClaimant() && casefile.case_status === 0 &&
           <Button color="danger" onClick={this.onShredCasefile(casefile)}>Shred</Button>
+          }
+          {casefile.case_ruling &&
+          <Button color="info" onClick={() => this.onOpenCaseRuling(casefile)}>Case ruling</Button>
           }
         </td>
       </tr>,
@@ -196,6 +194,9 @@ class CasesTable extends Component {
           <Button color="success" onClick={this.onSubmitCasefile(casefile)}>Submit for arbitration</Button>
           }
         </td>
+        <td/>
+        <td/>
+        <td/>
       </tr>,
       claims,
     ];
@@ -220,8 +221,7 @@ class CasesTable extends Component {
               <th sm="1">Status</th>
               <th sm="3">Arbitrators</th>
               <th sm="3">Approvals</th>
-              <th sm="1">Case ruling</th>
-              <th sm="3" style={{textAlign: 'right'}}>Actions</th>
+              <th sm="4" style={{textAlign: 'right'}}>Actions</th>
             </tr>
             </thead>
             <tbody>
