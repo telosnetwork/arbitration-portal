@@ -4,14 +4,14 @@ import { createReducer } from 'utils/redux';
 export const STATE_KEY = 'claims';
 
 const initialState = {
-  selectedClaimId: null,
+  selectedClaimSummary: null,
 };
 
 function setSelectedClaim(state, action) {
 
   return {
     ...state,
-    selectedClaimId: action.claim_id !== undefined ? action.claim_id : null,
+    selectedClaimSummary: action.claim_summary !== undefined ? action.claim_summary : null,
   };
 // const emptyClaim = {
 //     claim_id:       0,

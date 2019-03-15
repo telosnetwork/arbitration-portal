@@ -234,6 +234,8 @@ class MembersModal extends Component {
             Claim ID: {this.props.claim.claim_id}
             <br/>
             Claim status: {this.props.claim.claim_status}
+            <br/>
+            Claim hash: {this.props.claim.claim_summary}
           </Row>
         </Container>
       </ModalBody>

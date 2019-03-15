@@ -126,11 +126,32 @@ export function* executeAction({ actionName, actionData }) {
 
 }
 
-export function* fetchCases() {
+export function* fetchCasesFromTable() {
 
   const account = yield select(AuthenticationSelectors.account);
   if(!account) throw new Error('Must be logged in first to fetch cases');
+  const arbitrationContract = yield select(AuthenticationSelectors.arbitrationContract);
   const memberName = account.name;
+
+  const cases = yield arbitrationContract.getCases();
+  const acceptedClaims = yield arbitrationContract.getClaims();
+  console.log(cases, acceptedClaims);
+  cases.forEach(casefile => {
+    casefile.accepted_claims = casefile.accepted_claims.map(claimId => acceptedClaims.find(claim => claim.claim_id === claimId));
+  });
+  console.log(cases);
+
+  const claimantCases = cases.filter(c => c.claimant === memberName);
+  const respondantCases = cases.filter(c => c.respondant === memberName);
+
+  yield put(actions.setClaimantCases(claimantCases));
+  yield put(actions.setRespondantCases(respondantCases));
+
+}
+
+export function* fetchCases() {
+
+  yield fetchCasesFromTable();
 
   /*
   const [ claimantCases, respondantCases ]  = yield all([
@@ -141,15 +162,6 @@ export function* fetchCases() {
   yield put(actions.setRespondantCases(respondantCases));
   yield put(actions.setClaimantCases(claimantCases));
   */
-
-  // TODO remove when demux indexes are ok
-  const arbitrationContract = yield select(AuthenticationSelectors.arbitrationContract);
-  const data = yield arbitrationContract.getCases();
-  const claimantCases = data.filter(c => c.claimant === memberName);
-  const respondantCases = data.filter(c => c.respondant === memberName);
-  yield put(actions.setClaimantCases(claimantCases));
-  yield put(actions.setRespondantCases(respondantCases));
-
 
 }
 

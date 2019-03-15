@@ -1,9 +1,9 @@
 import { ActionTypes } from 'const';
 
-export function setSelectedClaim(claim_id) {
+export function setSelectedClaim(claim_summary) {
   return {
     type: ActionTypes.SET_SELECTED_CLAIM,
-    claim_id,
+    claim_summary,
   };
 }
 

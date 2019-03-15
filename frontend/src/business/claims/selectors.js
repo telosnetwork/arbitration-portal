@@ -6,7 +6,7 @@ import {createSelector} from "reselect/lib/index";
 
 import { getSelectedCase } from '../cases/selectors';
 
-export const getSelectedClaimId = selectProperty([STATE_KEY, 'selectedClaimId'], null);
+export const getSelectedClaimSummary = selectProperty([STATE_KEY, 'selectedClaimSummary'], null);
 
 export const getClaims = createSelector(
   getSelectedCase,
@@ -15,8 +15,8 @@ export const getClaims = createSelector(
 
 export const getSelectedClaim = createSelector(
   getClaims,
-  getSelectedClaimId,
-  (claims, claimId) => claimId !== undefined ? claims.find(c => c.claim_id === claimId) : null,
+  getSelectedClaimSummary,
+  (claims, claimSummary) => claimSummary !== undefined ? claims.find(c => c.claim_summary === claimSummary) : null,
 );
 
 // export const getClaims = selectProperty([STATE_KEY], null);

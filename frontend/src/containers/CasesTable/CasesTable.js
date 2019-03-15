@@ -44,7 +44,7 @@ class CasesTable extends Component {
   onRespondClaim(casefile, claim) {
     return () => {
       this.props.setSelectedCase(casefile.case_id);
-      this.props.setSelectedClaim(claim.claim_id);
+      this.props.setSelectedClaim(claim.claim_summary);
       this.props.setMemberAction('respondclaim');
     }
   }
@@ -63,7 +63,7 @@ class CasesTable extends Component {
   onRemoveClaim(casefile, claim) {
     return () => {
       this.props.setSelectedCase(casefile.case_id);
-      this.props.setSelectedClaim(claim.claim_id);
+      this.props.setSelectedClaim(claim.claim_summary);
       this.props.setMemberAction('removeclaim');
     }
   }
@@ -91,7 +91,7 @@ class CasesTable extends Component {
 
   renderClaim(casefile, claim) {
     return (
-      <tr key={claim.claim_id}>
+      <tr key={claim.claim_summary}>
         <td className="claim-col">
           Claim #{claim.claim_status === 'accepted' ? `${claim.claim_id}` : '-'}
         </td>
