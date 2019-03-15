@@ -30,11 +30,14 @@ function setClaimantCases(state, action) {
   const claimantCases = action.cases.map(c => Object.assign({}, emptyCase, c));
 
   claimantCases.forEach(casefile => {
-    //casefile.case_id += 10;
+
+    // TODO restore this when demux fixed
     casefile.unread_claims.forEach(c => c.claim_status = 'unread');
     casefile.accepted_claims.forEach(c => c.claim_status = 'accepted');
-    casefile.dismiss_claims.forEach(c => c.claim_status = 'dismissed');
+    casefile.dismiss_claims = [];
+    //casefile.dismiss_claims.forEach(c => c.claim_status = 'dismissed');
     casefile.claims = [].concat(casefile.unread_claims).concat(casefile.accepted_claims).concat(casefile.dismiss_claims);
+
   });
 
   return {
@@ -48,10 +51,14 @@ function setRespondantCases(state, action) {
   const respondantCases = action.cases.map(c => Object.assign({}, emptyCase, c));
 
   respondantCases.forEach(casefile => {
+
+    // TODO restore this when demux fixed
     casefile.unread_claims.forEach(c => c.claim_status = 'unread');
     casefile.accepted_claims.forEach(c => c.claim_status = 'accepted');
-    casefile.dismiss_claims.forEach(c => c.claim_status = 'dismissed');
+    casefile.dismiss_claims = [];
+    //casefile.dismiss_claims.forEach(c => c.claim_status = 'dismissed');
     casefile.claims = [].concat(casefile.unread_claims).concat(casefile.accepted_claims).concat(casefile.dismiss_claims);
+
   });
 
   return {

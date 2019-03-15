@@ -134,10 +134,7 @@ class ArbitrationContract {
     // TODO use demux server ?
     const balanceRows = await this.eosio.getTable(contractAddress, 'accounts', account_name, 1);
     const balances = balanceRows.map(balanceRow => this.eosio.constructor.parseBalance(balanceRow.balance));
-
     const tlosBalance = balances.find(b => b.token === 'TLOS');
-
-    console.log(balanceRows, balances, tlosBalance);
 
     return tlosBalance || { value: '0.0000', token: 'TLOS' };
 

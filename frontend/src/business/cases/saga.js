@@ -1,8 +1,8 @@
-import { all, call, take, put, takeEvery, select } from 'redux-saga/effects';
+import { /*all,*/ call, take, put, takeEvery, select } from 'redux-saga/effects';
 import { eventChannel } from 'redux-saga';
 import { ActionTypes }    from 'const';
 
-import * as api     from 'utils/api-client';
+//import * as api     from 'utils/api-client';
 import IoClient from 'utils/io-client';
 import * as actions from './actions';
 import { AuthenticationSelectors, CasesSelectors, ClaimsSelectors } from '../selectors';
@@ -122,15 +122,38 @@ export function* executeAction({ actionName, actionData }) {
   }
 
   yield finishAction();
+  yield put(actions.fetchCases());
+
+}
+
+export function* fetchCasesFromTable() {
+
+  const account = yield select(AuthenticationSelectors.account);
+  if(!account) throw new Error('Must be logged in first to fetch cases');
+  const arbitrationContract = yield select(AuthenticationSelectors.arbitrationContract);
+  const memberName = account.name;
+
+  const cases = yield arbitrationContract.getCases();
+  const acceptedClaims = yield arbitrationContract.getClaims();
+  console.log(cases, acceptedClaims);
+  cases.forEach(casefile => {
+    casefile.accepted_claims = casefile.accepted_claims.map(claimId => acceptedClaims.find(claim => claim.claim_id === claimId));
+  });
+  console.log(cases);
+
+  const claimantCases = cases.filter(c => c.claimant === memberName);
+  const respondantCases = cases.filter(c => c.respondant === memberName);
+
+  yield put(actions.setClaimantCases(claimantCases));
+  yield put(actions.setRespondantCases(respondantCases));
 
 }
 
 export function* fetchCases() {
 
-  const account = yield select(AuthenticationSelectors.account);
-  if(!account) throw new Error('Must be logged in first to fetch cases');
-  const memberName = account.name;
+  yield fetchCasesFromTable();
 
+  /*
   const [ claimantCases, respondantCases ]  = yield all([
     call(api.getCases, { claimant: memberName }),
     call(api.getCases, { respondant: memberName }),
@@ -138,11 +161,7 @@ export function* fetchCases() {
 
   yield put(actions.setRespondantCases(respondantCases));
   yield put(actions.setClaimantCases(claimantCases));
-
-  // TODO remove when demux indexes are ok
-  const arbitrationContract = yield select(AuthenticationSelectors.arbitrationContract);
-  const data = yield arbitrationContract.getCases();
-  console.log(data );
+  */
 
 }
 
