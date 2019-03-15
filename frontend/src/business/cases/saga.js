@@ -1,8 +1,8 @@
-import { all, call, take, put, takeEvery, select } from 'redux-saga/effects';
+import { /*all,*/ call, take, put, takeEvery, select } from 'redux-saga/effects';
 import { eventChannel } from 'redux-saga';
 import { ActionTypes }    from 'const';
 
-import * as api     from 'utils/api-client';
+//import * as api     from 'utils/api-client';
 import IoClient from 'utils/io-client';
 import * as actions from './actions';
 import { AuthenticationSelectors, CasesSelectors, ClaimsSelectors } from '../selectors';
@@ -122,6 +122,7 @@ export function* executeAction({ actionName, actionData }) {
   }
 
   yield finishAction();
+  yield put(actions.fetchCases());
 
 }
 
