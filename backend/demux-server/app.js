@@ -36,6 +36,7 @@ mongoose.connect(process.env.MONGODB_URL, { useNewUrlParser: true }).then(() => 
       services.addService('demux', new Demux(models, {
          version:    process.env.VERSION,
          endpoint:   process.env.TELOS_ENDPOINT,
+         // endpoint: process.env.MONGO_ENDPOINT,
          startBlock: parseInt(process.env.STARTING_BLOCK),
          interval:   100
       }));

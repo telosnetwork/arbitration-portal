@@ -3,7 +3,7 @@ import models from '../../models';
 import io     from '../../utils/io';
 
 const stateHist = {};
-const stateHistMaxLength = 200;
+const stateHistMaxLength = 10;
 
 class ActionHandler extends AbstractActionHandler {
 
@@ -18,15 +18,30 @@ class ActionHandler extends AbstractActionHandler {
       await handle(state, context); // Passed to all calls of Updaters.APPLY & Effects.RUN
 
       // Update Demux Service State Hist
-      let blockNumber;
+      let blockNumber; let blockHash; let isReplay; let handlerVersionName;
       const indexState = await state.blockIndexState.findOne({}).exec();
       if (indexState) {
-        ({ blockNumber } = indexState)
+        ({ blockNumber } = indexState); ({ blockHash } = indexState);
+        ({ isReplay } = indexState);
+        ({ handlerVersionName } = indexState);
       }
 
       stateHist[blockNumber] = indexState;
+      
+      let block = {
+        blockNumber:        blockNumber,
+        blockHash:          blockHash,
+        isReplay:           isReplay,
+        handlerVersionName: handlerVersionName
+      };
+
+      await state.blockhist.create({
+        block: block
+      });
+
       if ( blockNumber > stateHistMaxLength && stateHist[blockNumber - stateHistMaxLength] ) {
         delete stateHist[blockNumber - stateHistMaxLength];
+        await state.blockhist.findOneAndDelete({ 'block.blockNumber': (blockNumber - stateHistMaxLength) }).exec();
       }
       console.log('StateHist Length: ', Object.keys(stateHist).length);
     } catch (err) {
@@ -43,7 +58,7 @@ class ActionHandler extends AbstractActionHandler {
         blockHash:          blockInfo.blockHash,
         isReplay:           isReplay,
         handlerVersionName: handlerVersionName
-      }, { upsert: true }).exec()
+      }, { upsert: true }).exec();
     } catch (err) {
       console.error(err);
     }
@@ -77,6 +92,16 @@ class ActionHandler extends AbstractActionHandler {
 
       for (const n of toDelete) {
         delete stateHist[n]
+      }
+
+      let histState = await models.blockhist.findOne({ 'block.blockNumber': blockNumber }).exec();
+      if (histState) {
+        await models.blockIndexState.updateOne({
+          blockNumber:        histState.blockNumber,
+          blockHash:          histState.blockHash,
+          isReplay:           histState.isReplay,
+          handlerVersionName: histState.handlerVersionName
+        }, { upsert: true }).exec();
       }
     } catch (err) {
       console.error(err);
