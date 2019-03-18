@@ -15,7 +15,7 @@ class ArbitratorsHome extends Component {
 
   openArbitratorsSettings() {
     return () => {
-      this.props.setAction('arbitratorssettings');
+      this.props.setAction('arbitratorsettings');
     }
   }
 

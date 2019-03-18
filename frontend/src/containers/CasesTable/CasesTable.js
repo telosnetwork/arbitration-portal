@@ -53,13 +53,31 @@ class CasesTable extends Component {
       this.props.setAction('addclaim');
     }
   }
+  onSetCaseRuling(casefile) {
+    return () => {
+      this.props.setSelectedCase(casefile.case_id);
+      this.props.setAction('setruling');
+    }
+  }
+  onAddArbs(casefile) {
+    return () => {
+      this.props.setSelectedCase(casefile.case_id);
+      this.props.setAction('addarbs');
+    }
+  }
 
   isClaimant() {
     return this.props.caseType === 'claimant';
   }
 
+  isArbitrator() {
+    return this.props.caseType === 'arbitrator';
+  }
+
   onOpenCaseRuling(casefile) {
-    window.open(`https://${casefile.case_ruling}`);
+    return () => {
+      window.open(`https://${casefile.case_ruling}`);
+    };
   }
 
   renderCase(casefile) {
@@ -89,7 +107,13 @@ class CasesTable extends Component {
           <Button color="danger" onClick={this.onShredCasefile(casefile)}>Shred</Button>
           }
           {casefile.case_ruling &&
-          <Button color="info" onClick={() => this.onOpenCaseRuling(casefile)}>Case ruling</Button>
+          <Button color="primary" onClick={this.onOpenCaseRuling(casefile)}>Case ruling</Button>
+          }
+          {this.isArbitrator() && casefile.case_status === 6 &&
+          <Button color="info" onClick={this.onSetCaseRuling(casefile)}>Case ruling</Button>
+          }
+          {this.isArbitrator() && casefile.case_status === 2 &&
+          <Button color="info" onClick={this.onAddArbs(casefile)}>Add arbitrators</Button>
           }
         </td>
       </tr>,

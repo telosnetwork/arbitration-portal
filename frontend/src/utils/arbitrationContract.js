@@ -129,6 +129,42 @@ class ArbitrationContract {
 
   }
 
+  async addArbs(addArbsData) {
+
+    const { case_id, assigned_arb, num_arbs_to_assign } = addArbsData;
+
+    const actionData = {
+      case_id,
+      assigned_arb,
+      num_arbs_to_assign,
+    };
+
+    await this.eosio.createAndSendAction(
+      contractAddress,
+      'addarbs',
+      actionData
+    );
+
+  }
+
+  async setRuling(setRulingData) {
+
+    const { case_id, assigned_arb, case_ruling } = setRulingData;
+
+    const actionData = {
+      case_id,
+      assigned_arb,
+      case_ruling,
+    };
+
+    await this.eosio.createAndSendAction(
+      contractAddress,
+      'setruling',
+      actionData
+    );
+
+  }
+
   async getAccountBalance(account_name) {
 
     // TODO use demux server ?

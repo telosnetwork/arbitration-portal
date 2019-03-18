@@ -91,6 +91,28 @@ export function* executeAction({ actionName, actionData }) {
       break;
 
     }
+    case 'addarbs': {
+
+      const data = {
+        case_id: casefile.case_id,
+        assigned_arb: account.name,
+        num_arbs_to_assign: actionData.num_arbs_to_assign,
+      };
+      yield arbitrationContract.addArbs(data);
+      break;
+
+    }
+    case 'setruling': {
+
+      const data = {
+        case_id: casefile.case_id,
+        assigned_arb: account.name,
+        case_ruling: actionData.case_ruling,
+      };
+      yield arbitrationContract.setRuling(data);
+      break;
+
+    }
     case 'submitcasefile': {
 
       const account = yield select(AuthenticationSelectors.account);

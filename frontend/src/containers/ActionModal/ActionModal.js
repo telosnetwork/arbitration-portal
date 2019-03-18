@@ -23,6 +23,7 @@ const languageCodes = {
   PGSE: '7',
   SWED: '8'
 };
+
 const forms = {
   filecase: {
     respondant: {
@@ -56,6 +57,23 @@ const forms = {
   respondclaim: {
     response_link: {
       label: 'Response file:',
+      placeholder: 'ipfs_link',
+      special: 'ipfs',
+      text: 'Please select a file to upload'
+    }
+  },
+  addarbs: {
+    num_arbs_to_assign: {
+      label: 'Arbs to assign:',
+      value: 0,
+      type: 'text',
+      placeholder: 'num_arbs_to_assign',
+      text: 'Please input the number of arbitrators to assign'
+    }
+  },
+  setruling: {
+    case_ruling: {
+      label: 'Ruling file:',
       placeholder: 'ipfs_link',
       special: 'ipfs',
       text: 'Please select a file to upload'
@@ -229,6 +247,15 @@ class ActionModal extends Component {
       case 'respondclaim': {
         return 'Respond to claim';
       }
+      case 'arbitratorsettings': {
+        return 'Arbitrator settings';
+      }
+      case 'setruling': {
+        return 'Set ruling';
+      }
+      case 'addarbs': {
+        return 'Add arbitrators';
+      }
       default: {
         return '';
       }
@@ -288,7 +315,7 @@ class ActionModal extends Component {
     const rendered = [];
     rendered.push(...this.renderHeader());
 
-    if(actionName === 'filecase' || actionName === 'addclaim' || actionName === 'respondclaim') {
+    if(actionName === 'filecase' || actionName === 'addclaim' || actionName === 'respondclaim' || actionName === 'setruling' || actionName === 'addarbs') {
 
       rendered.push(
         <ModalBody key="form">
@@ -330,6 +357,15 @@ class ActionModal extends Component {
         <ModalFooter key="footer">
           <Button color="info" onClick={this.props.cancel}>Cancel</Button>
           <Button color='success' onClick={this.handleSubmit()}>Submit</Button>
+        </ModalFooter>
+      );
+
+    }
+    else if (actionName === 'arbitratorsettings') {
+
+      rendered.push(
+        <ModalFooter key="footer">
+          <Button color="info" onClick={this.props.cancel}>Done</Button>
         </ModalFooter>
       );
 
