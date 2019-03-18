@@ -40,7 +40,7 @@ const forms = {
     },
     lang_codes: {
       label: 'Language Codes:',
-      value: '',
+      value: [],
       special: 'languages',
       text: 'Please select from the following language codes'
     },
@@ -120,6 +120,29 @@ class MembersModal extends Component {
     };
   }
 
+  checkboxChangedHandler(formElementId) {
+    return event => {
+
+      const oldArray = this.state.formValues[formElementId];
+      const newArray = [].concat(oldArray);
+      const clickedValue = event.target.value;
+      const existingIndex = oldArray.indexOf(clickedValue);
+      if(existingIndex !== -1) {
+        newArray.splice(existingIndex, 1);
+      } else {
+        newArray.push(clickedValue);
+      }
+      
+      this.setState({
+        formValues: {
+          ...this.state.formValues,
+          [formElementId]: newArray,
+        },
+      });
+
+    };
+  }
+
   handleSubmit() {
     return () => {
 
@@ -142,18 +165,20 @@ class MembersModal extends Component {
         );
       }
       case 'languages': {
-        return (
-          <Input
-            type="select"
-            name="formElement.id"
-            multiple
-            onChange={this.inputChangedHandler(formElement.id)}
-          >
-            {Object.keys(languageCodes).map(language =>
-              <option key={language} value={languageCodes[language]}>{language}</option>
-            )}
-          </Input>
+
+        return Object.keys(languageCodes).map(language =>
+          <div key={`lg-select-${language}`}>
+            <Input
+              type="checkbox"
+              name={formElement.id}
+              value={languageCodes[language]}
+              id={`lg-select-${language}`}
+              onChange={this.checkboxChangedHandler(formElement.id)}
+            />
+            <Label for={`lg-select-${language}`} check>{language}</Label>
+          </div>
         );
+
       }
       default: {
         return (
