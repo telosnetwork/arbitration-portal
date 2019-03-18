@@ -93,7 +93,7 @@ class ActionHandler extends AbstractActionHandler {
 
       for (const n of toDelete) {
         delete stateHist[n]
-        await state.blockhist.findOneAndDelete({ 'block.blockNumber': n }).exec();
+        await models.blockhist.findOneAndDelete({ 'block.blockNumber': n }).exec();
       }
 
       let histState = await models.blockhist.findOne({ 'block.blockNumber': blockNumber }).exec();
