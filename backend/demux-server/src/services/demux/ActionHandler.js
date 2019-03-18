@@ -1,4 +1,4 @@
-import { AbstractActionHandler } from 'demux'
+import { AbstractActionHandler } from 'demux';
 import models from '../../models';
 import io     from '../../utils/io';
 
@@ -12,6 +12,7 @@ class ActionHandler extends AbstractActionHandler {
   }
 
   async handleWithState(handle) {
+    console.log(`Handler with State`);
     const context = { socket: io.getSocket() }
     const state = models;
     try {
@@ -92,6 +93,7 @@ class ActionHandler extends AbstractActionHandler {
 
       for (const n of toDelete) {
         delete stateHist[n]
+        await state.blockhist.findOneAndDelete({ 'block.blockNumber': n }).exec();
       }
 
       let histState = await models.blockhist.findOne({ 'block.blockNumber': blockNumber }).exec();
