@@ -55,7 +55,7 @@ class CasesTable extends Component {
   }
 
   isClaimant() {
-    return this.props.memberType === 'claimant';
+    return this.props.caseType === 'claimant';
   }
 
   onOpenCaseRuling(casefile) {
@@ -120,7 +120,7 @@ class CasesTable extends Component {
       this.state.caseClaimsOpen[casefile.case_id] &&
       <tr key="claims">
         <td colSpan="5">
-          <ClaimsTable casefile={casefile} />
+          <ClaimsTable casefile={casefile} caseType={this.props.caseType} />
         </td>
       </tr>,
     ];
@@ -135,8 +135,9 @@ class CasesTable extends Component {
         <Jumbotron className="members-home-jumbo">
 
           <Row className="table-title">
-            {this.props.memberType === 'claimant' && "Claimant cases"}
-            {this.props.memberType === 'respondant' && "Respondant cases"}
+            {this.props.caseType === 'claimant' && "Claimant cases"}
+            {this.props.caseType === 'respondant' && "Respondant cases"}
+            {this.props.caseType === 'arbitrator' && "Arbitrator cases"}
           </Row>
           <Table>
             <thead>
@@ -167,7 +168,7 @@ const mapDispatchToProps = {
 
 CasesTable.propTypes = {
   cases: PropTypes.array,
-  memberType: PropTypes.oneOf(['claimant', 'respondant']),
+  caseType: PropTypes.oneOf(['claimant', 'respondant']),
 };
 
 

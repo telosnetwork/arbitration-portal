@@ -27,10 +27,10 @@ class ClaimsTable extends Component {
   }
 
   isClaimant() {
-    return this.props.memberType === 'claimant';
+    return this.props.caseType === 'claimant';
   }
   isRespondant() {
-    return this.props.memberType === 'respondant';
+    return this.props.caseType === 'respondant';
   }
 
   openSummary(claim) {

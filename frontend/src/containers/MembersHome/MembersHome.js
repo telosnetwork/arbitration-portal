@@ -47,8 +47,8 @@ class MembersHome extends Component {
           <Button color="primary" onClick={this.onNewCase()} className="new-case-btn">New case</Button>
         </Row>
 
-        <CasesTable memberType="claimant" cases={this.props.claimantCases} />
-        <CasesTable memberType="respondant" cases={this.props.respondantCases} />
+        <CasesTable caseType="claimant" cases={this.props.claimantCases} />
+        <CasesTable caseType="respondant" cases={this.props.respondantCases} />
 
         <Modal
           isOpen={!!this.props.modalAction}
