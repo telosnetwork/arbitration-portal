@@ -7,7 +7,7 @@ import ClaimsTable from '../ClaimsTable';
 
 // Redux
 import { connect }               from 'react-redux';
-import { CasesActions } from 'business/actions';
+import { CasesActions, ModalActions } from 'business/actions';
 import CaseStatus from 'const/CaseStatus';
 
 class CasesTable extends Component {
@@ -38,19 +38,19 @@ class CasesTable extends Component {
   onShredCasefile(casefile) {
     return () => {
       this.props.setSelectedCase(casefile.case_id);
-      this.props.setMemberAction('shredcase');
+      this.props.setAction('shredcase');
     }
   }
   onSubmitCasefile(casefile) {
     return () => {
       this.props.setSelectedCase(casefile.case_id);
-      this.props.setMemberAction('submitcasefile');
+      this.props.setAction('submitcasefile');
     }
   }
   onAddClaim(casefile) {
     return () => {
       this.props.setSelectedCase(casefile.case_id);
-      this.props.setMemberAction('addclaim');
+      this.props.setAction('addclaim');
     }
   }
 
@@ -161,7 +161,7 @@ class CasesTable extends Component {
 }
 
 const mapDispatchToProps = {
-  setMemberAction: CasesActions.setMemberAction,
+  setAction: ModalActions.setAction,
   setSelectedCase: CasesActions.setSelectedCase,
 };
 

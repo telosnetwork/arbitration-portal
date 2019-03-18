@@ -7,8 +7,8 @@ import { Container, Row, ModalHeader, ModalBody, ModalFooter, Col, Button, Spinn
 
 // Redux
 import { connect }               from 'react-redux';
-import { CasesActions } from 'business/actions';
-import { CasesSelectors, ClaimsSelectors } from 'business/selectors';
+import { ModalActions } from 'business/actions';
+import { CasesSelectors, ClaimsSelectors, ModalSelectors } from 'business/selectors';
 
 import CaseStatus from 'const/CaseStatus';
 
@@ -272,7 +272,7 @@ class ActionModal extends Component {
     const { actionName } = this.props;
     if(!actionName) return null;
 
-    if(this.props.memberActionLoading) {
+    if(this.props.actionLoading) {
       return (
         <div>
           <ModalHeader>
@@ -351,12 +351,12 @@ ActionModal.propTypes = {
 
 const mapStateToProps = state => ({
   case: CasesSelectors.getSelectedCase(state),
-  memberActionLoading: CasesSelectors.memberActionLoading(state),
+  actionLoading: ModalSelectors.actionLoading(state),
   claim: ClaimsSelectors.getSelectedClaim(state),
 });
 
 const mapDispatchToProps = {
-  executeAction: CasesActions.executeAction,
+  executeAction: ModalActions.executeAction,
 };
 
 // Export a redux connected component

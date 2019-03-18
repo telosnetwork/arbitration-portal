@@ -33,32 +33,3 @@ export function setSelectedCase(case_id) {
     case_id,
   }
 }
-
-export function setMemberAction(actionName) {
-  return {
-    type: ActionTypes.SET_MEMBER_ACTION,
-    actionName,
-  }
-}
-
-export function setMemberActionLoading(loading) {
-  return {
-    type: ActionTypes.SET_MEMBER_ACTION_LOADING,
-    loading: !!loading,
-  }
-}
-
-export function submitCasefile(case_id) {
-  return {
-    type: ActionTypes.SUBMIT_CASEFILE,
-    case_id,
-  }
-}
-
-export function executeAction(actionName, actionData) {
-  return {
-    type: ActionTypes.EXECUTE_ACTION,
-    actionName,
-    actionData,
-  }
-}

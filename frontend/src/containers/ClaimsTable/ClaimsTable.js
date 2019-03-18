@@ -6,7 +6,7 @@ import { Table, Button } from 'reactstrap';
 
 // Redux
 import { connect }               from 'react-redux';
-import { CasesActions, ClaimsActions } from 'business/actions';
+import { CasesActions, ClaimsActions, ModalActions } from 'business/actions';
 import DecisionClass from 'const/DecisionClass';
 
 class ClaimsTable extends Component {
@@ -15,14 +15,14 @@ class ClaimsTable extends Component {
     return () => {
       this.props.setSelectedCase(casefile.case_id);
       this.props.setSelectedClaim(claim.claim_summary);
-      this.props.setMemberAction('respondclaim');
+      this.props.setAction('respondclaim');
     }
   }
   onRemoveClaim(casefile, claim) {
     return () => {
       this.props.setSelectedCase(casefile.case_id);
       this.props.setSelectedClaim(claim.claim_summary);
-      this.props.setMemberAction('removeclaim');
+      this.props.setAction('removeclaim');
     }
   }
 
@@ -95,7 +95,7 @@ class ClaimsTable extends Component {
 }
 
 const mapDispatchToProps = {
-  setMemberAction: CasesActions.setMemberAction,
+  setAction: ModalActions.setAction,
   setSelectedCase: CasesActions.setSelectedCase,
   setSelectedClaim: ClaimsActions.setSelectedClaim,
 };

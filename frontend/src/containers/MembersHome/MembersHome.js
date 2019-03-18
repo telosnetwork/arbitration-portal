@@ -7,21 +7,21 @@ import { Modal, Container, Row, Col, Button } from 'reactstrap';
 
 // Redux
 import { connect }               from 'react-redux';
-import { CasesActions, ClaimsActions } from 'business/actions';
-import { CasesSelectors } from 'business/selectors';
-import {AuthenticationSelectors} from "../../business/selectors";
+import { ModalActions, CasesActions, ClaimsActions } from 'business/actions';
+import { CasesSelectors, ModalSelectors } from 'business/selectors';
+import { AuthenticationSelectors } from "../../business/selectors";
 
 class MembersHome extends Component {
 
   onNewCase() {
     return () => {
-      this.props.setMemberAction('filecase');
+      this.props.setAction('filecase');
     }
   }
 
   closeAction() {
     return () => {
-      this.props.setMemberAction(null);
+      this.props.setAction(null);
       this.props.setSelectedCase(null);
       this.props.setSelectedClaim(null);
     }
@@ -51,11 +51,11 @@ class MembersHome extends Component {
         <CasesTable memberType="respondant" cases={this.props.respondantCases} />
 
         <Modal
-          isOpen={!!this.props.memberAction}
+          isOpen={!!this.props.modalAction}
           toggle={this.closeAction()}
           centered
         >
-          <ActionModal actionName={this.props.memberAction} cancel={this.closeAction()}/>
+          <ActionModal actionName={this.props.modalAction} cancel={this.closeAction()}/>
         </Modal>
 
       </Container>
@@ -67,11 +67,11 @@ const mapStateToProps = state => ({
   isLogin: AuthenticationSelectors.isLogin(state),
   claimantCases: CasesSelectors.getClaimantCases(state),
   respondantCases: CasesSelectors.getRespondantCases(state),
-  memberAction: CasesSelectors.memberAction(state),
+  modalAction: ModalSelectors.action(state),
 });
 
 const mapDispatchToProps = {
-  setMemberAction: CasesActions.setMemberAction,
+  setAction: ModalActions.setAction,
   fetchCases: CasesActions.fetchCases,
   setSelectedCase: CasesActions.setSelectedCase,
   setSelectedClaim: ClaimsActions.setSelectedClaim,
