@@ -1,5 +1,5 @@
 import { BaseActionWatcher }  from 'demux';
-import { NodeosActionReader } from 'demux-eos';
+import { NodeosActionReader, MongoActionReader } from 'demux-eos';
 
 import ActionHandler from './ActionHandler';
 
@@ -18,7 +18,12 @@ class DemuxService extends Service {
         }];
 
         this.actionHandler = new ActionHandler(this.handlerVersions, driver); // driver?
+
+        // NodeosActionReader
         this.actionReader  = new NodeosActionReader(options.endpoint, options.startBlock); // Public Nodeos Endpoint as a source of Block Data & Starting Block
+
+        // MongoActionReader
+        // this.actionReader = new MongoActionReader(options.endpoint, options.startBlock);
 
         // Base Class coordinate the Action Reader and the Action Handler
         this.actionWatcher = new BaseActionWatcher(
@@ -29,9 +34,11 @@ class DemuxService extends Service {
     }
 
     start() {
-        this.actionWatcher.watch().then(() => { // Start Polling Loop based on Polling Loop interval
-            this.isRunning = true;
-        });
+        // this.actionReader.initialize().then(() => {
+            this.actionWatcher.watch().then(() => { // Start Polling Loop based on Polling Loop interval
+                this.isRunning = true;
+            });
+        // }):
     }
 
     onExit() {

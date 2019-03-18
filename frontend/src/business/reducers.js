@@ -1,19 +1,15 @@
 import { combineReducers }   from 'redux';
 
-// import ArbitratorsReducer    from './ArbitratorsReducer';
-// import BalancesReducer       from './BalancesReducers';
-// import CasesReducer          from './CasesReducers';
-// import ClaimsReducers        from './ClaimsReducers';
-// // import JoinedCasesReducers from './JoinedCasesReducers';
-// import TransfersReducers     from './TransfersReducers';
-import * as Authentication from './authentication/reducer';
+import * as Authentication      from './authentication/reducer';
+import * as Cases               from './cases/reducer';
+
+import * as Claims              from './claims/reducer';
+//import * as Arbitrators         from './arbitrators/reducer';
 
 export default combineReducers({
-    // arbitrators:    ArbitratorsReducer,
-    // balances:       BalancesReducer,
-    // cases:          CasesReducer,
-    // claims:         ClaimsReducers,
-    // joinedcases:    JoinedCasesReducers,
-    // transfers:      TransfersReducers,
-    [Authentication.STATE_KEY]: Authentication.reducer
+    [Authentication.STATE_KEY]: Authentication.reducer,
+    [Cases.STATE_KEY]: Cases.reducer,
+    [Claims.STATE_KEY]: Claims.reducer,
 });
+//     [Arbitrators.STATE_KEY]: Arbitrators.reducer
+// });

@@ -1,0 +1,24 @@
+.uploadForm {
+    margin-top:  10px;
+}
+
+.uploadLabel {
+    margin-top:  5px;
+    margin-left: 20px;
+}
+
+.hidden-input {
+  position: fixed;
+  top: -100em;
+}
+
+.select-file {
+  border: 1px solid black;
+  cursor: pointer;
+  color: #fff;
+  background-color: #47bac1;
+}
+
+.ipfs-url {
+  font-size: 0.6rem;
+}

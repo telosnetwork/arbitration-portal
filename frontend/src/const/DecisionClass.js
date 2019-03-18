@@ -1,0 +1,23 @@
+/**
+ * List all decisions classes
+ */
+
+export default {
+
+  1: 'UNDECIDED',
+  2: 'LOST_KEY_RECOVERY',
+  3: 'TRX_REVERSAL',
+  4: 'EMERGENCY_INTER',
+  5: 'CONTESTED_OWNER',
+  6: 'UNEXECUTED_RELIEF',
+  7: 'CONTRACT_BREACH',
+  8: 'MISUSED_CR_IP',
+  9: 'A_TORT',
+  10: 'BP_PENALTY_REVERSAL',
+  11: 'WRONGFUL_ARB_ACT',
+  12: 'ACT_EXEC_RELIEF',
+  13: 'WP_PROJ_FAILURE',
+  14: 'TBNOA_BREACH',
+  15: 'MISC',
+
+};
