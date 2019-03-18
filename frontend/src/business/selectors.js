@@ -7,5 +7,5 @@ export {
     AuthenticationSelectors,
     CasesSelectors,
     ClaimsSelectors,
-    ArbitratorsSelectors
+    ArbitratorsSelectors,
 }

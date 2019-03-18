@@ -13,12 +13,6 @@ import {AuthenticationSelectors} from "../../business/selectors";
 
 class MembersHome extends Component {
 
-  componentDidUpdate(prevProps) {
-    if(this.props.isLogin && !prevProps.isLogin) {
-      this.props.fetchCases();
-    }
-  }
-
   onNewCase() {
     return () => {
       this.props.setMemberAction('filecase');

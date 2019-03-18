@@ -135,11 +135,9 @@ export function* fetchCasesFromTable() {
 
   const cases = yield arbitrationContract.getCases();
   const acceptedClaims = yield arbitrationContract.getClaims();
-  console.log(cases, acceptedClaims);
   cases.forEach(casefile => {
     casefile.accepted_claims = casefile.accepted_claims.map(claimId => acceptedClaims.find(claim => claim.claim_id === claimId));
   });
-  console.log(cases);
 
   const claimantCases = cases.filter(c => c.claimant === memberName);
   const respondantCases = cases.filter(c => c.respondant === memberName);

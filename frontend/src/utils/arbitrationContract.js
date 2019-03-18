@@ -162,24 +162,36 @@ class ArbitrationContract {
 
   }
 
-  async getCases() {
+  async getCases(limit = 100) {
 
     const rows = await this.eosio.getTable(
       contractAddress,
       'casefiles',
       contractAddress,
-      100,
+      limit,
     );
     return rows;
 
   }
-  async getClaims() {
+  async getClaims(limit = 100) {
 
     const rows = await this.eosio.getTable(
       contractAddress,
       'claims',
       contractAddress,
-      100,
+      limit,
+    );
+    return rows;
+
+  }
+
+  async getArbitrators(limit = 100) {
+
+    const rows = await this.eosio.getTable(
+      contractAddress,
+      'arbitrators',
+      contractAddress,
+      limit,
     );
     return rows;
 
