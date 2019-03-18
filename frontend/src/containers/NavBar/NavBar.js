@@ -58,11 +58,11 @@ class NavBar extends Component {
                   Arbitrator
                 </Link>
               </NavItem>,
-              <NavItem key="transfers">
-                <Link to='/transfers' style={ !this.props.isLogin ? {pointerEvents: 'none', color: 'black', textDecoration: 'none', marginRight: '10px'} : {color: 'black', textDecoration: 'none', marginRight: '10px'}} >
-              Transfers
-              </Link>
-              </NavItem>,
+              /*<NavItem key="transfers">
+                <Link to='/transfers_reg' style={ !this.props.isLogin ? {pointerEvents: 'none', color: 'black', textDecoration: 'none', marginRight: '10px'} : {color: 'black', textDecoration: 'none', marginRight: '10px'}} >
+                  Transfers
+                </Link>
+              </NavItem>,*/
             ]}
 
             <NavItem>

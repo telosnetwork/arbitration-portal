@@ -102,6 +102,7 @@ const mapDispatchToProps = {
 
 ClaimsTable.propTypes = {
   casefile: PropTypes.object,
+  caseType: PropTypes.oneOf(['claimant', 'respondant', 'arbitrator']),
 };
 
 

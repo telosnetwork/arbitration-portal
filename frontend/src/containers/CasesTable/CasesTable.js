@@ -168,7 +168,7 @@ const mapDispatchToProps = {
 
 CasesTable.propTypes = {
   cases: PropTypes.array,
-  caseType: PropTypes.oneOf(['claimant', 'respondant']),
+  caseType: PropTypes.oneOf(['claimant', 'respondant', 'arbitrator']),
 };
 
 
