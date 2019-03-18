@@ -113,6 +113,17 @@ export function* executeAction({ actionName, actionData }) {
       break;
 
     }
+    case 'recuse': {
+
+      const data = {
+        case_id: casefile.case_id,
+        rationale: actionData.rationale, // TODO what is rationale ?
+        assigned_arb: account.name,
+      };
+      yield arbitrationContract.recuse(data);
+      break;
+
+    }
     case 'submitcasefile': {
 
       const account = yield select(AuthenticationSelectors.account);

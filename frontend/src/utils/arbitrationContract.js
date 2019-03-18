@@ -165,6 +165,24 @@ class ArbitrationContract {
 
   }
 
+  async recuse(recuseData) {
+
+    const { case_id, rationale, assigned_arb } = recuseData;
+
+    const actionData = {
+      case_id,
+      rationale,
+      assigned_arb,
+    };
+
+    await this.eosio.createAndSendAction(
+      contractAddress,
+      'recuse',
+      actionData
+    );
+
+  }
+
   async getAccountBalance(account_name) {
 
     // TODO use demux server ?

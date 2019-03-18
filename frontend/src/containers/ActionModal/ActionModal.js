@@ -256,6 +256,9 @@ class ActionModal extends Component {
       case 'addarbs': {
         return 'Add arbitrators';
       }
+      case 'recuse': {
+        return 'Are you sure you want to recuse from the case ?';
+      }
       default: {
         return '';
       }
@@ -333,7 +336,7 @@ class ActionModal extends Component {
       );
 
     }
-    else if (actionName === 'shredcase' || actionName === 'removeclaim') {
+    else if (actionName === 'shredcase' || actionName === 'removeclaim' || actionName === 'recuse') {
 
       rendered.push(
         <ModalFooter key="footer">
