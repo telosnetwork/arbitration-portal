@@ -9,13 +9,13 @@ import { Modal, Container, Row, Col, Button } from 'reactstrap';
 import { connect }               from 'react-redux';
 import { CasesActions, ClaimsActions, ModalActions } from 'business/actions';
 import { CasesSelectors, ModalSelectors } from 'business/selectors';
-import {AuthenticationSelectors} from "../../business/selectors";
+import { AuthenticationSelectors } from 'business/selectors';
 
 class ArbitratorsHome extends Component {
 
-  onNewCase() {
+  openArbitratorsSettings() {
     return () => {
-      this.props.setAction('filecase');
+      this.props.setAction('arbitratorssettings');
     }
   }
 
@@ -44,7 +44,7 @@ class ArbitratorsHome extends Component {
       <Container>
 
         <Row className="top-actions">
-          <Button color="primary" onClick={this.onNewCase()} className="new-case-btn">New case</Button>
+          <Button color="primary" onClick={this.openArbitratorsSettings()} className="new-case-btn">Arbitrator settings</Button>
         </Row>
 
         <CasesTable caseType="arbitrator" cases={this.props.arbitratorCases} />
