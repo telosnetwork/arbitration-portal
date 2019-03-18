@@ -20,6 +20,12 @@ export function setRespondantCases(cases) {
         cases,
     }
 }
+export function setArbitratorCases(cases) {
+    return {
+        type: ActionTypes.SET_ARBITRATOR_CASES,
+        cases,
+    }
+}
 
 export function setSelectedCase(case_id) {
   return {

@@ -7,7 +7,7 @@ import ClaimsTable from '../ClaimsTable';
 
 // Redux
 import { connect }               from 'react-redux';
-import { CasesActions, ClaimsActions } from 'business/actions';
+import { CasesActions } from 'business/actions';
 import CaseStatus from 'const/CaseStatus';
 
 class CasesTable extends Component {

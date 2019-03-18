@@ -141,9 +141,11 @@ export function* fetchCasesFromTable() {
 
   const claimantCases = cases.filter(c => c.claimant === memberName);
   const respondantCases = cases.filter(c => c.respondant === memberName);
+  const arbitratorCases = cases.filter(c => c.arbitrators.includes(memberName));
 
   yield put(actions.setClaimantCases(claimantCases));
   yield put(actions.setRespondantCases(respondantCases));
+  yield put(actions.setArbitratorCases(arbitratorCases));
 
 }
 
