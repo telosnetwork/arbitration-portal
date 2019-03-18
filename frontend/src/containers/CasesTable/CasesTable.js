@@ -3,12 +3,12 @@ import PropTypes from 'prop-types';
 
 // Components
 import { Jumbotron, Table, Container, Row, Button } from 'reactstrap';
+import ClaimsTable from '../ClaimsTable';
 
 // Redux
 import { connect }               from 'react-redux';
 import { CasesActions, ClaimsActions } from 'business/actions';
 import CaseStatus from 'const/CaseStatus';
-import DecisionClass from 'const/DecisionClass';
 
 class CasesTable extends Component {
 
@@ -41,13 +41,6 @@ class CasesTable extends Component {
       this.props.setMemberAction('shredcase');
     }
   }
-  onRespondClaim(casefile, claim) {
-    return () => {
-      this.props.setSelectedCase(casefile.case_id);
-      this.props.setSelectedClaim(claim.claim_summary);
-      this.props.setMemberAction('respondclaim');
-    }
-  }
   onSubmitCasefile(casefile) {
     return () => {
       this.props.setSelectedCase(casefile.case_id);
@@ -60,90 +53,16 @@ class CasesTable extends Component {
       this.props.setMemberAction('addclaim');
     }
   }
-  onRemoveClaim(casefile, claim) {
-    return () => {
-      this.props.setSelectedCase(casefile.case_id);
-      this.props.setSelectedClaim(claim.claim_summary);
-      this.props.setMemberAction('removeclaim');
-    }
-  }
 
   isClaimant() {
     return this.props.memberType === 'claimant';
   }
-  isRespondant() {
-    return this.props.memberType === 'respondant';
-  }
 
-  openSummary(claim) {
-    window.open(`https://${claim.claim_summary}`);
-  }
-  openResponse(claim) {
-    window.open(`https://${claim.response_link}`);
-  }
-  openDecision(claim) {
-    window.open(`https://${claim.decision_link}`);
-  }
   onOpenCaseRuling(casefile) {
     window.open(`https://${casefile.case_ruling}`);
   }
 
-
-  renderClaim(casefile, claim) {
-    return (
-      <tr key={claim.claim_summary}>
-        <td className="claim-col">
-          Claim #{claim.claim_status === 'accepted' ? `${claim.claim_id}` : '-'}
-        </td>
-        <td>
-          {claim.claim_status === 'unread' && 'Unread'}
-          {claim.claim_status === 'accepted' && 'Accepted'}
-          {claim.claim_status === 'dismissed' && 'Declined'}
-        </td>
-        <td>
-          {DecisionClass[claim.decision_class] || '-'}
-        </td>
-        <td align="right">
-          <Button color="primary" onClick={() => this.openSummary(claim)}>Summary</Button>
-          {!!claim.response_link && <Button color="primary" onClick={() => this.openResponse(claim)}>Response</Button>}
-          {!!claim.decision_link && <Button color="primary" onClick={() => this.openDecision(claim)}>Decision</Button>}
-          {claim.claim_status === 'unread' && casefile.case_status === 2 && this.isRespondant() &&
-          <Button color="info" onClick={this.onRespondClaim(casefile, claim)}>Respond</Button>
-          }
-          {claim.claim_status === 'unread' && casefile.case_status === 0 &&
-          this.isClaimant() && <Button color="danger" onClick={this.onRemoveClaim(casefile, claim)}>Remove</Button>}
-        </td>
-      </tr>
-    );
-  }
-
-  renderClaims(casefile) {
-    return (
-      <tr key="claims">
-        <td colSpan="5">
-          <Table hover>
-            <thead>
-            <tr>
-              <th sm="1">Claim ID</th>
-              <th sm="3">Status</th>
-              <th sm="3">Decision</th>
-              <th sm="5" style={{textAlign: 'right'}}>Actions</th>
-            </tr>
-            </thead>
-            <tbody>
-            {casefile.claims.map(claim => this.renderClaim(casefile, claim))}
-            </tbody>
-          </Table>
-        </td>
-      </tr>
-    );
-  }
-
   renderCase(casefile) {
-
-    const claims = this.state.caseClaimsOpen[casefile.case_id] ?
-      this.renderClaims(casefile) :
-      null;
 
     return [
       <tr key={casefile.case_id}>
@@ -198,7 +117,12 @@ class CasesTable extends Component {
         <td/>
         <td/>
       </tr>,
-      claims,
+      this.state.caseClaimsOpen[casefile.case_id] &&
+      <tr key="claims">
+        <td colSpan="5">
+          <ClaimsTable casefile={casefile} />
+        </td>
+      </tr>,
     ];
 
   }
@@ -239,7 +163,6 @@ class CasesTable extends Component {
 const mapDispatchToProps = {
   setMemberAction: CasesActions.setMemberAction,
   setSelectedCase: CasesActions.setSelectedCase,
-  setSelectedClaim: ClaimsActions.setSelectedClaim,
 };
 
 CasesTable.propTypes = {
