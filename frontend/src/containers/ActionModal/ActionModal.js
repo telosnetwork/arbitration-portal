@@ -63,7 +63,7 @@ const forms = {
   },
 };
 
-class MembersModal extends Component {
+class ActionModal extends Component {
 
   constructor(props) {
     super(props);
@@ -341,7 +341,7 @@ class MembersModal extends Component {
 
 }
 
-MembersModal.propTypes = {
+ActionModal.propTypes = {
   actionName: PropTypes.string,
   case: PropTypes.object,
   claim: PropTypes.object,
@@ -360,4 +360,4 @@ const mapDispatchToProps = {
 };
 
 // Export a redux connected component
-export default connect(mapStateToProps, mapDispatchToProps)(MembersModal);
+export default connect(mapStateToProps, mapDispatchToProps)(ActionModal);

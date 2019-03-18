@@ -1,7 +1,7 @@
 import React, { Component }      from 'react';
 
 // Components
-import MembersModal from  '../MembersModal';
+import ActionModal from '../ActionModal';
 import CasesTable from  '../CasesTable';
 import { Modal, Container, Row, Col, Button } from 'reactstrap';
 
@@ -55,7 +55,7 @@ class MembersHome extends Component {
           toggle={this.closeAction()}
           centered
         >
-          <MembersModal actionName={this.props.memberAction} cancel={this.closeAction()}/>
+          <ActionModal actionName={this.props.memberAction} cancel={this.closeAction()}/>
         </Modal>
 
       </Container>
