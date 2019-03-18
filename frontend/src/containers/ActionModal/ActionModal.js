@@ -247,6 +247,12 @@ class ActionModal extends Component {
       case 'respondclaim': {
         return 'Respond to claim';
       }
+      case 'acceptclaim': {
+        return 'Do you want to accept this claim ?';
+      }
+      case 'dismissclaim': {
+        return 'Do you want to dismiss this claim ?';
+      }
       case 'arbitratorsettings': {
         return 'Arbitrator settings';
       }
@@ -336,7 +342,7 @@ class ActionModal extends Component {
       );
 
     }
-    else if (actionName === 'shredcase' || actionName === 'removeclaim' || actionName === 'recuse') {
+    else if (actionName === 'shredcase' || actionName === 'removeclaim' || actionName === 'recuse' || actionName === 'acceptclaim' || actionName === 'dismissclaim') {
 
       rendered.push(
         <ModalFooter key="footer">

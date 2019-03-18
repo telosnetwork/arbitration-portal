@@ -25,13 +25,29 @@ class ClaimsTable extends Component {
       this.props.setAction('removeclaim');
     }
   }
-
-  isClaimant() {
-    return this.props.caseType === 'claimant';
+  onAcceptClaim(casefile, claim) {
+    return () => {
+      this.props.setSelectedCase(casefile.case_id);
+      this.props.setSelectedClaim(claim.claim_summary);
+      this.props.setAction('acceptclaim');
+    }
   }
+  onDismissClaim(casefile, claim) {
+    return () => {
+      this.props.setSelectedCase(casefile.case_id);
+      this.props.setSelectedClaim(claim.claim_summary);
+      this.props.setAction('dismissclaim');
+    }
+  }
+
   isRespondant() {
     return this.props.caseType === 'respondant';
   }
+
+  isArbitrator() {
+    return this.props.caseType === 'arbitrator';
+  }
+
 
   openSummary(claim) {
     window.open(`https://${claim.claim_summary}`);
@@ -62,11 +78,20 @@ class ClaimsTable extends Component {
           <Button color="primary" onClick={() => this.openSummary(claim)}>Summary</Button>
           {!!claim.response_link && <Button color="primary" onClick={() => this.openResponse(claim)}>Response</Button>}
           {!!claim.decision_link && <Button color="primary" onClick={() => this.openDecision(claim)}>Decision</Button>}
-          {claim.claim_status === 'unread' && casefile.case_status === 2 && this.isRespondant() &&
+
+          {this.isRespondant() && claim.claim_status === 'unread' && casefile.case_status === 2 &&
           <Button color="info" onClick={this.onRespondClaim(casefile, claim)}>Respond</Button>
           }
-          {claim.claim_status === 'unread' && casefile.case_status === 0 &&
-          this.isClaimant() && <Button color="danger" onClick={this.onRemoveClaim(casefile, claim)}>Remove</Button>}
+          {this.isRespondant() && claim.claim_status === 'unread' && casefile.case_status === 0 &&
+          <Button color="danger" onClick={this.onRemoveClaim(casefile, claim)}>Remove</Button>
+          }
+          {this.isArbitrator() && claim.claim_status === 'unread' && casefile.case_status >= 2 && casefile.case_status <= 4 &&
+          <Button color="info" onClick={this.onAcceptClaim(casefile, claim)}>Accept</Button>
+          }
+          {this.isArbitrator() && claim.claim_status === 'unread' && casefile.case_status >= 2 && casefile.case_status <= 4 &&
+          <Button color="info" onClick={this.onDismissClaim(casefile, claim)}>Dismiss</Button>
+          }
+
         </td>
       </tr>
     );

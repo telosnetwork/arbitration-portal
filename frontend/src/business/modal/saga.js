@@ -91,6 +91,31 @@ export function* executeAction({ actionName, actionData }) {
       break;
 
     }
+    case 'acceptclaim': {
+
+      const data = {
+        case_id: casefile.case_id,
+        assigned_arb: account.name,
+        claim_hash: claim.claim_summary,
+        decision_link: actionData.decision_link, // TODO
+        decision_class: actionData.decision_class, // TODO
+      };
+      yield arbitrationContract.acceptClaim(data);
+      break;
+
+    }
+    case 'dismissclaim': {
+
+      const data = {
+        case_id: casefile.case_id,
+        assigned_arb: account.name,
+        claim_hash: claim.claim_summary,
+        memo: actionData.memo, // TODO
+      };
+      yield arbitrationContract.dismissClaim(data);
+      break;
+
+    }
     case 'addarbs': {
 
       const data = {

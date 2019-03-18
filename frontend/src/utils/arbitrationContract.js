@@ -129,6 +129,45 @@ class ArbitrationContract {
 
   }
 
+  async acceptClaim(acceptClaimData) {
+
+    const { case_id, assigned_arb, claim_hash, decision_link, decision_class } = acceptClaimData;
+
+    const actionData = {
+      case_id,
+      assigned_arb,
+      claim_hash,
+      decision_link,
+      decision_class,
+    };
+
+    await this.eosio.createAndSendAction(
+      contractAddress,
+      'acceptclaim',
+      actionData
+    );
+
+  }
+
+  async dismissClaim(dismissClaimData) {
+
+    const { case_id, assigned_arb, claim_hash, memo } = dismissClaimData;
+
+    const actionData = {
+      case_id,
+      assigned_arb,
+      claim_hash,
+      memo,
+    };
+
+    await this.eosio.createAndSendAction(
+      contractAddress,
+      'dismissclaim',
+      actionData
+    );
+
+  }
+
   async addArbs(addArbsData) {
 
     const { case_id, assigned_arb, num_arbs_to_assign } = addArbsData;
