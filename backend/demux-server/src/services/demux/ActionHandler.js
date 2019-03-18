@@ -97,10 +97,10 @@ class ActionHandler extends AbstractActionHandler {
       let histState = await models.blockhist.findOne({ 'block.blockNumber': blockNumber }).exec();
       if (histState) {
         await models.blockIndexState.updateOne({
-          blockNumber:        histState.blockNumber,
-          blockHash:          histState.blockHash,
-          isReplay:           histState.isReplay,
-          handlerVersionName: histState.handlerVersionName
+          blockNumber:        histState.block[0].blockNumber,
+          blockHash:          histState.block[0].blockHash,
+          isReplay:           histState.block[0].isReplay,
+          handlerVersionName: histState.block[0].handlerVersionName
         }, { upsert: true }).exec();
       }
     } catch (err) {
