@@ -79,6 +79,14 @@ const forms = {
       text: 'Please select a file to upload'
     }
   },
+  recuse: {
+    rationale: {
+      label: 'Rationale:',
+      placeholder: 'rationale',
+      type: 'text',
+      text: 'Please provide a rationale for recusing'
+    }
+  },
 };
 
 class ActionModal extends Component {
@@ -324,7 +332,7 @@ class ActionModal extends Component {
     const rendered = [];
     rendered.push(...this.renderHeader());
 
-    if(actionName === 'filecase' || actionName === 'addclaim' || actionName === 'respondclaim' || actionName === 'setruling' || actionName === 'addarbs') {
+    if(actionName === 'filecase' || actionName === 'addclaim' || actionName === 'respondclaim' || actionName === 'setruling' || actionName === 'addarbs' || actionName === 'recuse') {
 
       rendered.push(
         <ModalBody key="form">
@@ -342,7 +350,7 @@ class ActionModal extends Component {
       );
 
     }
-    else if (actionName === 'shredcase' || actionName === 'removeclaim' || actionName === 'recuse' || actionName === 'acceptclaim' || actionName === 'dismissclaim') {
+    else if (actionName === 'shredcase' || actionName === 'removeclaim' || actionName === 'acceptclaim' || actionName === 'dismissclaim') {
 
       rendered.push(
         <ModalFooter key="footer">
