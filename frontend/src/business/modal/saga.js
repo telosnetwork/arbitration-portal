@@ -28,144 +28,142 @@ export function* executeAction({ actionName, actionData }) {
   switch(actionName) {
     case 'filecase': {
 
-      const casefileData = {
+      yield arbitrationContract.fileCase({
         claimant: account.name,
         claim_link: actionData.claim_link,
         lang_codes: actionData.lang_codes,
         respondant: actionData.respondant,
-      };
-      yield arbitrationContract.fileCase(casefileData);
+      });
 
       break;
+
     }
     case 'shredcase': {
 
-      const data = {
+      yield arbitrationContract.shredCase({
         case_id: casefile.case_id,
         claimant: account.name,
-      };
-
-      yield arbitrationContract.shredCase(data);
+      });
       break;
+
     }
     case 'readycase': {
 
-      const data = {
+      yield arbitrationContract.readyCase({
         case_id: casefile.case_id,
         claimant: account.name,
-      };
-      yield arbitrationContract.readyCase(data);
+      });
       break;
 
     }
     case 'addclaim': {
 
-      const addClaimData = {
+      yield arbitrationContract.addClaim({
         case_id: casefile.case_id,
         claimant: account.name,
         claim_link: actionData.claim_link,
-      };
-      yield arbitrationContract.addClaim(addClaimData);
+      });
       break;
     }
     case 'removeclaim': {
 
-      const data = {
+      yield arbitrationContract.removeClaim({
         claimant: account.name,
         case_id: casefile.case_id,
         claim_hash: claim.claim_summary,
-      };
-      yield arbitrationContract.removeClaim(data);
+      });
       break;
 
     }
     case 'respondclaim': {
 
-      const data = {
+      yield arbitrationContract.respondClaim({
         case_id: casefile.case_id,
         claim_hash: claim.claim_summary,
         respondant: account.name,
         response_link: actionData.response_link,
-      };
-      yield arbitrationContract.respondClaim(data);
+      });
       break;
 
     }
     case 'acceptclaim': {
 
-      const data = {
+      yield arbitrationContract.acceptClaim({
         case_id: casefile.case_id,
         assigned_arb: account.name,
         claim_hash: claim.claim_summary,
-        decision_link: actionData.decision_link, // TODO
-        decision_class: actionData.decision_class, // TODO
-      };
-      yield arbitrationContract.acceptClaim(data);
+        decision_link: actionData.decision_link,
+        decision_class: actionData.decision_class,
+      });
       break;
 
     }
     case 'dismissclaim': {
 
-      const data = {
+      yield arbitrationContract.dismissClaim({
         case_id: casefile.case_id,
         assigned_arb: account.name,
         claim_hash: claim.claim_summary,
-        memo: actionData.memo, // TODO
-      };
-      yield arbitrationContract.dismissClaim(data);
+        memo: actionData.memo,
+      });
       break;
 
     }
     case 'addarbs': {
 
-      const data = {
+      yield arbitrationContract.addArbs({
         case_id: casefile.case_id,
         assigned_arb: account.name,
         num_arbs_to_assign: actionData.num_arbs_to_assign,
-      };
-      yield arbitrationContract.addArbs(data);
+      });
       break;
 
     }
     case 'setruling': {
 
-      const data = {
+      yield arbitrationContract.setRuling({
         case_id: casefile.case_id,
         assigned_arb: account.name,
         case_ruling: actionData.case_ruling,
-      };
-      yield arbitrationContract.setRuling(data);
+      });
       break;
 
     }
     case 'recuse': {
 
-      const data = {
+      yield arbitrationContract.recuse({
         case_id: casefile.case_id,
-        rationale: actionData.rationale, // TODO what is rationale ?
+        rationale: actionData.rationale,
         assigned_arb: account.name,
-      };
-      yield arbitrationContract.recuse(data);
+      });
       break;
 
     }
     case 'submitcasefile': {
 
-      const account = yield select(AuthenticationSelectors.account);
-      if(!account) throw new Error('Must be logged in first to execute action');
-
-      const arbitrationContract = yield select(AuthenticationSelectors.arbitrationContract);
       const balance = yield arbitrationContract.getAccountBalance(account.name);
 
       if(parseFloat(balance.value) < 100) {
         yield arbitrationContract.deposit(account.name);
       }
 
-      const data = {
+      yield arbitrationContract.readyCase({
         case_id: casefile.case_id,
         claimant: account.name,
-      };
-      yield arbitrationContract.readyCase(data);
+      });
+      break;
+
+    }
+    case 'arbitratorsettings': {
+
+      yield arbitrationContract.newArbStatus({
+        arbitrator: account.name,
+        new_status: actionData.new_status,
+      });
+      yield arbitrationContract.setLangCodes({
+        arbitrator: account.name,
+        lang_codes: actionData.lang_codes,
+      });
       break;
 
     }

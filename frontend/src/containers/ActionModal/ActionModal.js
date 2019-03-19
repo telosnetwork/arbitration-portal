@@ -13,6 +13,7 @@ import { CasesSelectors, ClaimsSelectors, ModalSelectors } from 'business/select
 import CaseStatus from 'const/CaseStatus';
 import DecisionClass from 'const/DecisionClass';
 import LanguageCodes from 'const/LanguageCodes';
+import ArbStatus from 'const/ArbStatus';
 
 const forms = {
   filecase: {
@@ -98,6 +99,19 @@ const forms = {
       type: 'text',
       text: 'Please provide a rationale for recusing'
     }
+  },
+  arbitratorsettings: {
+    new_status: {
+      label: 'Availability',
+      special: 'arb_status',
+      text: 'Please select your availability'
+    },
+    lang_codes: {
+      label: 'Language Codes:',
+      value: [],
+      special: 'languages',
+      text: 'Please select from the following language codes'
+    },
   },
 };
 
@@ -238,6 +252,26 @@ class ActionModal extends Component {
         );
 
       }
+      case 'arb_status': {
+
+        return (
+          <Input
+            type="select"
+            name={formElement.id}
+            onChange={this.inputChangedHandler(formElement.id)}
+          >
+            {Object.keys(ArbStatus).filter(s => parseInt(s) <= 1).map(statusId =>
+              <option
+                key={statusId}
+                value={statusId}
+              >
+                {ArbStatus[statusId]}
+              </option>
+            )}
+          </Input>
+        );
+
+      }
       default: {
         return (
           <Input
@@ -365,7 +399,7 @@ class ActionModal extends Component {
     rendered.push(...this.renderHeader());
 
     // Actions with form
-    if(actionName === 'filecase' || actionName === 'addclaim' || actionName === 'respondclaim' || actionName === 'setruling' || actionName === 'addarbs' || actionName === 'recuse' || actionName === 'acceptclaim' || actionName === 'dismissclaim') {
+    if(actionName === 'filecase' || actionName === 'addclaim' || actionName === 'respondclaim' || actionName === 'setruling' || actionName === 'addarbs' || actionName === 'recuse' || actionName === 'acceptclaim' || actionName === 'dismissclaim' || actionName === 'arbitratorsettings') {
 
       rendered.push(
         <ModalBody key="form">
@@ -409,16 +443,6 @@ class ActionModal extends Component {
         <ModalFooter key="footer">
           <Button color="info" onClick={this.props.cancel}>Cancel</Button>
           <Button color='success' onClick={this.handleSubmit()}>Submit</Button>
-        </ModalFooter>
-      );
-
-    }
-    // Arbitrators settings
-    else if (actionName === 'arbitratorsettings') {
-
-      rendered.push(
-        <ModalFooter key="footer">
-          <Button color="info" onClick={this.props.cancel}>Done</Button>
         </ModalFooter>
       );
 

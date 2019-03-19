@@ -222,6 +222,41 @@ class ArbitrationContract {
 
   }
 
+  async newArbStatus(data) {
+
+    const { new_status, arbitrator } = data;
+
+    const actionData = {
+      new_status,
+      arbitrator,
+    };
+
+    await this.eosio.createAndSendAction(
+      contractAddress,
+      'newarbstatus',
+      actionData
+    );
+
+  }
+
+  async setLangCodes(data) {
+
+    const { arbitrator, lang_codes } = data;
+
+    const actionData = {
+      arbitrator,
+      lang_codes,
+    };
+
+    await this.eosio.createAndSendAction(
+      contractAddress,
+      'setlangcodes',
+      actionData
+    );
+
+  }
+
+
   async getAccountBalance(account_name) {
 
     // TODO use demux server ?
