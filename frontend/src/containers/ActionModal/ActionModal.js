@@ -11,18 +11,8 @@ import { ModalActions } from 'business/actions';
 import { CasesSelectors, ClaimsSelectors, ModalSelectors } from 'business/selectors';
 
 import CaseStatus from 'const/CaseStatus';
-
-const languageCodes = {
-  ENGL: '0',
-  FRCH: '1',
-  GRMN: '2',
-  KREA: '3',
-  JAPN: '4',
-  CHNA: '5',
-  SPAN: '6',
-  PGSE: '7',
-  SWED: '8'
-};
+import DecisionClass from 'const/DecisionClass';
+import LanguageCodes from 'const/LanguageCodes';
 
 const forms = {
   filecase: {
@@ -60,6 +50,28 @@ const forms = {
       placeholder: 'ipfs_link',
       special: 'ipfs',
       text: 'Please select a file to upload'
+    }
+  },
+  acceptclaim: {
+    decision_link: {
+      label: 'Decision file:',
+      placeholder: 'ipfs_link',
+      special: 'ipfs',
+      text: 'Please select a file to upload'
+    },
+    decision_class: {
+      label: 'Decision class:',
+      placeholder: 'decision_class',
+      special: 'decision_class',
+      text: 'Please set a decision class'
+    }
+  },
+  dismissclaim: {
+    memo: {
+      label: 'Memo:',
+      placeholder: 'memo',
+      type: 'text',
+      text: 'Please provide a note'
     }
   },
   addarbs: {
@@ -158,7 +170,7 @@ class ActionModal extends Component {
       } else {
         newArray.push(clickedValue);
       }
-      
+
       this.setState({
         formValues: {
           ...this.state.formValues,
@@ -192,17 +204,37 @@ class ActionModal extends Component {
       }
       case 'languages': {
 
-        return Object.keys(languageCodes).map(language =>
+        return Object.keys(LanguageCodes).map(language =>
           <div key={`lg-select-${language}`}>
             <Input
               type="checkbox"
               name={formElement.id}
-              value={languageCodes[language]}
+              value={LanguageCodes[language]}
               id={`lg-select-${language}`}
               onChange={this.checkboxChangedHandler(formElement.id)}
             />
             <Label for={`lg-select-${language}`} check>{language}</Label>
           </div>
+        );
+
+      }
+      case 'decision_class': {
+
+        return (
+          <Input
+            type="select"
+            name={formElement.id}
+            onChange={this.inputChangedHandler(formElement.id)}
+          >
+            {Object.keys(DecisionClass).map(classId =>
+              <option
+                key={classId}
+                value={classId}
+              >
+                {DecisionClass[classId]}
+              </option>
+            )}
+          </Input>
         );
 
       }
@@ -256,10 +288,10 @@ class ActionModal extends Component {
         return 'Respond to claim';
       }
       case 'acceptclaim': {
-        return 'Do you want to accept this claim ?';
+        return 'Accept claim';
       }
       case 'dismissclaim': {
-        return 'Do you want to dismiss this claim ?';
+        return 'Dismiss claim';
       }
       case 'arbitratorsettings': {
         return 'Arbitrator settings';
@@ -332,7 +364,8 @@ class ActionModal extends Component {
     const rendered = [];
     rendered.push(...this.renderHeader());
 
-    if(actionName === 'filecase' || actionName === 'addclaim' || actionName === 'respondclaim' || actionName === 'setruling' || actionName === 'addarbs' || actionName === 'recuse') {
+    // Actions with form
+    if(actionName === 'filecase' || actionName === 'addclaim' || actionName === 'respondclaim' || actionName === 'setruling' || actionName === 'addarbs' || actionName === 'recuse' || actionName === 'acceptclaim' || actionName === 'dismissclaim') {
 
       rendered.push(
         <ModalBody key="form">
@@ -350,7 +383,8 @@ class ActionModal extends Component {
       );
 
     }
-    else if (actionName === 'shredcase' || actionName === 'removeclaim' || actionName === 'acceptclaim' || actionName === 'dismissclaim') {
+    // Actions with only yes/no
+    else if (actionName === 'shredcase' || actionName === 'removeclaim') {
 
       rendered.push(
         <ModalFooter key="footer">
@@ -360,6 +394,7 @@ class ActionModal extends Component {
       );
 
     }
+    // Submit case
     else if (actionName === 'submitcasefile') {
 
       // TODO get and display account's balance on the contract
@@ -378,6 +413,7 @@ class ActionModal extends Component {
       );
 
     }
+    // Arbitrators settings
     else if (actionName === 'arbitratorsettings') {
 
       rendered.push(
