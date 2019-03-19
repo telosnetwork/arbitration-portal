@@ -71,6 +71,12 @@ class CasesTable extends Component {
       this.props.setAction('recuse');
     }
   }
+  onEdit(casefile) {
+    return () => {
+      this.props.setSelectedCase(casefile.case_id);
+      this.props.setAction('editcase');
+    }
+  }
 
   isClaimant() {
     return this.props.caseType === 'claimant';
@@ -123,6 +129,9 @@ class CasesTable extends Component {
           }
           {this.isArbitrator() && casefile.case_status >= 2 && casefile.case_status <= 6 &&
           <Button color="info" onClick={this.onRecuse(casefile)}>Recuse</Button>
+          }
+          {this.isArbitrator() &&
+          <Button color="info" onClick={this.onEdit(casefile)}>Edit</Button>
           }
         </td>
       </tr>,

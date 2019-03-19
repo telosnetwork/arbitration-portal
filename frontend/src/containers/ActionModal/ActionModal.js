@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 // Components
 import IPFSInput from '../../components/IPFSInput';
-import { Container, Row, ModalHeader, ModalBody, ModalFooter, Col, Button, Spinner, Form, FormGroup, Label, Input, FormText } from 'reactstrap';
+import { Container, Row, ModalHeader, ModalBody, ModalFooter, Col, Button, Spinner, Form, FormGroup, Label, Input, FormText, ListGroup, ListGroupItem } from 'reactstrap';
 
 // Redux
 import { connect }               from 'react-redux';
@@ -347,6 +347,9 @@ class ActionModal extends Component {
       case 'recuse': {
         return 'Are you sure you want to recuse from the case ?';
       }
+      case 'editcase': {
+        return 'Edit case';
+      }
       default: {
         return '';
       }
@@ -361,10 +364,10 @@ class ActionModal extends Component {
             <Col sm={7}>
               {this.getTitle()}
             </Col>
-            {this.props.case &&
+            {this.props.casefile &&
             <Col sm={5} style={{textAlign: 'end'}}>
-              Case #{this.props.case.case_id} &nbsp;
-              <i className="case-status text-muted">({CaseStatus[this.props.case.case_status]})</i>
+              Case #{this.props.casefile.case_id} &nbsp;
+              <i className="case-status text-muted">({CaseStatus[this.props.casefile.case_status]})</i>
             </Col>
             }
           </Row>
@@ -383,6 +386,12 @@ class ActionModal extends Component {
         </Container>
       </ModalBody>
     ];
+  }
+
+  changeAction(actionName) {
+    return () => {
+      this.props.setAction(actionName);
+    };
   }
 
   render() {
@@ -455,6 +464,60 @@ class ActionModal extends Component {
       );
 
     }
+    // Edit case
+    else if (actionName === 'editcase') {
+
+      const { casefile } = this.props;
+      rendered.push(
+        <ModalBody key="description">
+          <Row>
+            <Col>
+              <h4>Arbitrator approvals</h4>
+
+              <ListGroup>
+                {casefile.approvals.map(arbitrator =>
+                  <ListGroupItem
+                    key={arbitrator}
+                    color={'success'}
+                  >
+                    {arbitrator}
+                  </ListGroupItem>
+                )}
+                {casefile.arbitrators.map(arbitrator =>
+                  <ListGroupItem
+                    key={arbitrator}
+                  >
+                    {arbitrator}
+                  </ListGroupItem>
+                )}
+              </ListGroup>
+            </Col>
+            <Col>
+              <h4>Case status</h4>
+
+              <ListGroup>
+                {Object.keys(CaseStatus).map(s =>
+                  <ListGroupItem
+                    key={s}
+                    color={casefile.case_status === parseInt(s) ? 'success' : null}
+                  >
+                    {CaseStatus[s]}
+                  </ListGroupItem>
+                )}
+              </ListGroup>
+            </Col>
+          </Row>
+        </ModalBody>
+      );
+      rendered.push(
+        <ModalFooter key="footer">
+          <Button color="info" onClick={this.props.cancel}>Cancel</Button>
+          <Button color='warning' onClick={this.changeAction('dismisscase')}>Dismiss case</Button>
+          <Button color='success' onClick={this.changeAction('advancecase')}>Advance case</Button>
+        </ModalFooter>
+      );
+
+    }
 
     return rendered;
 
@@ -464,14 +527,11 @@ class ActionModal extends Component {
 
 ActionModal.propTypes = {
   actionName: PropTypes.string,
-  case: PropTypes.object,
-  claim: PropTypes.object,
   cancel: PropTypes.func,
-  fileCase: PropTypes.func,
 };
 
 const mapStateToProps = state => ({
-  case: CasesSelectors.getSelectedCase(state),
+  casefile: CasesSelectors.getSelectedCase(state),
   actionLoading: ModalSelectors.actionLoading(state),
   claim: ClaimsSelectors.getSelectedClaim(state),
   arbitrator: ArbitratorsSelectors.arbitrator(state),
@@ -479,6 +539,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = {
   executeAction: ModalActions.executeAction,
+  setAction: ModalActions.setAction,
 };
 
 // Export a redux connected component
