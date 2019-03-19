@@ -129,6 +129,169 @@ class ArbitrationContract {
 
   }
 
+  async acceptClaim(acceptClaimData) {
+
+    const { case_id, assigned_arb, claim_hash, decision_link, decision_class } = acceptClaimData;
+
+    const actionData = {
+      case_id,
+      assigned_arb,
+      claim_hash,
+      decision_link,
+      decision_class,
+    };
+
+    await this.eosio.createAndSendAction(
+      contractAddress,
+      'acceptclaim',
+      actionData
+    );
+
+  }
+
+  async dismissClaim(dismissClaimData) {
+
+    const { case_id, assigned_arb, claim_hash, memo } = dismissClaimData;
+
+    const actionData = {
+      case_id,
+      assigned_arb,
+      claim_hash,
+      memo,
+    };
+
+    await this.eosio.createAndSendAction(
+      contractAddress,
+      'dismissclaim',
+      actionData
+    );
+
+  }
+
+  async addArbs(addArbsData) {
+
+    const { case_id, assigned_arb, num_arbs_to_assign } = addArbsData;
+
+    const actionData = {
+      case_id,
+      assigned_arb,
+      num_arbs_to_assign,
+    };
+
+    await this.eosio.createAndSendAction(
+      contractAddress,
+      'addarbs',
+      actionData
+    );
+
+  }
+
+  async setRuling(setRulingData) {
+
+    const { case_id, assigned_arb, case_ruling } = setRulingData;
+
+    const actionData = {
+      case_id,
+      assigned_arb,
+      case_ruling,
+    };
+
+    await this.eosio.createAndSendAction(
+      contractAddress,
+      'setruling',
+      actionData
+    );
+
+  }
+
+  async recuse(recuseData) {
+
+    const { case_id, rationale, assigned_arb } = recuseData;
+
+    const actionData = {
+      case_id,
+      rationale,
+      assigned_arb,
+    };
+
+    await this.eosio.createAndSendAction(
+      contractAddress,
+      'recuse',
+      actionData
+    );
+
+  }
+
+  async newArbStatus(data) {
+
+    const { new_status, arbitrator } = data;
+
+    const actionData = {
+      new_status,
+      arbitrator,
+    };
+
+    await this.eosio.createAndSendAction(
+      contractAddress,
+      'newarbstatus',
+      actionData
+    );
+
+  }
+
+  async setLangCodes(data) {
+
+    const { arbitrator, lang_codes } = data;
+
+    const actionData = {
+      arbitrator,
+      lang_codes,
+    };
+
+    await this.eosio.createAndSendAction(
+      contractAddress,
+      'setlangcodes',
+      actionData
+    );
+
+  }
+
+  async advanceCase(data) {
+
+    const { case_id, assigned_arb } = data;
+
+    const actionData = {
+      case_id,
+      assigned_arb,
+    };
+
+    await this.eosio.createAndSendAction(
+      contractAddress,
+      'advancecase',
+      actionData
+    );
+
+  }
+
+  async dismissCase(data) {
+
+    const { case_id, assigned_arb, ruling_link } = data;
+
+    const actionData = {
+      case_id,
+      assigned_arb,
+      ruling_link,
+    };
+
+    await this.eosio.createAndSendAction(
+      contractAddress,
+      'dismisscase',
+      actionData
+    );
+
+  }
+
+
   async getAccountBalance(account_name) {
 
     // TODO use demux server ?
@@ -162,24 +325,36 @@ class ArbitrationContract {
 
   }
 
-  async getCases() {
+  async getCases(limit = 100) {
 
     const rows = await this.eosio.getTable(
       contractAddress,
       'casefiles',
       contractAddress,
-      100,
+      limit,
     );
     return rows;
 
   }
-  async getClaims() {
+  async getClaims(limit = 100) {
 
     const rows = await this.eosio.getTable(
       contractAddress,
       'claims',
       contractAddress,
-      100,
+      limit,
+    );
+    return rows;
+
+  }
+
+  async getArbitrators(limit = 100) {
+
+    const rows = await this.eosio.getTable(
+      contractAddress,
+      'arbitrators',
+      contractAddress,
+      limit,
     );
     return rows;
 

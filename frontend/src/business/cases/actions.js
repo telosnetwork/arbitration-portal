@@ -20,39 +20,16 @@ export function setRespondantCases(cases) {
         cases,
     }
 }
+export function setArbitratorCases(cases) {
+    return {
+        type: ActionTypes.SET_ARBITRATOR_CASES,
+        cases,
+    }
+}
 
 export function setSelectedCase(case_id) {
   return {
     type: ActionTypes.SET_SELECTED_CASE,
     case_id,
-  }
-}
-
-export function setMemberAction(actionName) {
-  return {
-    type: ActionTypes.SET_MEMBER_ACTION,
-    actionName,
-  }
-}
-
-export function setMemberActionLoading(loading) {
-  return {
-    type: ActionTypes.SET_MEMBER_ACTION_LOADING,
-    loading: !!loading,
-  }
-}
-
-export function submitCasefile(case_id) {
-  return {
-    type: ActionTypes.SUBMIT_CASEFILE,
-    case_id,
-  }
-}
-
-export function executeAction(actionName, actionData) {
-  return {
-    type: ActionTypes.EXECUTE_ACTION,
-    actionName,
-    actionData,
   }
 }

@@ -20,16 +20,16 @@ const emptyCase = {
 const initialState = {
   claimantCases: [],
   respondantCases: [],
+  arbitratorCases: [],
   selectedCaseId: null,
-  memberAction: null, // TODO Move somewhere else
-  memberActionLoading: false, // TODO Move somewhere else
 };
 
-function setClaimantCases(state, action) {
 
-  const claimantCases = action.cases.map(c => Object.assign({}, emptyCase, c));
+function parseCases(cases) {
 
-  claimantCases.forEach(casefile => {
+  const affectedCases = cases.map(c => Object.assign({}, emptyCase, c));
+
+  affectedCases.forEach(casefile => {
 
     // TODO restore this when demux fixed
     casefile.unread_claims.forEach(c => c.claim_status = 'unread');
@@ -40,30 +40,31 @@ function setClaimantCases(state, action) {
 
   });
 
+  return affectedCases;
+
+}
+
+function setClaimantCases(state, action) {
+
   return {
     ...state,
-    claimantCases,
+    claimantCases: parseCases(action.cases),
   };
 
 }
 function setRespondantCases(state, action) {
 
-  const respondantCases = action.cases.map(c => Object.assign({}, emptyCase, c));
+  return {
+    ...state,
+    respondantCases: parseCases(action.cases),
+  };
 
-  respondantCases.forEach(casefile => {
-
-    // TODO restore this when demux fixed
-    casefile.unread_claims.forEach(c => c.claim_status = 'unread');
-    casefile.accepted_claims.forEach(c => c.claim_status = 'accepted');
-    casefile.dismiss_claims = [];
-    //casefile.dismiss_claims.forEach(c => c.claim_status = 'dismissed');
-    casefile.claims = [].concat(casefile.unread_claims).concat(casefile.accepted_claims).concat(casefile.dismiss_claims);
-
-  });
+}
+function setArbitratorCases(state, action) {
 
   return {
     ...state,
-    respondantCases,
+    arbitratorCases: parseCases(action.cases),
   };
 
 }
@@ -77,23 +78,10 @@ function setSelectedCase(state, action) {
 
 }
 
-function setMemberAction(state, { actionName }) {
-  return {
-    ...state,
-    memberAction: actionName,
-  };
-}
-function setMemberActionLoading(state, { loading }) {
-  return {
-    ...state,
-    memberActionLoading: loading,
-  };
-}
 
 export const reducer = createReducer(initialState, {
   [ActionTypes.SET_CLAIMANT_CASES]: setClaimantCases,
   [ActionTypes.SET_RESPONDANT_CASES]: setRespondantCases,
+  [ActionTypes.SET_ARBITRATOR_CASES]: setArbitratorCases,
   [ActionTypes.SET_SELECTED_CASE]: setSelectedCase,
-  [ActionTypes.SET_MEMBER_ACTION]: setMemberAction,
-  [ActionTypes.SET_MEMBER_ACTION_LOADING]: setMemberActionLoading,
 });

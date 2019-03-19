@@ -4,7 +4,7 @@ import { ActionTypes }    from 'const';
 import ScatterBridge             from 'utils/scatterBridge';
 import ArbitrationContract        from 'utils/arbitrationContract';
 
-import { AuthenticationActions } from '../actions';
+import {ArbitratorsActions, AuthenticationActions, CasesActions} from '../actions';
 
 export function* login() {
 
@@ -29,6 +29,9 @@ export function* login() {
   }));
 
   yield put(AuthenticationActions.listenWebsocket());
+
+  yield put(ArbitratorsActions.fetchArbitrators());
+  yield put(CasesActions.fetchCases());
 
 }
 

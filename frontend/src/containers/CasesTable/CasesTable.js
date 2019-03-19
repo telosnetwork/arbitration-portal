@@ -3,12 +3,12 @@ import PropTypes from 'prop-types';
 
 // Components
 import { Jumbotron, Table, Container, Row, Button } from 'reactstrap';
+import ClaimsTable from '../ClaimsTable';
 
 // Redux
 import { connect }               from 'react-redux';
-import { CasesActions, ClaimsActions } from 'business/actions';
+import { CasesActions, ModalActions } from 'business/actions';
 import CaseStatus from 'const/CaseStatus';
-import DecisionClass from 'const/DecisionClass';
 
 class CasesTable extends Component {
 
@@ -38,112 +38,61 @@ class CasesTable extends Component {
   onShredCasefile(casefile) {
     return () => {
       this.props.setSelectedCase(casefile.case_id);
-      this.props.setMemberAction('shredcase');
-    }
-  }
-  onRespondClaim(casefile, claim) {
-    return () => {
-      this.props.setSelectedCase(casefile.case_id);
-      this.props.setSelectedClaim(claim.claim_summary);
-      this.props.setMemberAction('respondclaim');
+      this.props.setAction('shredcase');
     }
   }
   onSubmitCasefile(casefile) {
     return () => {
       this.props.setSelectedCase(casefile.case_id);
-      this.props.setMemberAction('submitcasefile');
+      this.props.setAction('submitcasefile');
     }
   }
   onAddClaim(casefile) {
     return () => {
       this.props.setSelectedCase(casefile.case_id);
-      this.props.setMemberAction('addclaim');
+      this.props.setAction('addclaim');
     }
   }
-  onRemoveClaim(casefile, claim) {
+  onSetCaseRuling(casefile) {
     return () => {
       this.props.setSelectedCase(casefile.case_id);
-      this.props.setSelectedClaim(claim.claim_summary);
-      this.props.setMemberAction('removeclaim');
+      this.props.setAction('setruling');
+    }
+  }
+  onAddArbs(casefile) {
+    return () => {
+      this.props.setSelectedCase(casefile.case_id);
+      this.props.setAction('addarbs');
+    }
+  }
+  onRecuse(casefile) {
+    return () => {
+      this.props.setSelectedCase(casefile.case_id);
+      this.props.setAction('recuse');
+    }
+  }
+  onEdit(casefile) {
+    return () => {
+      this.props.setSelectedCase(casefile.case_id);
+      this.props.setAction('editcase');
     }
   }
 
   isClaimant() {
-    return this.props.memberType === 'claimant';
-  }
-  isRespondant() {
-    return this.props.memberType === 'respondant';
+    return this.props.caseType === 'claimant';
   }
 
-  openSummary(claim) {
-    window.open(`https://${claim.claim_summary}`);
+  isArbitrator() {
+    return this.props.caseType === 'arbitrator';
   }
-  openResponse(claim) {
-    window.open(`https://${claim.response_link}`);
-  }
-  openDecision(claim) {
-    window.open(`https://${claim.decision_link}`);
-  }
+
   onOpenCaseRuling(casefile) {
-    window.open(`https://${casefile.case_ruling}`);
-  }
-
-
-  renderClaim(casefile, claim) {
-    return (
-      <tr key={claim.claim_summary}>
-        <td className="claim-col">
-          Claim #{claim.claim_status === 'accepted' ? `${claim.claim_id}` : '-'}
-        </td>
-        <td>
-          {claim.claim_status === 'unread' && 'Unread'}
-          {claim.claim_status === 'accepted' && 'Accepted'}
-          {claim.claim_status === 'dismissed' && 'Declined'}
-        </td>
-        <td>
-          {DecisionClass[claim.decision_class] || '-'}
-        </td>
-        <td align="right">
-          <Button color="primary" onClick={() => this.openSummary(claim)}>Summary</Button>
-          {!!claim.response_link && <Button color="primary" onClick={() => this.openResponse(claim)}>Response</Button>}
-          {!!claim.decision_link && <Button color="primary" onClick={() => this.openDecision(claim)}>Decision</Button>}
-          {claim.claim_status === 'unread' && casefile.case_status === 2 && this.isRespondant() &&
-          <Button color="info" onClick={this.onRespondClaim(casefile, claim)}>Respond</Button>
-          }
-          {claim.claim_status === 'unread' && casefile.case_status === 0 &&
-          this.isClaimant() && <Button color="danger" onClick={this.onRemoveClaim(casefile, claim)}>Remove</Button>}
-        </td>
-      </tr>
-    );
-  }
-
-  renderClaims(casefile) {
-    return (
-      <tr key="claims">
-        <td colSpan="5">
-          <Table hover>
-            <thead>
-            <tr>
-              <th sm="1">Claim ID</th>
-              <th sm="3">Status</th>
-              <th sm="3">Decision</th>
-              <th sm="5" style={{textAlign: 'right'}}>Actions</th>
-            </tr>
-            </thead>
-            <tbody>
-            {casefile.claims.map(claim => this.renderClaim(casefile, claim))}
-            </tbody>
-          </Table>
-        </td>
-      </tr>
-    );
+    return () => {
+      window.open(`https://${casefile.case_ruling}`);
+    };
   }
 
   renderCase(casefile) {
-
-    const claims = this.state.caseClaimsOpen[casefile.case_id] ?
-      this.renderClaims(casefile) :
-      null;
 
     return [
       <tr key={casefile.case_id}>
@@ -170,7 +119,19 @@ class CasesTable extends Component {
           <Button color="danger" onClick={this.onShredCasefile(casefile)}>Shred</Button>
           }
           {casefile.case_ruling &&
-          <Button color="info" onClick={() => this.onOpenCaseRuling(casefile)}>Case ruling</Button>
+          <Button color="primary" onClick={this.onOpenCaseRuling(casefile)}>Case ruling</Button>
+          }
+          {this.isArbitrator() && casefile.case_status === 6 &&
+          <Button color="info" onClick={this.onSetCaseRuling(casefile)}>Case ruling</Button>
+          }
+          {this.isArbitrator() && casefile.case_status === 2 &&
+          <Button color="info" onClick={this.onAddArbs(casefile)}>Add arbitrators</Button>
+          }
+          {this.isArbitrator() && casefile.case_status >= 2 && casefile.case_status <= 6 &&
+          <Button color="info" onClick={this.onRecuse(casefile)}>Recuse</Button>
+          }
+          {this.isArbitrator() &&
+          <Button color="info" onClick={this.onEdit(casefile)}>Edit</Button>
           }
         </td>
       </tr>,
@@ -198,7 +159,12 @@ class CasesTable extends Component {
         <td/>
         <td/>
       </tr>,
-      claims,
+      this.state.caseClaimsOpen[casefile.case_id] &&
+      <tr key="claims">
+        <td colSpan="5">
+          <ClaimsTable casefile={casefile} caseType={this.props.caseType} />
+        </td>
+      </tr>,
     ];
 
   }
@@ -211,8 +177,9 @@ class CasesTable extends Component {
         <Jumbotron className="members-home-jumbo">
 
           <Row className="table-title">
-            {this.props.memberType === 'claimant' && "Claimant cases"}
-            {this.props.memberType === 'respondant' && "Respondant cases"}
+            {this.props.caseType === 'claimant' && "Claimant cases"}
+            {this.props.caseType === 'respondant' && "Respondant cases"}
+            {this.props.caseType === 'arbitrator' && "Arbitrator cases"}
           </Row>
           <Table>
             <thead>
@@ -237,14 +204,13 @@ class CasesTable extends Component {
 }
 
 const mapDispatchToProps = {
-  setMemberAction: CasesActions.setMemberAction,
+  setAction: ModalActions.setAction,
   setSelectedCase: CasesActions.setSelectedCase,
-  setSelectedClaim: ClaimsActions.setSelectedClaim,
 };
 
 CasesTable.propTypes = {
   cases: PropTypes.array,
-  memberType: PropTypes.oneOf(['claimant', 'respondant']),
+  caseType: PropTypes.oneOf(['claimant', 'respondant', 'arbitrator']),
 };
 
 

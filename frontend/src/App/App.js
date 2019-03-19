@@ -5,8 +5,9 @@ import {  Route, Switch }   from 'react-router-dom';
 import Transfers                 from '../containers/Transfers';
 import Arbitrators               from '../containers/Arbitrators';
 import Members                   from '../containers/Members';
-import MembersHome                   from '../containers/MembersHome';
-import NavBar                     from '../containers/NavBar';
+import MembersHome               from '../containers/MembersHome';
+import ArbitratorsHome           from '../containers/ArbitratorsHome';
+import NavBar                    from '../containers/NavBar';
 
 // Resources
 import mainLogo                  from '../resources/telosLogo.png'
@@ -41,10 +42,11 @@ class App extends Component {
                 <NavBar />
                 <Switch>
                     <Route exact path='/' render={Home} />
-                    <Route exact path='/arbitrators' component={Arbitrators} />
                     <Route exact path='/members'     component={MembersHome} />
+                    <Route exact path='/arbitrators' component={ArbitratorsHome} />
+                    <Route exact path='/transfers_reg'   component={Transfers} />
                     <Route exact path='/members_reg'     component={Members} />
-                    <Route exact path='/transfers'   component={Transfers} />
+                    <Route exact path='/arbitrators_reg' component={Arbitrators} />
                     <Route render={NotFound}/>
                 </Switch>
             </div>

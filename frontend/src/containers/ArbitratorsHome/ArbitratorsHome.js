@@ -7,15 +7,14 @@ import { Modal, Container, Row, Col, Button } from 'reactstrap';
 
 // Redux
 import { connect }               from 'react-redux';
-import { ModalActions, CasesActions, ClaimsActions } from 'business/actions';
-import { CasesSelectors, ModalSelectors } from 'business/selectors';
-import { AuthenticationSelectors } from "../../business/selectors";
+import { CasesActions, ClaimsActions, ModalActions } from 'business/actions';
+import { AuthenticationSelectors, ArbitratorsSelectors, CasesSelectors, ModalSelectors } from 'business/selectors';
 
-class MembersHome extends Component {
+class ArbitratorsHome extends Component {
 
-  onNewCase() {
+  openArbitratorsSettings() {
     return () => {
-      this.props.setAction('filecase');
+      this.props.setAction('arbitratorsettings');
     }
   }
 
@@ -29,7 +28,7 @@ class MembersHome extends Component {
 
   render() {
 
-    if(!this.props.isLogin) {
+    if(!this.props.isLogin || !this.props.arbitrator) {
       return (
         <Container>
           <Row>
@@ -44,11 +43,10 @@ class MembersHome extends Component {
       <Container>
 
         <Row className="top-actions">
-          <Button color="primary" onClick={this.onNewCase()} className="new-case-btn">New case</Button>
+          <Button color="primary" onClick={this.openArbitratorsSettings()} className="new-case-btn">Arbitrator settings</Button>
         </Row>
 
-        <CasesTable caseType="claimant" cases={this.props.claimantCases} />
-        <CasesTable caseType="respondant" cases={this.props.respondantCases} />
+        <CasesTable caseType="arbitrator" cases={this.props.arbitratorCases} />
 
         <Modal
           isOpen={!!this.props.modalAction}
@@ -65,16 +63,16 @@ class MembersHome extends Component {
 
 const mapStateToProps = state => ({
   isLogin: AuthenticationSelectors.isLogin(state),
-  claimantCases: CasesSelectors.getClaimantCases(state),
-  respondantCases: CasesSelectors.getRespondantCases(state),
+  arbitrator: ArbitratorsSelectors.arbitrator(state),
+  arbitratorCases: CasesSelectors.getArbitratorCases(state),
   modalAction: ModalSelectors.action(state),
 });
 
 const mapDispatchToProps = {
-  setAction: ModalActions.setAction,
   fetchCases: CasesActions.fetchCases,
   setSelectedCase: CasesActions.setSelectedCase,
   setSelectedClaim: ClaimsActions.setSelectedClaim,
+  setAction: ModalActions.setAction,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(MembersHome);
+export default connect(mapStateToProps, mapDispatchToProps)(ArbitratorsHome);
