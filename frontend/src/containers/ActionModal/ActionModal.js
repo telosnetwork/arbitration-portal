@@ -350,6 +350,12 @@ class ActionModal extends Component {
       case 'editcase': {
         return 'Edit case';
       }
+      case 'advancecase': {
+        return 'Are you sure you want to advance this case ?';
+      }
+      case 'dismisscase': {
+        return 'Are you sure you want to dismiss this case ?';
+      }
       default: {
         return '';
       }
@@ -435,7 +441,7 @@ class ActionModal extends Component {
 
     }
     // Actions with only yes/no
-    else if (actionName === 'shredcase' || actionName === 'removeclaim') {
+    else if (actionName === 'shredcase' || actionName === 'removeclaim' || actionName === 'advancecase' || actionName === 'dismisscase') {
 
       rendered.push(
         <ModalFooter key="footer">
@@ -512,8 +518,10 @@ class ActionModal extends Component {
       rendered.push(
         <ModalFooter key="footer">
           <Button color="info" onClick={this.props.cancel}>Cancel</Button>
-          <Button color='warning' onClick={this.changeAction('dismisscase')}>Dismiss case</Button>
+          {casefile.case_status === 2 && <Button color='warning' onClick={this.changeAction('dismisscase')}>Dismiss case</Button>}
+          {casefile.case_status >= 2 && casefile.case_status <= 6 &&
           <Button color='success' onClick={this.changeAction('advancecase')}>Advance case</Button>
+          }
         </ModalFooter>
       );
 
