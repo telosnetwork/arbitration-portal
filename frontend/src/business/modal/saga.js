@@ -139,6 +139,25 @@ export function* executeAction({ actionName, actionData }) {
       break;
 
     }
+    case 'advancecase': {
+
+      yield arbitrationContract.advanceCase({
+        case_id: casefile.case_id,
+        assigned_arb: account.name,
+      });
+      break;
+
+    }
+    case 'dismisscase': {
+
+      yield arbitrationContract.dismissCase({
+        case_id: casefile.case_id,
+        assigned_arb: account.name,
+        ruling_link: actionData.ruling_link,
+      });
+      break;
+
+    }
     case 'submitcasefile': {
 
       const balance = yield arbitrationContract.getAccountBalance(account.name);

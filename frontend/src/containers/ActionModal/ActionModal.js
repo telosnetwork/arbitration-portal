@@ -113,6 +113,14 @@ const forms = {
       text: 'Please select from the following language codes'
     },
   },
+  dismisscase: {
+    ruling_link: {
+      label: 'Ruling file:',
+      placeholder: 'ipfs_link',
+      special: 'ipfs',
+      text: 'Please select a file to upload'
+    }
+  },
 };
 
 class ActionModal extends Component {
@@ -139,11 +147,30 @@ class ActionModal extends Component {
       {}
     );
 
-    this.form = this.formArrays[this.props.actionName];
+    this.state = {
+      form: [],
+      formValues: {},
+    };
 
-    if(this.form) {
+  }
 
-      const defaultFormValues = this.form.reduce((acc, formElement) =>
+  componentDidMount() {
+    this.updateForm();
+  }
+
+  componentDidUpdate(oldProps) {
+    if(oldProps.actionName !== this.props.actionName) {
+      this.updateForm();
+    }
+  }
+
+  updateForm() {
+
+    const form = this.formArrays[this.props.actionName];
+
+    if(form) {
+
+      const formValues = form.reduce((acc, formElement) =>
           ({
             ...acc,
             [formElement.id]: formElement.value || '',
@@ -152,16 +179,15 @@ class ActionModal extends Component {
       );
 
       if(this.props.actionName === 'arbitratorsettings') {
-        defaultFormValues.new_status = this.props.arbitrator.arb_status || 0;
-        defaultFormValues.lang_codes = this.props.arbitrator.languages || [];
+        formValues.new_status = this.props.arbitrator.arb_status || 0;
+        formValues.lang_codes = this.props.arbitrator.languages || [];
       }
 
-      this.state = {
-        formValues: defaultFormValues,
-      };
+      this.setState({
+        form,
+        formValues,
+      });
 
-    } else {
-      this.state = {};
     }
 
   }
@@ -296,7 +322,7 @@ class ActionModal extends Component {
   }
 
   renderAutoForm() {
-    return this.form.map(formElement => (
+    return this.state.form.map(formElement => (
       <FormGroup key={formElement.id} row>
         <Label key={formElement.id} sm={4}>
           {formElement.label}
@@ -354,7 +380,7 @@ class ActionModal extends Component {
         return 'Are you sure you want to advance this case ?';
       }
       case 'dismisscase': {
-        return 'Are you sure you want to dismiss this case ?';
+        return 'Dismiss case';
       }
       default: {
         return '';
@@ -422,7 +448,7 @@ class ActionModal extends Component {
     rendered.push(...this.renderHeader());
 
     // Actions with form
-    if(actionName === 'filecase' || actionName === 'addclaim' || actionName === 'respondclaim' || actionName === 'setruling' || actionName === 'addarbs' || actionName === 'recuse' || actionName === 'acceptclaim' || actionName === 'dismissclaim' || actionName === 'arbitratorsettings') {
+    if(actionName === 'filecase' || actionName === 'addclaim' || actionName === 'respondclaim' || actionName === 'setruling' || actionName === 'addarbs' || actionName === 'recuse' || actionName === 'acceptclaim' || actionName === 'dismissclaim' || actionName === 'arbitratorsettings' || actionName === 'dismisscase') {
 
       rendered.push(
         <ModalBody key="form">
@@ -441,7 +467,7 @@ class ActionModal extends Component {
 
     }
     // Actions with only yes/no
-    else if (actionName === 'shredcase' || actionName === 'removeclaim' || actionName === 'advancecase' || actionName === 'dismisscase') {
+    else if (actionName === 'shredcase' || actionName === 'removeclaim' || actionName === 'advancecase') {
 
       rendered.push(
         <ModalFooter key="footer">
@@ -517,7 +543,7 @@ class ActionModal extends Component {
       );
       rendered.push(
         <ModalFooter key="footer">
-          <Button color="info" onClick={this.props.cancel}>Cancel</Button>
+          <Button color="info" onClick={this.props.cancel}>Close</Button>
           {casefile.case_status === 2 && <Button color='warning' onClick={this.changeAction('dismisscase')}>Dismiss case</Button>}
           {casefile.case_status >= 2 && casefile.case_status <= 6 &&
           <Button color='success' onClick={this.changeAction('advancecase')}>Advance case</Button>
@@ -534,13 +560,13 @@ class ActionModal extends Component {
 }
 
 ActionModal.propTypes = {
-  actionName: PropTypes.string,
   cancel: PropTypes.func,
 };
 
 const mapStateToProps = state => ({
-  casefile: CasesSelectors.getSelectedCase(state),
+  actionName: ModalSelectors.action(state),
   actionLoading: ModalSelectors.actionLoading(state),
+  casefile: CasesSelectors.getSelectedCase(state),
   claim: ClaimsSelectors.getSelectedClaim(state),
   arbitrator: ArbitratorsSelectors.arbitrator(state),
 });

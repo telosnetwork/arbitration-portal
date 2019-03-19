@@ -53,7 +53,7 @@ class ArbitratorsHome extends Component {
           toggle={this.closeAction()}
           centered
         >
-          <ActionModal actionName={this.props.modalAction} cancel={this.closeAction()}/>
+          <ActionModal cancel={this.closeAction()}/>
         </Modal>
 
       </Container>

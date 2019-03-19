@@ -256,6 +256,41 @@ class ArbitrationContract {
 
   }
 
+  async advanceCase(data) {
+
+    const { case_id, assigned_arb } = data;
+
+    const actionData = {
+      case_id,
+      assigned_arb,
+    };
+
+    await this.eosio.createAndSendAction(
+      contractAddress,
+      'advancecase',
+      actionData
+    );
+
+  }
+
+  async dismissCase(data) {
+
+    const { case_id, assigned_arb, ruling_link } = data;
+
+    const actionData = {
+      case_id,
+      assigned_arb,
+      ruling_link,
+    };
+
+    await this.eosio.createAndSendAction(
+      contractAddress,
+      'dismisscase',
+      actionData
+    );
+
+  }
+
 
   async getAccountBalance(account_name) {
 
