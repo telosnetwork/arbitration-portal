@@ -8,8 +8,7 @@ import { Modal, Container, Row, Col, Button } from 'reactstrap';
 // Redux
 import { connect }               from 'react-redux';
 import { CasesActions, ClaimsActions, ModalActions } from 'business/actions';
-import { CasesSelectors, ModalSelectors } from 'business/selectors';
-import { AuthenticationSelectors } from 'business/selectors';
+import { AuthenticationSelectors, ArbitratorsSelectors, CasesSelectors, ModalSelectors } from 'business/selectors';
 
 class ArbitratorsHome extends Component {
 
@@ -29,7 +28,7 @@ class ArbitratorsHome extends Component {
 
   render() {
 
-    if(!this.props.isLogin) {
+    if(!this.props.isLogin || !this.props.arbitrator) {
       return (
         <Container>
           <Row>
@@ -64,6 +63,7 @@ class ArbitratorsHome extends Component {
 
 const mapStateToProps = state => ({
   isLogin: AuthenticationSelectors.isLogin(state),
+  arbitrator: ArbitratorsSelectors.arbitrator(state),
   arbitratorCases: CasesSelectors.getArbitratorCases(state),
   modalAction: ModalSelectors.action(state),
 });

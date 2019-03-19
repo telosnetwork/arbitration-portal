@@ -3,7 +3,7 @@ import { ActionTypes }    from 'const';
 
 import * as actions from './actions';
 import { AuthenticationSelectors, CasesSelectors, ClaimsSelectors } from '../selectors';
-import { CasesActions, ClaimsActions } from '../actions';
+import { ArbitratorsActions, CasesActions, ClaimsActions } from '../actions';
 
 export function* finishAction() {
 
@@ -164,6 +164,7 @@ export function* executeAction({ actionName, actionData }) {
         arbitrator: account.name,
         lang_codes: actionData.lang_codes,
       });
+      yield put(ArbitratorsActions.fetchArbitrators());
       break;
 
     }

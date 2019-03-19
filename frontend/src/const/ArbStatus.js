@@ -4,7 +4,7 @@
 
 export default {
 
-  0: 'Availabile',
+  0: 'Available',
   1: 'Unavailable',
   2: 'Removed',
   3: 'Seat expired',

@@ -11,7 +11,7 @@ const emptyArbitrator = {
     credentials_link: '',
     elected_time:     0,
     term_expiration:  0,
-    languages:        null
+    languages:        []
 };
 
 const initialState = {

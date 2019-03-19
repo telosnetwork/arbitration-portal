@@ -8,7 +8,7 @@ import { Container, Row, ModalHeader, ModalBody, ModalFooter, Col, Button, Spinn
 // Redux
 import { connect }               from 'react-redux';
 import { ModalActions } from 'business/actions';
-import { CasesSelectors, ClaimsSelectors, ModalSelectors } from 'business/selectors';
+import { ArbitratorsSelectors, CasesSelectors, ClaimsSelectors, ModalSelectors } from 'business/selectors';
 
 import CaseStatus from 'const/CaseStatus';
 import DecisionClass from 'const/DecisionClass';
@@ -78,7 +78,7 @@ const forms = {
   addarbs: {
     num_arbs_to_assign: {
       label: 'Arbs to assign:',
-      value: 0,
+      value: 1,
       type: 'text',
       placeholder: 'num_arbs_to_assign',
       text: 'Please input the number of arbitrators to assign'
@@ -151,6 +151,11 @@ class ActionModal extends Component {
         {}
       );
 
+      if(this.props.actionName === 'arbitratorsettings') {
+        defaultFormValues.new_status = this.props.arbitrator.arb_status || 0;
+        defaultFormValues.lang_codes = this.props.arbitrator.languages || [];
+      }
+
       this.state = {
         formValues: defaultFormValues,
       };
@@ -177,7 +182,7 @@ class ActionModal extends Component {
 
       const oldArray = this.state.formValues[formElementId];
       const newArray = [].concat(oldArray);
-      const clickedValue = event.target.value;
+      const clickedValue = parseInt(event.target.value);
       const existingIndex = oldArray.indexOf(clickedValue);
       if(existingIndex !== -1) {
         newArray.splice(existingIndex, 1);
@@ -226,6 +231,7 @@ class ActionModal extends Component {
               value={LanguageCodes[language]}
               id={`lg-select-${language}`}
               onChange={this.checkboxChangedHandler(formElement.id)}
+              checked={this.state.formValues[formElement.id].includes(LanguageCodes[language])}
             />
             <Label for={`lg-select-${language}`} check>{language}</Label>
           </div>
@@ -239,6 +245,7 @@ class ActionModal extends Component {
             type="select"
             name={formElement.id}
             onChange={this.inputChangedHandler(formElement.id)}
+            value={this.state.formValues[formElement.id]}
           >
             {Object.keys(DecisionClass).map(classId =>
               <option
@@ -259,6 +266,7 @@ class ActionModal extends Component {
             type="select"
             name={formElement.id}
             onChange={this.inputChangedHandler(formElement.id)}
+            value={this.state.formValues[formElement.id]}
           >
             {Object.keys(ArbStatus).filter(s => parseInt(s) <= 1).map(statusId =>
               <option
@@ -466,6 +474,7 @@ const mapStateToProps = state => ({
   case: CasesSelectors.getSelectedCase(state),
   actionLoading: ModalSelectors.actionLoading(state),
   claim: ClaimsSelectors.getSelectedClaim(state),
+  arbitrator: ArbitratorsSelectors.arbitrator(state),
 });
 
 const mapDispatchToProps = {
