@@ -514,17 +514,10 @@ class ActionModal extends Component {
               <h4>Arbitrator approvals</h4>
 
               <ListGroup>
-                {casefile.approvals.map(arbitrator =>
-                  <ListGroupItem
-                    key={arbitrator}
-                    color={'success'}
-                  >
-                    {arbitrator}
-                  </ListGroupItem>
-                )}
                 {casefile.arbitrators.map(arbitrator =>
                   <ListGroupItem
                     key={arbitrator}
+                    color={casefile.approvals.find(a => a === arbitrator) ? 'success' : ''}
                   >
                     {arbitrator}
                   </ListGroupItem>

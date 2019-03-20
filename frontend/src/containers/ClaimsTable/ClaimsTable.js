@@ -40,10 +40,12 @@ class ClaimsTable extends Component {
     }
   }
 
+  isClaimant() {
+    return this.props.caseType === 'claimant';
+  }
   isRespondant() {
     return this.props.caseType === 'respondant';
   }
-
   isArbitrator() {
     return this.props.caseType === 'arbitrator';
   }
@@ -82,7 +84,7 @@ class ClaimsTable extends Component {
           {this.isRespondant() && claim.claim_status === 'unread' && casefile.case_status === 2 &&
           <Button color="info" onClick={this.onRespondClaim(casefile, claim)}>Respond</Button>
           }
-          {this.isRespondant() && claim.claim_status === 'unread' && casefile.case_status === 0 &&
+          {this.isClaimant() && claim.claim_status === 'unread' && casefile.case_status === 0 &&
           <Button color="danger" onClick={this.onRemoveClaim(casefile, claim)}>Remove</Button>
           }
           {this.isArbitrator() && claim.claim_status === 'unread' && casefile.case_status >= 2 && casefile.case_status <= 4 &&
