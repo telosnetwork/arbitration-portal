@@ -1,28 +1,19 @@
 import React, { Component }      from 'react';
 
 // Components
-import ActionModal from '../ActionModal';
 import CasesTable from  '../CasesTable';
-import { Modal, Container, Row, Col, Button } from 'reactstrap';
+import { Container, Row, Col, Button } from 'reactstrap';
 
 // Redux
 import { connect }               from 'react-redux';
-import { CasesActions, ClaimsActions, ModalActions } from 'business/actions';
-import { AuthenticationSelectors, ArbitratorsSelectors, CasesSelectors, ModalSelectors } from 'business/selectors';
+import { CasesActions, ModalActions } from 'business/actions';
+import { AuthenticationSelectors, ArbitratorsSelectors, CasesSelectors } from 'business/selectors';
 
 class ArbitratorsHome extends Component {
 
   openArbitratorsSettings() {
     return () => {
       this.props.setAction('arbitratorsettings');
-    }
-  }
-
-  closeAction() {
-    return () => {
-      this.props.setAction(null);
-      this.props.setSelectedCase(null);
-      this.props.setSelectedClaim(null);
     }
   }
 
@@ -48,14 +39,6 @@ class ArbitratorsHome extends Component {
 
         <CasesTable caseType="arbitrator" cases={this.props.arbitratorCases} />
 
-        <Modal
-          isOpen={!!this.props.modalAction}
-          toggle={this.closeAction()}
-          centered
-        >
-          <ActionModal cancel={this.closeAction()}/>
-        </Modal>
-
       </Container>
     )
   }
@@ -65,13 +48,10 @@ const mapStateToProps = state => ({
   isLogin: AuthenticationSelectors.isLogin(state),
   arbitrator: ArbitratorsSelectors.arbitrator(state),
   arbitratorCases: CasesSelectors.getArbitratorCases(state),
-  modalAction: ModalSelectors.action(state),
 });
 
 const mapDispatchToProps = {
   fetchCases: CasesActions.fetchCases,
-  setSelectedCase: CasesActions.setSelectedCase,
-  setSelectedClaim: ClaimsActions.setSelectedClaim,
   setAction: ModalActions.setAction,
 };
 

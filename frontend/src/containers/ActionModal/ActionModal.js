@@ -1,13 +1,12 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 
 // Components
 import IPFSInput from '../../components/IPFSInput';
-import { Container, Row, ModalHeader, ModalBody, ModalFooter, Col, Button, Spinner, Form, FormGroup, Label, Input, FormText, ListGroup, ListGroupItem } from 'reactstrap';
+import { Modal, Container, Row, ModalHeader, ModalBody, ModalFooter, Col, Button, Spinner, Form, FormGroup, Label, Input, FormText, ListGroup, ListGroupItem } from 'reactstrap';
 
 // Redux
 import { connect }               from 'react-redux';
-import { ModalActions } from 'business/actions';
+import { CasesActions, ClaimsActions, ModalActions } from 'business/actions';
 import { ArbitratorsSelectors, CasesSelectors, ClaimsSelectors, ModalSelectors } from 'business/selectors';
 
 import CaseStatus from 'const/CaseStatus';
@@ -161,6 +160,14 @@ class ActionModal extends Component {
   componentDidUpdate(oldProps) {
     if(oldProps.actionName !== this.props.actionName) {
       this.updateForm();
+    }
+  }
+
+  close() {
+    return () => {
+      this.props.setAction(null);
+      this.props.setSelectedCase(null);
+      this.props.setSelectedClaim(null);
     }
   }
 
@@ -426,7 +433,7 @@ class ActionModal extends Component {
     };
   }
 
-  render() {
+  renderContent() {
 
     const { actionName } = this.props;
     if(!actionName) return null;
@@ -460,7 +467,7 @@ class ActionModal extends Component {
       );
       rendered.push(
         <ModalFooter key="footer">
-          <Button color="secondary" onClick={this.props.cancel}>Cancel</Button>
+          <Button color="secondary" onClick={this.close()}>Cancel</Button>
           <Button color='primary' onClick={this.handleSubmit()}>Submit</Button>
         </ModalFooter>
       );
@@ -471,7 +478,7 @@ class ActionModal extends Component {
 
       rendered.push(
         <ModalFooter key="footer">
-          <Button color="info" onClick={this.props.cancel}>No</Button>
+          <Button color="info" onClick={this.close()}>No</Button>
           <Button color='danger' onClick={this.handleSubmit()}>Yes</Button>
         </ModalFooter>
       );
@@ -490,7 +497,7 @@ class ActionModal extends Component {
       );
       rendered.push(
         <ModalFooter key="footer">
-          <Button color="info" onClick={this.props.cancel}>Cancel</Button>
+          <Button color="info" onClick={this.close()}>Cancel</Button>
           <Button color='success' onClick={this.handleSubmit()}>Submit</Button>
         </ModalFooter>
       );
@@ -543,7 +550,7 @@ class ActionModal extends Component {
       );
       rendered.push(
         <ModalFooter key="footer">
-          <Button color="info" onClick={this.props.cancel}>Close</Button>
+          <Button color="info" onClick={this.close()}>Close</Button>
           {casefile.case_status === 2 && <Button color='warning' onClick={this.changeAction('dismisscase')}>Dismiss case</Button>}
           {casefile.case_status >= 2 && casefile.case_status <= 6 &&
           <Button color='success' onClick={this.changeAction('advancecase')}>Advance case</Button>
@@ -556,14 +563,22 @@ class ActionModal extends Component {
     return rendered;
 
   }
+  render() {
+    return (
+      <Modal
+        isOpen={!!this.props.modalAction}
+        toggle={this.close()}
+        centered
+      >
+        {this.renderContent()}
+      </Modal>
+    );
+  }
 
 }
 
-ActionModal.propTypes = {
-  cancel: PropTypes.func,
-};
-
 const mapStateToProps = state => ({
+  modalAction: ModalSelectors.action(state),
   actionName: ModalSelectors.action(state),
   actionLoading: ModalSelectors.actionLoading(state),
   casefile: CasesSelectors.getSelectedCase(state),
@@ -573,6 +588,8 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = {
   executeAction: ModalActions.executeAction,
+  setSelectedCase: CasesActions.setSelectedCase,
+  setSelectedClaim: ClaimsActions.setSelectedClaim,
   setAction: ModalActions.setAction,
 };
 
