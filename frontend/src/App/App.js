@@ -8,6 +8,7 @@ import Members                   from '../containers/Members';
 import MembersHome               from '../containers/MembersHome';
 import ArbitratorsHome           from '../containers/ArbitratorsHome';
 import NavBar                    from '../containers/NavBar';
+import ErrorModal                from '../containers/ErrorModal';
 
 // Resources
 import mainLogo                  from '../resources/telosLogo.png'
@@ -40,6 +41,7 @@ class App extends Component {
         return (
             <div className='App'>
                 <NavBar />
+              <ErrorModal />
                 <Switch>
                     <Route exact path='/' render={Home} />
                     <Route exact path='/members'     component={MembersHome} />

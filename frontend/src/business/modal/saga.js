@@ -197,8 +197,19 @@ export function* executeAction({ actionName, actionData }) {
 
 }
 
+function* executeActionWrapper({ actionName, actionData }) {
+  try {
+    yield executeAction({ actionName, actionData });
+  } catch(error) {
+
+    yield finishAction();
+    yield put(actions.setActionError(error));
+
+  }
+}
+
 export default function* casesSaga() {
 
-  yield takeEvery(ActionTypes.EXECUTE_ACTION, executeAction);
+  yield takeEvery(ActionTypes.EXECUTE_ACTION, executeActionWrapper);
 
 }

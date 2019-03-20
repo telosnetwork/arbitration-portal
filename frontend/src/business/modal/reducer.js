@@ -5,6 +5,7 @@ export const STATE_KEY = 'modal';
 
 const initialState = {
   action: null,
+  actionError: null,
   actionLoading: false,
 };
 
@@ -20,8 +21,15 @@ function setActionLoading(state, { loading }) {
     actionLoading: loading,
   };
 }
+function setActionError(state, { error }) {
+  return {
+    ...state,
+    actionError: error,
+  };
+}
 
 export const reducer = createReducer(initialState, {
   [ActionTypes.SET_ACTION]: setAction,
   [ActionTypes.SET_ACTION_LOADING]: setActionLoading,
+  [ActionTypes.SET_ACTION_ERROR]: setActionError,
 });
