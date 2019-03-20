@@ -114,6 +114,16 @@ class CasesTable extends Component {
             '-'
           }
         </td>
+        {this.props.caseType !== 'claimant' &&
+        <td>
+          {casefile.claimant}
+        </td>
+        }
+        {this.props.caseType !== 'respondant' &&
+        <td>
+          {casefile.respondant}
+        </td>
+        }
         <td align="right">
           {this.isClaimant() && casefile.case_status === 0 &&
           <Button color="danger" onClick={this.onShredCasefile(casefile)}>Shred</Button>
@@ -157,11 +167,13 @@ class CasesTable extends Component {
         </td>
         <td/>
         <td/>
+        {this.props.caseType !== 'claimant' && <td/>}
+        {this.props.caseType !== 'respondant' && <td/>}
         <td/>
       </tr>,
       this.state.caseClaimsOpen[casefile.case_id] &&
       <tr key="claims">
-        <td colSpan="5">
+        <td colSpan={7 - ((this.props.caseType === 'claimant' || this.props.caseType === 'respondant') ? 1 : 0)}>
           <ClaimsTable casefile={casefile} caseType={this.props.caseType} />
         </td>
       </tr>,
@@ -188,6 +200,16 @@ class CasesTable extends Component {
               <th sm="1">Status</th>
               <th sm="3">Arbitrators</th>
               <th sm="3">Approvals</th>
+              {this.props.caseType !== 'claimant' &&
+              <th>
+                Claimant
+              </th>
+              }
+              {this.props.caseType !== 'respondant' &&
+              <th>
+                Respondant
+              </th>
+              }
               <th sm="4" style={{textAlign: 'right'}}>Actions</th>
             </tr>
             </thead>
