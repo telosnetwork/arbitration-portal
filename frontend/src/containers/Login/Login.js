@@ -72,7 +72,7 @@ class Login extends Component {
 
       return (
         <div>
-          <img src={scatterSvg} onClick={this.toggleModal} height={33} style={{cursor: 'pointer'}} />
+          <img alt="Login with scatter" src={scatterSvg} onClick={this.toggleModal} height={33} style={{cursor: 'pointer'}} />
           <Modal isOpen={this.state.modal} toggle={this.toggleModal} className={this.props.className}>
             <ModalHeader toggle={this.toggleModal} className={this.props.className}>
               <ModalBody>
