@@ -2,7 +2,7 @@ import React, { Component }      from 'react';
 import PropTypes from 'prop-types';
 
 // Components
-import { Table, Button } from 'reactstrap';
+import { Table, Button, UncontrolledTooltip } from 'reactstrap';
 
 // Redux
 import { connect }               from 'react-redux';
@@ -63,6 +63,7 @@ class ClaimsTable extends Component {
 
   renderClaim(claim) {
     const { casefile } = this.props;
+    const shortId = claim.claim_summary.substr(claim.claim_summary.length - 5, 5);
     return (
       <tr key={claim.claim_summary}>
         <td className="claim-col">
@@ -77,21 +78,51 @@ class ClaimsTable extends Component {
           {DecisionClass[claim.decision_class] || '-'}
         </td>
         <td align="right">
-          <Button color="primary" onClick={() => this.openSummary(claim)}>Summary</Button>
-          {!!claim.response_link && <Button color="primary" onClick={() => this.openResponse(claim)}>Response</Button>}
-          {!!claim.decision_link && <Button color="primary" onClick={() => this.openDecision(claim)}>Decision</Button>}
+          <Button color="primary" onClick={() => this.openSummary(claim)}>
+            Summary
+          </Button>
+          {!!claim.response_link &&
+          <Button color="primary" onClick={() => this.openResponse(claim)}>
+            Response
+          </Button>
+          }
+          {!!claim.decision_link &&
+          <Button color="primary" onClick={() => this.openDecision(claim)}>
+            Decision
+          </Button>
+          }
 
           {this.isRespondant() && claim.claim_status === 'unread' && casefile.case_status === 2 &&
-          <Button color="info" onClick={this.onRespondClaim(casefile, claim)}>Respond</Button>
+          <Button id={`respondclaim-btn-${shortId}`} color="info" onClick={this.onRespondClaim(casefile, claim)}>
+            <i className="fas fa-reply"></i>
+            <UncontrolledTooltip placement="bottom" target={`respondclaim-btn-${shortId}`}>
+              Respond claim
+            </UncontrolledTooltip>
+          </Button>
           }
           {this.isClaimant() && claim.claim_status === 'unread' && casefile.case_status === 0 &&
-          <Button color="danger" onClick={this.onRemoveClaim(casefile, claim)}>Remove</Button>
+          <Button id={`removeclaim-btn-${shortId}`} color="danger" onClick={this.onRemoveClaim(casefile, claim)}>
+            <i className="fas fa-trash-alt"></i>
+            <UncontrolledTooltip placement="bottom" target={`removeclaim-btn-${shortId}`}>
+              Remove claim
+            </UncontrolledTooltip>
+          </Button>
           }
           {this.isArbitrator() && claim.claim_status === 'unread' && casefile.case_status >= 2 && casefile.case_status <= 4 &&
-          <Button color="info" onClick={this.onAcceptClaim(casefile, claim)}>Accept</Button>
+          <Button id={`acceptclaim-btn-${shortId}`} color="info" onClick={this.onAcceptClaim(casefile, claim)}>
+            <i className="fas fa-clipboard-check"></i>
+            <UncontrolledTooltip placement="bottom" target={`acceptclaim-btn-${shortId}`}>
+              Accept claim
+            </UncontrolledTooltip>
+          </Button>
           }
           {this.isArbitrator() && claim.claim_status === 'unread' && casefile.case_status >= 2 && casefile.case_status <= 4 &&
-          <Button color="info" onClick={this.onDismissClaim(casefile, claim)}>Dismiss</Button>
+          <Button id={`dismissclaim-btn-${shortId}`} color="info" onClick={this.onDismissClaim(casefile, claim)}>
+            <i className="fas fa-times-circle"></i>
+            <UncontrolledTooltip placement="bottom" target={`dismissclaim-btn-${shortId}`}>
+              Dismiss claim
+            </UncontrolledTooltip>
+          </Button>
           }
 
         </td>
