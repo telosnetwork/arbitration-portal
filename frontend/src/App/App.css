@@ -16,3 +16,7 @@
 .submitButton {
     float:        right;
 }
+
+.fas-left {
+  margin-right: 10px;
+}
