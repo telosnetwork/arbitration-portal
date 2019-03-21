@@ -8,6 +8,8 @@ import { AuthenticationSelectors } from 'business/selectors';
 // Reactstrap Components
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 
+import scatterSvg from '../../resources/gs_button_loginwithscatter_blue.svg';
+
 class Login extends Component {
 
   constructor (props) {
@@ -21,7 +23,7 @@ class Login extends Component {
 
   componentDidMount() {
     // TODO remove this, just for dev
-    this.props.login();
+    //this.props.login();
   }
 
   toggleModal = () => {
@@ -49,7 +51,9 @@ class Login extends Component {
     if (this.props.authentication.isLogin && this.props.authentication.account) {
 
       return (<div>
-        <Button color='primary' style={{ fontWeight: 'bold' }} onClick={this.toggleModal} outline>Logged in as: {this.props.authentication.account.name}</Button>
+        <Button color='primary' style={{ fontWeight: 'bold' }} onClick={this.toggleModal} outline>
+          Logged in as: {this.props.authentication.account.name}
+          </Button>
         <Modal isOpen={this.state.modal} toggle={this.toggleModal} className={this.props.className}>
           <ModalHeader toggle={this.toggleModal} className={this.props.className}>
             <ModalBody>
@@ -68,7 +72,7 @@ class Login extends Component {
 
       return (
         <div>
-          <Button color='primary' onClick={this.toggleModal}>Login</Button>
+          <img src={scatterSvg} onClick={this.toggleModal} height={33} style={{cursor: 'pointer'}} />
           <Modal isOpen={this.state.modal} toggle={this.toggleModal} className={this.props.className}>
             <ModalHeader toggle={this.toggleModal} className={this.props.className}>
               <ModalBody>
