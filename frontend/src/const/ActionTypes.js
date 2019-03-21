@@ -8,6 +8,7 @@ export default {
   HANDLE_WEBSOCKET:     'HANDLE_WEBSOCKET',
 
   LOGIN:                'LOGIN',
+  LOGOUT:               'LOGOUT',
   SET_BALANCES:         'SET_BALANCES',
   SET_JOINEDCASES:      'SET_JOINEDCASES',
   SET_TRANSFERS:        'SET_TRANSFERS',
