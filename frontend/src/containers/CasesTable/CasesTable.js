@@ -126,9 +126,9 @@ class CasesTable extends Component {
         }
         <td align="right">
           {this.isClaimant() && casefile.case_status === 0 &&
-          <Button id="shred-case-btn" color="danger" onClick={this.onShredCasefile(casefile)}>
+          <Button id={`shred-case-btn-${casefile.case_id}`} color="danger" onClick={this.onShredCasefile(casefile)}>
             <i className="fas fa-trash-alt"></i>
-            <UncontrolledTooltip placement="bottom" target="shred-case-btn">
+            <UncontrolledTooltip placement="bottom" target={`shred-case-btn-${casefile.case_id}`}>
               Shred case
             </UncontrolledTooltip>
           </Button>
