@@ -34,7 +34,10 @@ class ArbitratorsHome extends Component {
       <Container>
 
         <Row className="top-actions">
-          <Button color="primary" onClick={this.openArbitratorsSettings()} className="new-case-btn">Arbitrator settings</Button>
+          <Button color="primary" onClick={this.openArbitratorsSettings()} className="new-case-btn">
+            <i className="fas fa-cog fas-left"></i>
+            Arbitrator settings
+          </Button>
         </Row>
 
         <CasesTable caseType="arbitrator" cases={this.props.arbitratorCases} />
