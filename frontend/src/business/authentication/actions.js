@@ -14,6 +14,12 @@ export function login() {
 
 export function logout() {
   return {
+    type: ActionTypes.LOGOUT,
+  }
+}
+
+export function resetAuth() {
+  return {
     type: ActionTypes.SET_AUTH,
     isLogin: false,
     account: null,

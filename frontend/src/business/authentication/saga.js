@@ -1,10 +1,12 @@
-import { put, takeEvery } from 'redux-saga/effects';
+import { select, put, takeEvery } from 'redux-saga/effects';
 import { ActionTypes }    from 'const';
 
 import ScatterBridge             from 'utils/scatterBridge';
 import ArbitrationContract        from 'utils/arbitrationContract';
 
 import {ArbitratorsActions, AuthenticationActions, CasesActions} from '../actions';
+import {AuthenticationSelectors} from "../selectors";
+import * as actions from './actions';
 
 export function* login() {
 
@@ -35,8 +37,17 @@ export function* login() {
 
 }
 
+export function* logout() {
+
+  const eosio = yield select(AuthenticationSelectors.eosio);
+  yield eosio.logout();
+  yield put(actions.resetAuth());
+
+}
+
 export default function* authenticationSaga() {
 
   yield takeEvery(ActionTypes.LOGIN, login);
+  yield takeEvery(ActionTypes.LOGOUT, logout);
 
 }

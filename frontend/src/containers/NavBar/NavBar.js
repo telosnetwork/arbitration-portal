@@ -1,5 +1,5 @@
 import React, { Component }      from 'react';
-import { Link }   from 'react-router-dom';
+import { NavLink, withRouter }   from 'react-router-dom';
 
 // Resources
 import mainLogo                  from 'resources/telosLogo.png'
@@ -25,7 +25,6 @@ class NavBar extends Component {
     };
 
     this.toggleNavBar = this.toggleNavBar.bind(this);
-
   }
 
   toggleNavBar() {
@@ -38,9 +37,9 @@ class NavBar extends Component {
 
     return (
       <Navbar color='light' light expand='md'>
-        <Link to='/' style={{ color: 'black', textDecoration: 'none' }}>
+        <NavLink to='/' style={{ color: 'black', textDecoration: 'none' }}>
           <img src={mainLogo} alt='mainLogo' height="40" width="40"/> Arbitration Portal
-        </Link>
+        </NavLink>
         <NavbarToggler onClick={this.toggleNavBar}/>
         <Collapse isOpen={this.state.isOpen} navbar>
           <Nav className='ml-auto' navbar>
@@ -48,15 +47,23 @@ class NavBar extends Component {
             {this.props.isLogin && [
 
               <NavItem key="members">
-                <Link to='/members' style={ !this.props.isLogin ? {pointerEvents: 'none', color: 'black', textDecoration: 'none', marginRight: '10px'} : {color: 'black', textDecoration: 'none', marginRight: '10px'}} >
+                <NavLink
+                  to='/members'
+                  className="c-nav-link"
+                  activeClassName="nav-link-disabled"
+                >
                   Member
-                </Link>
+                </NavLink>
               </NavItem>,
               this.props.isArbitrator &&
               <NavItem key="arbitrators">
-                <Link to='/arbitrators' style={ !this.props.isLogin ? {pointerEvents: 'none', color: 'black', textDecoration: 'none', marginRight: '10px'} : {color: 'black', textDecoration: 'none', marginRight: '10px'}} >
+                <NavLink
+                  to='/arbitrators'
+                  className="c-nav-link"
+                  activeClassName="nav-link-disabled"
+                >
                   Arbitrator
-                </Link>
+                </NavLink>
               </NavItem>,
               /*<NavItem key="transfers">
                 <Link to='/transfers_reg' style={ !this.props.isLogin ? {pointerEvents: 'none', color: 'black', textDecoration: 'none', marginRight: '10px'} : {color: 'black', textDecoration: 'none', marginRight: '10px'}} >
@@ -85,4 +92,4 @@ const mapDispatchToProps = {
   fetchArbitrators: ArbitratorsActions.fetchArbitrators,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(NavBar);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(NavBar));

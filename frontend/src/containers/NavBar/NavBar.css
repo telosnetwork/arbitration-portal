@@ -1,0 +1,8 @@
+.c-nav-link {
+  text-decoration: none;
+  margin-right: 10px;
+}
+.nav-link-disabled {
+  pointer-events: none;
+  color: black;
+}
