@@ -2,7 +2,7 @@ import React, { Component }      from 'react';
 import PropTypes from 'prop-types';
 
 // Components
-import { Jumbotron, Table, Container, Row, Button } from 'reactstrap';
+import { UncontrolledTooltip, Jumbotron, Table, Container, Row, Button } from 'reactstrap';
 import ClaimsTable from '../ClaimsTable';
 
 // Redux
@@ -126,23 +126,56 @@ class CasesTable extends Component {
         }
         <td align="right">
           {this.isClaimant() && casefile.case_status === 0 &&
-          <Button color="danger" onClick={this.onShredCasefile(casefile)}>Shred</Button>
+          <Button id="shred-case-btn" color="danger" onClick={this.onShredCasefile(casefile)}>
+            <i className="fas fa-trash-alt"></i>
+            <UncontrolledTooltip placement="bottom" target="shred-case-btn">
+              Shred case
+            </UncontrolledTooltip>
+          </Button>
           }
           {casefile.case_ruling &&
-          <Button color="primary" onClick={this.onOpenCaseRuling(casefile)}>Case ruling</Button>
+          <Button id={`open-case-ruling-btn-${casefile.case_id}`} color="primary" onClick={this.onOpenCaseRuling(casefile)}>
+            <i className="fas fa-file-alt"></i>
+            <UncontrolledTooltip placement="bottom" target={`open-case-ruling-btn-${casefile.case_id}`}>
+              Open case ruling
+            </UncontrolledTooltip>
+          </Button>
           }
           {this.isArbitrator() && casefile.case_status === 6 &&
-          <Button color="info" onClick={this.onSetCaseRuling(casefile)}>Case ruling</Button>
+          <Button id={`set-case-ruling-btn-${casefile.case_id}`} color="info" onClick={this.onSetCaseRuling(casefile)}>
+            <i className="fas fa-file-alt"></i>
+            <UncontrolledTooltip placement="bottom" target={`set-case-ruling-btn-${casefile.case_id}`}>
+              Set case ruling
+            </UncontrolledTooltip>
+          </Button>
           }
           {this.isArbitrator() && casefile.case_status === 2 &&
-          <Button color="info" onClick={this.onAddArbs(casefile)}>Add arbitrators</Button>
+          <Button id={`case-addarbs-btn-${casefile.case_id}`} color="info" onClick={this.onAddArbs(casefile)}>
+            <i className="fas fa-user-plus"></i>
+            <UncontrolledTooltip placement="bottom" target={`case-addarbs-btn-${casefile.case_id}`}>
+              Add arbitrators
+            </UncontrolledTooltip>
+
+          </Button>
           }
           {this.isArbitrator() && casefile.case_status >= 2 && casefile.case_status <= 6 &&
-          <Button color="info" onClick={this.onRecuse(casefile)}>Recuse</Button>
+          <Button id={`case-recuse-btn-${casefile.case_id}`} color="info" onClick={this.onRecuse(casefile)}>
+            <i className="fas fa-user-minus"></i>
+            <UncontrolledTooltip placement="bottom" target={`case-recuse-btn-${casefile.case_id}`}>
+              Recuse
+            </UncontrolledTooltip>
+          </Button>
           }
           {this.isArbitrator() &&
-          <Button color="info" onClick={this.onEdit(casefile)}>Edit</Button>
+          <Button id={`case-edit-btn-${casefile.case_id}`} color="info" onClick={this.onEdit(casefile)}>
+            <i className="fas fa-user-edit"></i>
+            <UncontrolledTooltip placement="bottom" target={`case-edit-btn-${casefile.case_id}`}>
+              Edit case
+            </UncontrolledTooltip>
+          </Button>
           }
+
+
         </td>
       </tr>,
       <tr key="caseactions">
@@ -184,7 +217,7 @@ class CasesTable extends Component {
   render() {
 
     return (
-      <Container>
+      <Container className="cases-table">
 
         <Jumbotron className="members-home-jumbo">
 
