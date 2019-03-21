@@ -9,6 +9,7 @@ import { AuthenticationSelectors } from 'business/selectors';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 
 import scatterSvg from '../../resources/gs_button_loginwithscatter_blue.svg';
+import scatterBadgeSvg from '../../resources/scatter_badge_transparent.svg';
 
 class Login extends Component {
 
@@ -52,6 +53,7 @@ class Login extends Component {
 
       return (<div>
         <Button color='primary' style={{ fontWeight: 'bold' }} onClick={this.toggleModal} outline>
+          <img className="fas-left" alt="scatter" src={scatterBadgeSvg} height={20}  />
           Logged in as: {this.props.authentication.account.name}
           </Button>
         <Modal isOpen={this.state.modal} toggle={this.toggleModal} className={this.props.className}>
