@@ -15,6 +15,9 @@ class ArbitrationContract {
       lang_codes,
       respondant,
     };
+    if(typeof actionData.respondant !== 'string' || actionData.respondant === '') {
+      actionData.respondant = null;
+    }
 
     await this.eosio.createAndSendAction(
       contractAddress,

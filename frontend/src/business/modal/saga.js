@@ -11,6 +11,7 @@ export function* finishAction() {
   yield put(actions.setActionLoading(false));
   yield put(CasesActions.setSelectedCase(null));
   yield put(ClaimsActions.setSelectedClaim(null));
+  yield put(CasesActions.fetchCases());
 
 }
 
@@ -193,7 +194,6 @@ export function* executeAction({ actionName, actionData }) {
   }
 
   yield finishAction();
-  yield put(CasesActions.fetchCases());
 
 }
 
@@ -202,6 +202,7 @@ function* executeActionWrapper({ actionName, actionData }) {
     yield executeAction({ actionName, actionData });
   } catch(error) {
 
+    console.error(error);
     yield finishAction();
     yield put(actions.setActionError(error));
 
