@@ -34,6 +34,7 @@ export function* fetchCases() {
 
   yield fetchCasesFromTable();
 
+  console.log('fetched cases');
   /*
   const [ claimantCases, respondantCases ]  = yield all([
     call(api.getCases, { claimant: memberName }),
@@ -119,11 +120,24 @@ export function* listenWebsocket() {
 
 }
 
+const wait = duration => new Promise(res => setTimeout(res, duration));
+
+export function* autoRefresh() {
+
+  while (true) {
+    yield wait(10000);
+    yield put(actions.fetchCases());
+  }
+
+}
+
 export default function* casesSaga() {
 
   yield takeEvery(ActionTypes.FETCH_CASES, fetchCases);
 
   yield takeEvery(ActionTypes.LISTEN_WEBSOCKET, listenWebsocket);
+  yield takeEvery(ActionTypes.LISTEN_WEBSOCKET, autoRefresh);
+
   yield takeEvery(ActionTypes.HANDLE_WEBSOCKET, handleWebsocket);
 
 }
