@@ -3,10 +3,7 @@ function removeClaimEffect(payload, blockInfo, context) {
         console.log('RemoveClaim effect PAYLOAD:   ', payload);
         console.log('RemoveClaim effect BlockInfo: ', blockInfo);   
 
-        const post = {
-            trxHash: payload.transactionId
-        };
-        context.socket.emit('removeClaimAction', post);
+        context.socket.emit('removeClaimAction');
     } catch (err) {
         console.error('RemoveClaim effect error: ', err);
     }

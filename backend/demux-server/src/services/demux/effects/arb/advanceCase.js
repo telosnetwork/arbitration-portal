@@ -3,10 +3,7 @@ function advanceCaseEffect(payload, blockInfo, context) {
         console.log('AdvanceCase effect PAYLOAD:   ', payload);
         console.log('AdvanceCase effect BlockInfo: ', blockInfo);   
 
-        const post = {
-            trxHash: payload.transactionId
-        };
-        context.socket.emit('advanceCaseAction', post);
+        context.socket.emit('advanceCaseAction');
     } catch (err) {
         console.error('AdvanceCase effect error: ', err);
     }

@@ -3,10 +3,7 @@ function dismissClaimEffect(payload, blockInfo, context) {
         console.log('DismissClaim effect PAYLOAD:   ', payload);
         console.log('DismissClaim effect BlockInfo: ', blockInfo);   
 
-        const post = {
-            trxHash: payload.transactionId
-        };
-        context.socket.emit('dismissClaimAction', post);
+        context.socket.emit('dismissClaimAction');
     } catch (err) {
         console.error('DismissClaim effect error: ', err);
     }

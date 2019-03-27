@@ -3,12 +3,7 @@ function addArbsEffect(payload, blockInfo, context) {
         console.log('AddArbs effect PAYLOAD:   ', payload);
         console.log('AddArbs effect BlockInfo: ', blockInfo); 
         
-        const post = {
-            trxHash:            payload.transactionId,
-            assigned_arb:       payload.data.assigned_arb,
-            num_arbs_to_assign: payload.data.num_arbs_to_assign
-        };
-        context.socket.emit('addArbsAction', post);
+        context.socket.emit('addArbsAction');
     } catch (err) {
         console.error('AddArbs effect error: ', err);
     }

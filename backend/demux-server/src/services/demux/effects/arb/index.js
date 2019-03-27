@@ -1,20 +1,29 @@
+/**
+ * Case_Setup 
+ */
 import withdrawEffect     from './withdraw';
 import fileCaseEffect     from './fileCase';
 import addClaimEffect     from './addClaim';
 import removeClaimEffect  from './removeClaim';
 import shredCaseEffect    from './shredCase';
 import readyCaseEffect    from './readyCase';
+
+/**
+ * Case_Progression 
+ */
 import respondEffect      from './respond';
-import addArbsEffect      from './addarbs';
 import assignToCaseEffect from './assignToCase';
+import addArbsEffect      from './addarbs';
 import dismissClaimEffect from './dismissClaim';
 import acceptClaimEffect  from './acceptClaim';
 import advanceCaseEffect  from './advanceCase';
 import dismissCaseEffect  from './dismissCase';
 import setRulingEffect    from './setRuling';
 import recuseEffect       from './recuse';
-// import newJoinderEffect   from './newjoinder';
-// import joinCasesEffect    from './joinCases';
+
+/**
+ * Arb_Actions 
+ */
 import newArbStatusEffect from './newArbStatus';
 import setLangCodesEffect from './setLangCodes';
 import deleteCaseEffect   from './deleteCase';
@@ -86,14 +95,6 @@ export default [
         actionType: `${process.env.ARB_CONTRACT}::recuse`,
         run:        recuseEffect
     },
-    // {
-    //     actionType: `${process.env.ARB_CONTRACT}::newjoinder`,
-    //     run:        newJoinderEffect
-    // },
-    // {
-    //     actionType: `${process.env.ARB_CONTRACT}::joincases`,
-    //     run:        joinCasesEffect
-    // },
     /**
      * Arb_Actions
      */

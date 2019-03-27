@@ -1,7 +1,7 @@
 import arbHandlers   from './arb';
-import tokenHandlers from './token';
+// import tokenHandlers from './token';
 
 export default [
     ...arbHandlers,
-    ...tokenHandlers
+    // ...tokenHandlers
 ];

@@ -3,10 +3,7 @@ function setRulingEffect(payload, blockInfo, context) {
         console.log('SetRuling effect PAYLOAD:   ', payload);
         console.log('SetRuling effect BlockInfo: ', blockInfo);   
 
-        const post = {
-            trxHash: payload.transactionId
-        };
-        context.socket.emit('setRulingAction', post);
+        context.socket.emit('setRulingAction');
     } catch (err) {
         console.error('SetRuling effect error: ', err);
     }

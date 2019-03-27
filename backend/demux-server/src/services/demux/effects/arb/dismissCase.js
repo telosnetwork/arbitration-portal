@@ -3,10 +3,7 @@ function dismissCaseEffect(payload, blockInfo, context) {
         console.log('DismissCase effect PAYLOAD:   ', payload);
         console.log('DismissCase effect BlockInfo: ', blockInfo);   
 
-        const post = {
-            trxHash: payload.transactionId
-        };
-        context.socket.emit('dismissCaseAction', post);
+        context.socket.emit('dismissCaseAction');
     } catch (err) {
         console.error('DismissCase effect error: ', err);
     }

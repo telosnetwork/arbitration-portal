@@ -3,10 +3,7 @@ function recuseEffect(payload, blockInfo, context) {
         console.log('Recuse effect PAYLOAD:   ', payload);
         console.log('Recuse effect BlockInfo: ', blockInfo);
 
-        const post = {
-            trxHash: payload.transactionId
-        };
-        context.socket.emit('recuseAction', post);
+        context.socket.emit('recuseAction');
     } catch (err) {
         console.error('Recuse effect error: ', err);
     }

@@ -3,10 +3,7 @@ function respondEffect(payload, blockInfo, context) {
         console.log('Respond effect PAYLOAD:   ', payload);
         console.log('Respond effect BlockInfo: ', blockInfo);
 
-        const post = {
-            trxHash: payload.transactionId
-        };
-        context.socket.emit('respondAction', post);
+        context.socket.emit('respondAction');
     } catch (err) {
         console.error('Respond effect error: ', err);
     }

@@ -3,10 +3,7 @@ function readyCaseEffect(payload, blockInfo, context) {
         console.log('ReadyCase effect PAYLOAD:   ', payload);
         console.log('ReadyCase effect BlockInfo: ', blockInfo);
 
-        const post = {
-            trxHash: payload.transactionId
-        };
-        context.socket.emit('readyCaseAction', post);
+        context.socket.emit('readyCaseAction');
     } catch (err) {
         console.error('ReadyCase effect error: ', err);
     }

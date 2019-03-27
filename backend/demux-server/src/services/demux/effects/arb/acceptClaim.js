@@ -3,10 +3,7 @@ function acceptClaimEffect(payload, blockInfo, context) {
         console.log('AcceptClaim effect PAYLOAD:   ', payload);
         console.log('AcceptClaim effect BlockInfo: ', blockInfo);   
 
-        const post = {
-            trxHash: payload.transactionId
-        };
-        context.socket.emit('acceptClaimAction', post);
+        context.socket.emit('acceptClaimAction');
     } catch (err) {
         console.error('AcceptClaim effect error: ', err);
     }
