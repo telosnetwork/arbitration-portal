@@ -18,12 +18,7 @@ class DemuxService extends Service {
         }];
 
         this.actionHandler = new ActionHandler(this.handlerVersions, driver); // driver?
-        this.actionReader  = new NodeosActionReader(
-            {
-                nodeosEndpoint: options.endpoint, 
-                onlyIrreversible: true,        // onlyIrreversible: whether or not to only process irreversible blocks
-                startAtBlock: options.startBlock
-            }); // Public Nodeos Endpoint as a source of Block Data & Starting Block
+        this.actionReader  = new NodeosActionReader(options.endpoint, options.startAtBlock, true);
 
         // Base Class coordinate the Action Reader and the Action Handler
         this.actionWatcher = new BaseActionWatcher(
