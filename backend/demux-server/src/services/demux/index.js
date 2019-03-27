@@ -18,7 +18,7 @@ class DemuxService extends Service {
         }];
 
         this.actionHandler = new ActionHandler(this.handlerVersions, driver); // driver?
-        this.actionReader  = new NodeosActionReader(options.endpoint, options.startAtBlock, true);
+        this.actionReader  = new NodeosActionReader(options.endpoint, options.startBlock, true);
 
         // Base Class coordinate the Action Reader and the Action Handler
         this.actionWatcher = new BaseActionWatcher(
