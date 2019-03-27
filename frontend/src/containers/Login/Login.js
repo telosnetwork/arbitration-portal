@@ -61,7 +61,6 @@ class Login extends Component {
             <ModalBody>
               You are now logged in to Scatter on the Arbitration Portal! <br></br>
               Please feel free to navigate around. <br></br>
-              As of the writing of this we have 3 available tools to use, the transfer (eosio.token) action, the actions for both members and elected arbitrators of an arbitration under the eosio.arb contract account.
             </ModalBody>
             <ModalFooter>
               <Button color='danger' onClick={this.logout}>Logout</Button>
