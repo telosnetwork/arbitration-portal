@@ -12,7 +12,7 @@ import addArbsHandler      from './addarbs';
 // import advanceCaseHandler  from './advanceCase';
 // import dismissCaseHandler  from './dismissCase';
 // import setRulingHandler    from './setRuling';
-// import recuseHandler       from './recuse';
+import recuseHandler       from './recuse';
 // import newArbStatusHandler from './newArbStatus';
 // import setLangCodesHandler from './setLangCodes';
 // import deleteCaseHandler   from './deleteCase';
@@ -80,10 +80,10 @@ export default [
     //     actionType: `${process.env.ARB_CONTRACT}::setruling`,
     //     apply:      setRulingHandler
     // },
-    // {
-    //     actionType: `${process.env.ARB_CONTRACT}::recuse`,
-    //     apply:      recuseHandler
-    // },
+    {
+        actionType: `${process.env.ARB_CONTRACT}::recuse`,
+        apply:      recuseHandler
+    },
     /**
      * Arb_Actions
      */

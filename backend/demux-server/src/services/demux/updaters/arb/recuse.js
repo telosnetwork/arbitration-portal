@@ -1,34 +1,82 @@
+import { Api, JsonRpc } from 'eosjs';
+import fetch from 'node-fetch';
+import { JsSignatureProvider } from 'eosjs/dist/eosjs-jssig';
+
+function count_s (arrA, arrB) {
+    let matches = 0;
+    for ( let i = 0; i < arrA.length; i++ ) {
+        if ( arrB.indexOf(arrA[i]) != -1 ) {
+            matches++;
+        }
+    }
+    return matches;
+}
+
 async function recuseHandler (state, payload, blockInfo, context) {
     try {
-        console.log('Recuse updater PAYLOAD:   ', payload);
-        console.log('Recuse updater BlockInfo: ', blockInfo);
-
-        let case_id = parseInt(payload.data.case_id);
-
-        let caseState = await state.case.findOne({ case_id: case_id }).exec();
-        let arbitrators;
-        if (caseState) {
-            ({ arbitrators } = caseState);
-            for ( let arbitrator of arbitrators ) {
-                if ( arbitrator === payload.data.assigned_arb ) {
-                    arbitrators.splice(arbitrators.indexOf(arbitrator), 1);
-
-                    //** Remove Case_id from Arbitrator's Open_case_ids **//
-                    let arbState = await state.arbitrator.findOne({ arb: arbitrator }).exec();
-                    let open_case_ids;
-                    if (arbState) {
-                        ({ open_case_ids } = arbState);
-                        open_case_ids.splice(open_case_ids.indexOf(case_id), 1);
+        const rpc = new JsonRpc(`${process.env.TELOS_ENDPOINT}`, { fetch });
+        const signatureProvider = new JsSignatureProvider([`${process.env.ARB_PRIV}`]);
+        const eos = new Api({ rpc, signatureProvider });
+        
+        let case_id  = parseInt(payload.data.case_id);
+        let claimant = payload.data.claimant;
+    
+        let result = await rpc.get_table_rows({
+            code:  process.env.ARB_CONTRACT,
+            scope: process.env.ARB_CONTRACT,
+            table: `arbitrators`,
+            limit: 21,
+            json:  true
+        });
+        let arbitratorsT = result.rows;
+    
+        let caseresult = await rpc.get_table_rows({
+            code:        process.env.ARB_CONTRACT,
+            scope:       process.env.ARB_CONTRACT,
+            table:       `casefiles`,
+            lower_bound: case_id,
+            limit:       1,
+            json:        true
+        });
+        let casesT              = caseresult.rows[0];
+    
+        let selected_arbitrator = '';
+        let required_langs      = casesT.required_langs;
+    
+        for ( let i = required_langs.length; i >= 0; i-- ) {
+            for ( let arbitrator of arbitratorsT ) {
+                if ( count_s(required_langs, arbitrator.languages) >= i ) {
+                    if ( (arbitrator.arb_status == 0) && (arbitrator.arb != claimant) ) {
+                        if (selected_arbitrator != '') break;
+                        selected_arbitrator = arbitrator.arb;
                     }
-                    await state.arbitrator.findOneAndUpdate({ arb: arbitrator }, {
-                        open_case_ids: open_case_ids
-                    }, { upsert: true }).exec();
                 }
             }
-            await state.case.findOneAndUpdate({ case_id: case_id }, {
-                arbitrators: arbitrators
-            }).exec();
         }
+    
+        console.log('Selected Arbitrator: ', selected_arbitrator);
+    
+        await eos.transact({
+            actions: [
+                {
+                    account: process.env.ARB_CONTRACT,
+                    name: `assigntocase`,
+                    authorization: [
+                        {
+                            actor:      `eosio.arb`,
+                            permission: `assign`,
+                        }
+                    ],
+                    data: {
+                        case_id: case_id,
+                        arb_to_assign: selected_arbitrator
+                    }
+                }
+            ]
+        }, {
+            blocksBehind:  3,
+            expireSeconds: 30
+        });
     } catch (err) {
         console.error('Recuse updater error: ', err);
     }
