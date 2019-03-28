@@ -1,5 +1,6 @@
 import { Api, JsonRpc } from 'eosjs';
 import fetch from 'node-fetch';
+import { TextEncoder, TextDecoder } from 'util';
 import { JsSignatureProvider } from 'eosjs/dist/eosjs-jssig';
 
 function count_s (arrA, arrB) {
@@ -16,7 +17,7 @@ async function recuseHandler (state, payload, blockInfo, context) {
     try {
         const rpc = new JsonRpc(`${process.env.TELOS_ENDPOINT}`, { fetch });
         const signatureProvider = new JsSignatureProvider([`${process.env.ARB_PRIV}`]);
-        const eos = new Api({ rpc, signatureProvider });
+        const eos = new Api({ rpc, signatureProvider, textDecoder: new TextDecoder(), textEncoder: new TextEncoder() });
         
         let case_id  = parseInt(payload.data.case_id);
         let claimant = payload.data.claimant;
