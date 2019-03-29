@@ -19,8 +19,8 @@ async function recuseHandler (state, payload, blockInfo, context) {
         const signatureProvider = new JsSignatureProvider([`${process.env.ARB_PRIV}`]);
         const eos = new Api({ rpc, signatureProvider, textDecoder: new TextDecoder(), textEncoder: new TextEncoder() });
         
-        let case_id  = parseInt(payload.data.case_id);
-        let claimant = payload.data.claimant;
+        let case_id      = parseInt(payload.data.case_id);
+        let assigned_arb = payload.data.assigned_arb;
     
         let result = await rpc.get_table_rows({
             code:  process.env.ARB_CONTRACT,
@@ -47,7 +47,7 @@ async function recuseHandler (state, payload, blockInfo, context) {
         for ( let i = required_langs.length; i >= 0; i-- ) {
             for ( let arbitrator of arbitratorsT ) {
                 if ( count_s(required_langs, arbitrator.languages) >= i ) {
-                    if ( (arbitrator.arb_status == 0) && (arbitrator.arb != claimant) ) {
+                    if ( (arbitrator.arb_status == 0) && (arbitrator.arb != assigned_arb) ) {
                         if (selected_arbitrator != '') break;
                         selected_arbitrator = arbitrator.arb;
                     }
