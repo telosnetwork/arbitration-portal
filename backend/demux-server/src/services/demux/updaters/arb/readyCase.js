@@ -3,6 +3,21 @@ import fetch from 'node-fetch';
 import { TextEncoder, TextDecoder } from 'util';
 import { JsSignatureProvider } from 'eosjs/dist/eosjs-jssig';
 
+function shuffle(arr) {
+    let current_index = arr.length;
+    let randomIndex, tempVal;
+    
+    while (current_index !== 0) {
+        randomIndex   = Math.floor(Math.random() * current_index);
+        current_index -= 1;
+
+        tempVal            = arr[current_index];
+        arr[current_index] = arr[randomIndex];
+        arr[randomIndex]   = tempVal;
+    }
+    return arr;
+}
+
 function count_s (arrA, arrB) {
     let matches = 0;
     for ( let i = 0; i < arrA.length; i++ ) {
@@ -29,8 +44,8 @@ async function readyCaseHandler (state, payload, blockInfo, context) {
             limit: 21,
             json:  true
         });
-        let arbitratorsT = result.rows;
-    
+        let arbitratorsT = shuffle(result.rows);
+
         let caseresult = await rpc.get_table_rows({
             code:        process.env.ARB_CONTRACT,
             scope:       process.env.ARB_CONTRACT,
