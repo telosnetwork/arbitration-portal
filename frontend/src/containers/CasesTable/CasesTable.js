@@ -129,7 +129,7 @@ class CasesTable extends Component {
           <Button id={`shred-case-btn-${casefile.case_id}`} color="danger" onClick={this.onShredCasefile(casefile)}>
             <i className="fas fa-trash-alt"></i>
             <UncontrolledTooltip placement="bottom" target={`shred-case-btn-${casefile.case_id}`}>
-              Shred case
+              Shred Case
             </UncontrolledTooltip>
           </Button>
           }
@@ -137,7 +137,7 @@ class CasesTable extends Component {
           <Button id={`open-case-ruling-btn-${casefile.case_id}`} color="primary" onClick={this.onOpenCaseRuling(casefile)}>
             <i className="fas fa-file-alt"></i>
             <UncontrolledTooltip placement="bottom" target={`open-case-ruling-btn-${casefile.case_id}`}>
-              Open case ruling
+              Open Case Ruling
             </UncontrolledTooltip>
           </Button>
           }
@@ -145,7 +145,7 @@ class CasesTable extends Component {
           <Button id={`set-case-ruling-btn-${casefile.case_id}`} color="info" onClick={this.onSetCaseRuling(casefile)}>
             <i className="fas fa-file-alt"></i>
             <UncontrolledTooltip placement="bottom" target={`set-case-ruling-btn-${casefile.case_id}`}>
-              Set case ruling
+              Set Case Ruling
             </UncontrolledTooltip>
           </Button>
           }
@@ -153,7 +153,7 @@ class CasesTable extends Component {
           <Button id={`case-addarbs-btn-${casefile.case_id}`} color="info" onClick={this.onAddArbs(casefile)}>
             <i className="fas fa-user-plus"></i>
             <UncontrolledTooltip placement="bottom" target={`case-addarbs-btn-${casefile.case_id}`}>
-              Add arbitrators
+              Add Arbitrators
             </UncontrolledTooltip>
 
           </Button>
@@ -170,7 +170,7 @@ class CasesTable extends Component {
           <Button id={`case-edit-btn-${casefile.case_id}`} color="info" onClick={this.onEdit(casefile)}>
             <i className="fas fa-user-edit"></i>
             <UncontrolledTooltip placement="bottom" target={`case-edit-btn-${casefile.case_id}`}>
-              Edit case
+              Edit Case
             </UncontrolledTooltip>
           </Button>
           }
@@ -182,20 +182,20 @@ class CasesTable extends Component {
         <td>
           {casefile.claims.length > 0 ?
             <Button color={this.state.caseClaimsOpen[casefile.case_id] ? 'warning' : 'info'} onClick={() => this.openCaseClaims(casefile.case_id)}>
-              {this.state.caseClaimsOpen[casefile.case_id] ? 'Hide claims' : 'Show claims'}
+              {this.state.caseClaimsOpen[casefile.case_id] ? 'Hide Claims' : 'Show Claims'}
             </Button>
             :
-            'No claims'
+            'No Claims'
           }
         </td>
         <td>
           {this.isClaimant() && casefile.case_status === 0  &&
-          <Button color="primary" onClick={this.onAddClaim(casefile)}>Add claim</Button>
+          <Button color="primary" onClick={this.onAddClaim(casefile)}>Add Claim</Button>
           }
         </td>
         <td align="right">
           {this.isClaimant() && casefile.case_status === 0 &&
-          <Button color="success" onClick={this.onSubmitCasefile(casefile)}>Submit for arbitration</Button>
+          <Button color="success" onClick={this.onSubmitCasefile(casefile)}>Submit for Arbitration</Button>
           }
         </td>
         <td/>
@@ -222,9 +222,9 @@ class CasesTable extends Component {
         <Jumbotron className="members-home-jumbo">
 
           <Row className="table-title">
-            {this.props.caseType === 'claimant' && "Claimant cases"}
-            {this.props.caseType === 'respondant' && "Respondent cases"}
-            {this.props.caseType === 'arbitrator' && "Arbitrator cases"}
+            {this.props.caseType === 'claimant' && "Claimant Cases"}
+            {this.props.caseType === 'respondant' && "Respondent Cases"}
+            {this.props.caseType === 'arbitrator' && "Arbitrator Cases"}
           </Row>
           <Table>
             <thead>

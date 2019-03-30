@@ -79,7 +79,7 @@ class ClaimsTable extends Component {
         </td>
         <td align="right">
           <Button color="primary" onClick={() => this.openSummary(claim)}>
-            Summary
+            Document
           </Button>
           {!!claim.response_link &&
           <Button color="primary" onClick={() => this.openResponse(claim)}>
@@ -96,7 +96,7 @@ class ClaimsTable extends Component {
           <Button id={`respondclaim-btn-${shortId}`} color="info" onClick={this.onRespondClaim(casefile, claim)}>
             <i className="fas fa-reply"></i>
             <UncontrolledTooltip placement="bottom" target={`respondclaim-btn-${shortId}`}>
-              Respond claim
+              Respond Claim
             </UncontrolledTooltip>
           </Button>
           }
@@ -104,7 +104,7 @@ class ClaimsTable extends Component {
           <Button id={`removeclaim-btn-${shortId}`} color="danger" onClick={this.onRemoveClaim(casefile, claim)}>
             <i className="fas fa-trash-alt"></i>
             <UncontrolledTooltip placement="bottom" target={`removeclaim-btn-${shortId}`}>
-              Remove claim
+              Remove Claim
             </UncontrolledTooltip>
           </Button>
           }
@@ -112,7 +112,7 @@ class ClaimsTable extends Component {
           <Button id={`acceptclaim-btn-${shortId}`} color="info" onClick={this.onAcceptClaim(casefile, claim)}>
             <i className="fas fa-clipboard-check"></i>
             <UncontrolledTooltip placement="bottom" target={`acceptclaim-btn-${shortId}`}>
-              Accept claim
+              Accept Claim
             </UncontrolledTooltip>
           </Button>
           }
@@ -120,7 +120,7 @@ class ClaimsTable extends Component {
           <Button id={`dismissclaim-btn-${shortId}`} color="info" onClick={this.onDismissClaim(casefile, claim)}>
             <i className="fas fa-times-circle"></i>
             <UncontrolledTooltip placement="bottom" target={`dismissclaim-btn-${shortId}`}>
-              Dismiss claim
+              Dismiss cCaim
             </UncontrolledTooltip>
           </Button>
           }

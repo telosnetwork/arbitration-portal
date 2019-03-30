@@ -77,7 +77,7 @@ class IPFSInput extends Component {
             <a className="ipfs-url" href={'https://' + this.props.value}>
               {this.props.value}
             </a>
-            <Button onClick={this.reset()}>Remove</Button>
+            <Button style={{ marginLeft: '10px' }} onClick={this.reset()}>Remove</Button>
           </div>
           :
           <label>

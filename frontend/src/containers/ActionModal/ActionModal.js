@@ -24,7 +24,7 @@ const forms = {
       text: 'Please input a valid TELOS account name'
     },
     claim_link: {
-      label: 'Claim file:',
+      label: 'Claim File:',
       placeholder: 'ipfs_link',
       special: 'ipfs',
       text: 'Please select a file to upload'
@@ -38,7 +38,7 @@ const forms = {
   },
   addclaim: {
     claim_link: {
-      label: 'Claim file:',
+      label: 'Claim File:',
       placeholder: 'ipfs_link',
       special: 'ipfs',
       text: 'Please select a file to upload'
@@ -46,7 +46,7 @@ const forms = {
   },
   respondclaim: {
     response_link: {
-      label: 'Response file:',
+      label: 'Response File:',
       placeholder: 'ipfs_link',
       special: 'ipfs',
       text: 'Please select a file to upload'
@@ -54,13 +54,13 @@ const forms = {
   },
   acceptclaim: {
     decision_link: {
-      label: 'Decision file:',
+      label: 'Decision File:',
       placeholder: 'ipfs_link',
       special: 'ipfs',
       text: 'Please select a file to upload'
     },
     decision_class: {
-      label: 'Decision class:',
+      label: 'Decision Class:',
       placeholder: 'decision_class',
       special: 'decision_class',
       text: 'Please set a decision class'
@@ -76,7 +76,7 @@ const forms = {
   },
   addarbs: {
     num_arbs_to_assign: {
-      label: 'Arbs to assign:',
+      label: 'Arbitrators to Assign:',
       value: 1,
       type: 'text',
       placeholder: 'num_arbs_to_assign',
@@ -85,7 +85,7 @@ const forms = {
   },
   setruling: {
     case_ruling: {
-      label: 'Ruling file:',
+      label: 'Ruling File:',
       placeholder: 'ipfs_link',
       special: 'ipfs',
       text: 'Please select a file to upload'
@@ -101,9 +101,9 @@ const forms = {
   },
   arbitratorsettings: {
     new_status: {
-      label: 'Availability',
+      label: 'Arbitrator Status',
       special: 'arb_status',
-      text: 'Please select your availability'
+      text: 'Please select a status'
     },
     lang_codes: {
       label: 'Language Codes:',
@@ -114,7 +114,7 @@ const forms = {
   },
   dismisscase: {
     ruling_link: {
-      label: 'Ruling file:',
+      label: 'Ruling File:',
       placeholder: 'ipfs_link',
       special: 'ipfs',
       text: 'Please select a file to upload'
@@ -345,49 +345,49 @@ class ActionModal extends Component {
   getTitle() {
     switch (this.props.actionName) {
       case 'filecase': {
-        return 'Create new case';
+        return 'Create Case';
       }
       case 'addclaim': {
-        return 'Add a new claim';
+        return 'Add Claim';
       }
       case 'shredcase': {
-        return 'Are you sure you want to shred this case ?';
+        return 'Shred/Delete Case';
       }
       case 'removeclaim': {
-        return 'Are you sure you want to remove this claim ?';
+        return 'Remove Claim';
       }
       case 'submitcasefile': {
-        return 'Submit case for arbitration';
+        return 'Submit Case for Arbitration';
       }
       case 'respondclaim': {
-        return 'Respond to claim';
+        return 'Respond to Claim';
       }
       case 'acceptclaim': {
-        return 'Accept claim';
+        return 'Accept Claim';
       }
       case 'dismissclaim': {
-        return 'Dismiss claim';
+        return 'Dismiss Claim';
       }
       case 'arbitratorsettings': {
-        return 'Arbitrator settings';
+        return 'Arbitrator Settings';
       }
       case 'setruling': {
-        return 'Set ruling';
+        return 'Set Ruling';
       }
       case 'addarbs': {
-        return 'Add arbitrators';
+        return 'Add Arbitrators';
       }
       case 'recuse': {
-        return 'Are you sure you want to recuse from the case ?';
+        return 'Recuse';
       }
       case 'editcase': {
-        return 'Edit case';
+        return 'Edit Case';
       }
       case 'advancecase': {
-        return 'Are you sure you want to advance this case ?';
+        return 'Advance Case';
       }
       case 'dismisscase': {
-        return 'Dismiss case';
+        return 'Dismiss Case';
       }
       default: {
         return '';
@@ -418,9 +418,9 @@ class ActionModal extends Component {
           <Row>
             Claim ID: {this.props.claim.claim_id}
             <br/>
-            Claim status: {this.props.claim.claim_status}
+            Claim Status: {this.props.claim.claim_status}
             <br/>
-            Claim hash: {this.props.claim.claim_summary}
+            Claim Hash: {this.props.claim.claim_summary}
           </Row>
         </Container>
       </ModalBody>
@@ -467,8 +467,8 @@ class ActionModal extends Component {
       );
       rendered.push(
         <ModalFooter key="footer">
-          <Button color="secondary" onClick={this.close()}>Cancel</Button>
           <Button color='primary' onClick={this.handleSubmit()}>Submit</Button>
+          <Button color="secondary" onClick={this.close()}>Cancel</Button>
         </ModalFooter>
       );
 
@@ -478,8 +478,8 @@ class ActionModal extends Component {
 
       rendered.push(
         <ModalFooter key="footer">
-          <Button color="info" onClick={this.close()}>No</Button>
           <Button color='danger' onClick={this.handleSubmit()}>Yes</Button>
+          <Button color="info" onClick={this.close()}>No</Button>
         </ModalFooter>
       );
 
@@ -490,15 +490,15 @@ class ActionModal extends Component {
       // TODO get and display account's balance on the contract
       rendered.push(
         <ModalBody key="description">
-          In order to ready the case, you need to make a deposit of 100 TLOS.
+          In order to submit the case for arbitration, you are required to make a deposit of 100 TLOS.
           <br/>
-          If your balance on the contract is lower than 100 TLOS, a transfer will automatically be created.
+          If your account's credit balance is lower than 100 TLOS, a transfer will be enforced prior to submitting the case.
         </ModalBody>
       );
       rendered.push(
         <ModalFooter key="footer">
-          <Button color="info" onClick={this.close()}>Cancel</Button>
           <Button color='success' onClick={this.handleSubmit()}>Submit</Button>
+          <Button color="info" onClick={this.close()}>Cancel</Button>
         </ModalFooter>
       );
 
@@ -511,7 +511,7 @@ class ActionModal extends Component {
         <ModalBody key="description">
           <Row>
             <Col>
-              <h4>Arbitrator approvals</h4>
+              <h4>Arbitrator Approvals</h4>
 
               <ListGroup>
                 {casefile.arbitrators.map(arbitrator =>
@@ -525,7 +525,7 @@ class ActionModal extends Component {
               </ListGroup>
             </Col>
             <Col>
-              <h4>Case status</h4>
+              <h4>Case Status</h4>
 
               <ListGroup>
                 {Object.keys(CaseStatus).map(s =>
@@ -543,11 +543,11 @@ class ActionModal extends Component {
       );
       rendered.push(
         <ModalFooter key="footer">
-          <Button color="info" onClick={this.close()}>Close</Button>
-          {casefile.case_status === 2 && <Button color='warning' onClick={this.changeAction('dismisscase')}>Dismiss case</Button>}
           {casefile.case_status >= 2 && casefile.case_status <= 6 &&
-          <Button color='success' onClick={this.changeAction('advancecase')}>Advance case</Button>
+          <Button color='success' onClick={this.changeAction('advancecase')}>Advance Case</Button>
           }
+          {casefile.case_status === 2 && <Button color='warning' onClick={this.changeAction('dismisscase')}>Dismiss Case</Button>}
+          <Button color="info" onClick={this.close()}>Close</Button>
         </ModalFooter>
       );
 
