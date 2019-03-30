@@ -25,7 +25,7 @@ class MembersHome extends Component {
         <Container>
           <Row>
             <Col xs="12">
-              Please login first
+              Please Login first!
             </Col>
           </Row>
         </Container>
@@ -37,7 +37,7 @@ class MembersHome extends Component {
         <Row className="top-actions">
           <Button color="primary" onClick={this.onNewCase()} className="new-case-btn">
             <i className="fas fa-plus fas-left"></i>
-            New case
+            New Case
           </Button>
         </Row>
 
