@@ -24,7 +24,7 @@ class ArbitratorsHome extends Component {
         <Container>
           <Row>
             <Col xs="12">
-              Please login first
+              Please Login first!
             </Col>
           </Row>
         </Container>
@@ -36,7 +36,7 @@ class ArbitratorsHome extends Component {
         <Row className="top-actions">
           <Button color="primary" onClick={this.openArbitratorsSettings()} className="new-case-btn">
             <i className="fas fa-cog fas-left"></i>
-            Arbitrator settings
+            Arbitrator Settings
           </Button>
         </Row>
 
