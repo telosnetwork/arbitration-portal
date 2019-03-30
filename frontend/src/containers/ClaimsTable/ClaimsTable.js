@@ -120,7 +120,7 @@ class ClaimsTable extends Component {
           <Button id={`dismissclaim-btn-${shortId}`} color="info" onClick={this.onDismissClaim(casefile, claim)}>
             <i className="fas fa-times-circle"></i>
             <UncontrolledTooltip placement="bottom" target={`dismissclaim-btn-${shortId}`}>
-              Dismiss cCaim
+              Dismiss Claim
             </UncontrolledTooltip>
           </Button>
           }

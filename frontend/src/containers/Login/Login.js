@@ -8,7 +8,7 @@ import { AuthenticationSelectors } from 'business/selectors';
 // Reactstrap Components
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 
-import scatterSvg from '../../resources/gs_button_loginwithscatter_blue.svg';
+// import scatterSvg from '../../resources/gs_button_loginwithscatter_blue.svg';
 import scatterBadgeSvg from '../../resources/scatter_badge_transparent.svg';
 
 class Login extends Component {
