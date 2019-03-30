@@ -223,7 +223,7 @@ class CasesTable extends Component {
 
           <Row className="table-title">
             {this.props.caseType === 'claimant' && "Claimant cases"}
-            {this.props.caseType === 'respondant' && "Respondant cases"}
+            {this.props.caseType === 'respondant' && "Respondent cases"}
             {this.props.caseType === 'arbitrator' && "Arbitrator cases"}
           </Row>
           <Table>
@@ -240,7 +240,7 @@ class CasesTable extends Component {
               }
               {this.props.caseType !== 'respondant' &&
               <th>
-                Respondant
+                Respondent
               </th>
               }
               <th sm="4" style={{textAlign: 'right'}}>Actions</th>

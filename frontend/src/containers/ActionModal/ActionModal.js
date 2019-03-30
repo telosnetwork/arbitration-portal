@@ -17,7 +17,7 @@ import ArbStatus from 'const/ArbStatus';
 const forms = {
   filecase: {
     respondant: {
-      label: 'Respondant:',
+      label: 'Respondent:',
       value: '',
       type: 'text',
       placeholder: 'account_name',
