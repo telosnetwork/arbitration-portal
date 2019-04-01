@@ -52,7 +52,7 @@ class NavBar extends Component {
                   className="c-nav-link"
                   activeClassName="nav-link-disabled"
                 >
-                  Member
+                  MEMBER
                 </NavLink>
               </NavItem>,
               this.props.isArbitrator &&
@@ -62,7 +62,7 @@ class NavBar extends Component {
                   className="c-nav-link"
                   activeClassName="nav-link-disabled"
                 >
-                  Arbitrator
+                  ARBITRATOR
                 </NavLink>
               </NavItem>,
               /*<NavItem key="transfers">

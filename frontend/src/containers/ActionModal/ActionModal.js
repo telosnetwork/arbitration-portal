@@ -101,7 +101,7 @@ const forms = {
   },
   arbitratorsettings: {
     new_status: {
-      label: 'Arbitrator Status',
+      label: 'Arbitrator Status:',
       special: 'arb_status',
       text: 'Please select a status'
     },
@@ -345,49 +345,49 @@ class ActionModal extends Component {
   getTitle() {
     switch (this.props.actionName) {
       case 'filecase': {
-        return 'Create Case';
+        return 'CREATE CASE';
       }
       case 'addclaim': {
-        return 'Add Claim';
+        return 'ADD CLAIM';
       }
       case 'shredcase': {
-        return 'Shred/Delete Case';
+        return 'SHRED CASE';
       }
       case 'removeclaim': {
-        return 'Remove Claim';
+        return 'REMOVE CLAIM';
       }
       case 'submitcasefile': {
-        return 'Submit Case for Arbitration';
+        return 'SUBMIT CASE FOR ARBITRATION';
       }
       case 'respondclaim': {
-        return 'Respond to Claim';
+        return 'RESPOND TO CLAIM';
       }
       case 'acceptclaim': {
-        return 'Accept Claim';
+        return 'ACCEPT CLAIM';
       }
       case 'dismissclaim': {
-        return 'Dismiss Claim';
+        return 'DISMISS CLAIM';
       }
       case 'arbitratorsettings': {
-        return 'Arbitrator Settings';
+        return 'ARBITRATOR SETTINGS';
       }
       case 'setruling': {
-        return 'Set Ruling';
+        return 'SET RULING';
       }
       case 'addarbs': {
-        return 'Add Arbitrators';
+        return 'ADD ARBITRATORS';
       }
       case 'recuse': {
-        return 'Recuse';
+        return 'RECUSE';
       }
       case 'editcase': {
-        return 'Edit Case';
+        return 'EDIT CASE';
       }
       case 'advancecase': {
-        return 'Advance Case';
+        return 'ADVANCE CASE';
       }
       case 'dismisscase': {
-        return 'Dismiss Case';
+        return 'DISMISS CASE';
       }
       default: {
         return '';
@@ -406,7 +406,7 @@ class ActionModal extends Component {
             {this.props.casefile &&
             <Col sm={5} style={{textAlign: 'end'}}>
               Case #{this.props.casefile.case_id} &nbsp;
-              <i className="case-status text-muted">({CaseStatus[this.props.casefile.case_status]})</i>
+              Status: <i className="case-status text-muted">{CaseStatus[this.props.casefile.case_status]}</i>
             </Col>
             }
           </Row>

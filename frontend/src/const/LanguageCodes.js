@@ -3,13 +3,13 @@
  */
 
 export default {
-  ENGL: 0,
-  FRCH: 1,
-  GRMN: 2,
-  KREA: 3,
-  JAPN: 4,
-  CHNA: 5,
-  SPAN: 6,
-  PGSE: 7,
-  SWED: 8
+  English: 0,
+  French: 1,
+  German: 2,
+  Korea: 3,
+  Japan: 4,
+  China: 5,
+  Spanish: 6,
+  Portugese: 7,
+  Sweden: 8
 };

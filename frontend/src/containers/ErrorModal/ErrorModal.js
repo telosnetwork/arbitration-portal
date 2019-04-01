@@ -24,12 +24,12 @@ class ErrorModal extends Component {
         centered
       >
         <ModalHeader>
-          Error
+          ERROR
         </ModalHeader>
 
         <ModalBody className="loading-body">
 
-            {this.props.actionError && this.props.actionError.message}
+            {this.props.actionError && this.props.actionError.message}.
 
         </ModalBody>
 

@@ -4,9 +4,9 @@
 
 export default {
 
-  0: 'CASE_SETUP',
-  1: 'AWAITING_ARBS',
-  2: 'CASE_INVESTIGATION',
+  0: 'CASE SETUP',
+  1: 'AWAITING ARBS',
+  2: 'CASE INVESTIGATION',
   3: 'HEARING',
   4: 'DELIBERATION',
   5: 'DECISION',   // 5 NOTE: No more joinders allowed

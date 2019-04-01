@@ -222,7 +222,7 @@ class CasesTable extends Component {
         <Jumbotron className="members-home-jumbo">
 
           <Row className="table-title">
-            {this.props.caseType === 'claimant' && "Claimant Cases"}
+            {this.props.caseType === 'claimant' && "My Cases"}
             {this.props.caseType === 'respondant' && "Respondent Cases"}
             {this.props.caseType === 'arbitrator' && "Arbitrator Cases"}
           </Row>
