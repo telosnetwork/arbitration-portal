@@ -405,7 +405,7 @@ class ActionModal extends Component {
             </Col>
             {this.props.casefile &&
             <Col sm={5} style={{textAlign: 'end'}}>
-              Case #{this.props.casefile.case_id} &nbsp;
+              Case #{this.props.casefile.case_id} &nbsp;<br></br>
               Status: <i className="case-status text-muted">{CaseStatus[this.props.casefile.case_status]}</i>
             </Col>
             }
