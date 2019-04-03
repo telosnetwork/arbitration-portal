@@ -36,12 +36,25 @@ class NavBar extends Component {
   render() {
 
     return (
+      <div>
       <Navbar color='light' light expand='md'>
         <NavLink to='/' style={{ color: 'black', textDecoration: 'none' }}>
-          <img src={mainLogo} alt='mainLogo' height="40" width="40"/> Arbitration Portal
+            <img src={mainLogo} alt='mainLogo' height="50" width="50" />
+            <h5 className='nav-title' style={{display: 'inline-block'}}>Telos Arbitration Portal</h5>
         </NavLink>
         <NavbarToggler onClick={this.toggleNavBar}/>
         <Collapse isOpen={this.state.isOpen} navbar>
+          <Nav className='ml-auto' navbar>
+
+            <NavItem>
+              <Login/>
+            </NavItem>
+
+          </Nav>
+        </Collapse>
+      </Navbar>
+      <Navbar color='light' light expand='md'>
+        <div className='nav-links'>
           <Nav className='ml-auto' navbar>
 
             {this.props.isLogin && [
@@ -52,7 +65,7 @@ class NavBar extends Component {
                   className="c-nav-link"
                   activeClassName="nav-link-disabled"
                 >
-                  MEMBER
+                  <i class="fas fa-users"></i><p className="nav-text">MEMBER</p>
                 </NavLink>
               </NavItem>,
               this.props.isArbitrator &&
@@ -62,7 +75,7 @@ class NavBar extends Component {
                   className="c-nav-link"
                   activeClassName="nav-link-disabled"
                 >
-                  ARBITRATOR
+                  <i class="fas fa-user-shield"></i><p className="nav-text">ARBITRATOR</p>
                 </NavLink>
               </NavItem>,
               /*<NavItem key="transfers">
@@ -72,13 +85,10 @@ class NavBar extends Component {
               </NavItem>,*/
             ]}
 
-            <NavItem>
-              <Login/>
-            </NavItem>
-
           </Nav>
-        </Collapse>
-      </Navbar>
+        </div>
+     </Navbar>
+     </div>
     );
   }
 }

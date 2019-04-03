@@ -1,8 +1,6 @@
 .table-title {
-
   justify-content: center;
-  margin: 1rem;
-
+  margin:    1rem;
   font-size: 1.3rem;
   font-weight: 500;
 }
@@ -13,6 +11,11 @@
   overflow: hidden;
 }
 
+.cases-table {
+  margin-top: 40px;
+  margin-left:100px;
+}
+
 .cases-table .btn {
-  margin-left: 4px;
+  margin: 5px;
 }

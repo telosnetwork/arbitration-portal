@@ -32,19 +32,21 @@ class MembersHome extends Component {
       );
     }
     return (
-      <Container>
+      // <Container>
 
-        <Row className="top-actions">
-          <Button color="primary" onClick={this.onNewCase()} className="new-case-btn">
+      <div>
+        {/* <Row className="top-actions"> */}
+          <Button color="primary" onClick={this.onNewCase()} className="new-case-btn" style={{ marginRight: '55px' }}>
             <i className="fas fa-plus fas-left"></i>
             New Case
           </Button>
-        </Row>
+        {/* </Row> */}
 
         <CasesTable caseType="claimant" cases={this.props.claimantCases} />
         <CasesTable caseType="respondant" cases={this.props.respondantCases} />
+      </div>
 
-      </Container>
+      // </Container>
     )
   }
 }

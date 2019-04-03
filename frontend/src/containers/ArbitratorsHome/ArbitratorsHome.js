@@ -31,18 +31,19 @@ class ArbitratorsHome extends Component {
       );
     }
     return (
-      <Container>
+      // <Container>
 
-        <Row className="top-actions">
-          <Button color="primary" onClick={this.openArbitratorsSettings()} className="new-case-btn">
-            <i className="fas fa-cog fas-left"></i>
-            Arbitrator Settings
-          </Button>
-        </Row>
+        <div>
+          {/* <Row className="top-actions"> */}
+            <Button onClick={this.openArbitratorsSettings()} className="new-case-btn">
+              <i class="fas fa-user-cog"></i> Arbitrator Settings
+            </Button>
+          {/* </Row> */}
 
-        <CasesTable caseType="arbitrator" cases={this.props.arbitratorCases} />
+          <CasesTable caseType="arbitrator" cases={this.props.arbitratorCases} />
+        </div>
 
-      </Container>
+      // </Container>
     )
   }
 }

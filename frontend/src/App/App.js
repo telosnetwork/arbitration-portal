@@ -23,7 +23,7 @@ class App extends Component {
 
     const Home = () => (
       <div style={{ textAlign: 'center', marginTop: '150px' }}>
-        <h1>
+        <h1 className='portal-title'>
           Welcome to the Telos Arbitration Portal!
         </h1>
         <h3>In order to use the portal, please sign in with the button at the top right corner.</h3>

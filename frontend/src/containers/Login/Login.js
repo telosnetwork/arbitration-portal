@@ -36,7 +36,7 @@ class Login extends Component {
   login = async () => {
 
     this.props.login();
-    this.toggleModal();
+    // this.toggleModal();
 
   }
 
@@ -73,12 +73,13 @@ class Login extends Component {
 
       return (
         <div>
-          <Button color='primary' style={{ fontWeight: 'bold' }} onClick={this.toggleModal} outline>
+          <Button color='primary' style={{ fontWeight: 'bold' }} onClick={this.login} outline>
+          {/* <Button color='primary' style={{ fontWeight: 'bold' }} onClick={this.toggleModal} outline> */}
             <img className="fas-left" alt="scatter" src={scatterBadgeSvg} height={25}  />
             Scatter Login
           </Button>
           {/* <img alt="Login with scatter" src={scatterSvg} onClick={this.toggleModal} height={33} style={{  cursor: 'pointer'}} /> */}
-          <Modal isOpen={this.state.modal} toggle={this.toggleModal} className={this.props.className}>
+          {/* <Modal isOpen={this.state.modal} toggle={this.toggleModal} className={this.props.className}>
             <ModalHeader toggle={this.toggleModal} className={this.props.className}>
               <ModalBody>
                 Welcome to the Arbitration Portal! To use this portal, please login with Scatter first.
@@ -87,7 +88,7 @@ class Login extends Component {
                 <Button color='primary'onClick={this.login}>Login</Button>
               </ModalFooter>
             </ModalHeader>
-          </Modal>
+          </Modal> */}
         </div>
       );
     }

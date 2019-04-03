@@ -102,15 +102,15 @@ class CasesTable extends Component {
         <td>
           {CaseStatus[casefile.case_status]}
         </td>
-        <td>
+        <td style={{wordBreak: 'break-all'}}>
           {casefile.arbitrators.length > 0 ?
-            casefile.arbitrators.join(',') :
+            casefile.arbitrators.join(', ') :
             '-'
           }
         </td>
         <td>
           {casefile.approvals.length > 0 ?
-            casefile.approvals.join(',') :
+            casefile.approvals.join(', ') :
             '-'
           }
         </td>
@@ -226,7 +226,7 @@ class CasesTable extends Component {
             {this.props.caseType === 'respondant' && "Respondent Cases"}
             {this.props.caseType === 'arbitrator' && "Arbitrator Cases"}
           </Row>
-          <Table>
+          <Table className="cases-table-data">
             <thead>
             <tr>
               <th sm="1">Case ID</th>
