@@ -22,8 +22,8 @@
     "redux": "^4.0.1",
     "redux-saga": "^1.0.2",
     "reselect": "^4.0.0",
-    "scatterjs-core": "^2.7.9",
-    "scatterjs-plugin-eosjs": "^1.5.0",
+    "scatterjs-core": "^2.7.16",
+    "scatterjs-plugin-eosjs": "^1.5.1",
     "scatterjs-plugin-eosjs2": "^1.5.0",
     "socket.io-client": "^2.2.0",
     "text-encoding": "^0.7.0"
