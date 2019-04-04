@@ -219,7 +219,7 @@ class CasesTable extends Component {
     return (
       <Container className="cases-table">
 
-        <Jumbotron className="members-home-jumbo">
+        <Jumbotron className="members-home-jumbo scroll-x">
 
           <Row className="table-title">
             {this.props.caseType === 'claimant' && "My Cases"}

@@ -19,3 +19,7 @@
 .cases-table .btn {
   margin: 5px;
 }
+
+.scroll-x {
+  overflow-y: scroll;
+}
