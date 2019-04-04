@@ -19,3 +19,13 @@
 .cases-table .btn {
   margin: 5px;
 }
+
+.scroll-x {
+  overflow-y: scroll;
+}
+
+.new-case-btn {
+  float: right;
+  background-color: rgb(219, 119, 26);
+  border: none;
+}

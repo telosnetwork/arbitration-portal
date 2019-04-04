@@ -2,20 +2,14 @@ import React, { Component }      from 'react';
 
 // Components
 import CasesTable from  '../CasesTable';
-import { Container, Row, Col, Button } from 'reactstrap';
+import { Container, Row, Col } from 'reactstrap';
 
 // Redux
 import { connect }               from 'react-redux';
-import { CasesActions, ModalActions } from 'business/actions';
+import { CasesActions } from 'business/actions';
 import { AuthenticationSelectors, ArbitratorsSelectors, CasesSelectors } from 'business/selectors';
 
 class ArbitratorsHome extends Component {
-
-  openArbitratorsSettings() {
-    return () => {
-      this.props.setAction('arbitratorsettings');
-    }
-  }
 
   render() {
 
@@ -31,19 +25,9 @@ class ArbitratorsHome extends Component {
       );
     }
     return (
-      // <Container>
-
-        <div>
-          {/* <Row className="top-actions"> */}
-            <Button onClick={this.openArbitratorsSettings()} className="new-case-btn">
-              <i class="fas fa-user-cog"></i> Arbitrator Settings
-            </Button>
-          {/* </Row> */}
-
-          <CasesTable caseType="arbitrator" cases={this.props.arbitratorCases} />
-        </div>
-
-      // </Container>
+      <Container>
+        <CasesTable caseType="arbitrator" cases={this.props.arbitratorCases} />
+      </Container>
     )
   }
 }
@@ -56,7 +40,6 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = {
   fetchCases: CasesActions.fetchCases,
-  setAction: ModalActions.setAction,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(ArbitratorsHome);

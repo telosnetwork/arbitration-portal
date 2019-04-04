@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 
 // Components
 import IPFSInput from '../../components/IPFSInput';
-import { Modal, Container, Row, ModalHeader, ModalBody, ModalFooter, Col, Button, Spinner, Form, FormGroup, Label, Input, FormText, ListGroup, ListGroupItem } from 'reactstrap';
+import { Modal, Container, Row, ModalHeader, ModalBody, ModalFooter, Col, Button, Spinner, Form, FormGroup, Label, Input, FormText, ListGroup, ListGroupItem, Alert } from 'reactstrap';
 
 // Redux
 import { connect }               from 'react-redux';
@@ -395,6 +395,24 @@ class ActionModal extends Component {
     }
   }
 
+  renderAlert() {
+    if(this.props.actionName === 'respondclaim' && this.props.claim.response_link) {
+      return (
+        <Alert color="danger">
+          Responding again will overwrite the existing response link!
+        </Alert>
+      );
+    }
+    if(this.props.actionName === 'setruling' && this.props.case.case_ruling) {
+      return (
+        <Alert color="danger">
+          Setting the case ruling again will overwrite the existing ruling link!
+        </Alert>
+      );
+    }
+    return null;
+  }
+
   renderHeader() {
     return [
       <ModalHeader key="header" toggle={this.props.toggle}>
@@ -461,6 +479,7 @@ class ActionModal extends Component {
         <ModalBody key="form">
           <Form onSubmit={this.handleSubmit()}>
             {this.renderAutoForm()}
+            {this.renderAlert()}
             {this.state.loading && <Spinner className='submitSpinner' type='grow' color='primary' />}
           </Form>
         </ModalBody>
