@@ -78,11 +78,6 @@ class NavBar extends Component {
                   <i class="fas fa-user-shield"></i><p className="nav-text">ARBITRATOR</p>
                 </NavLink>
               </NavItem>,
-              /*<NavItem key="transfers">
-                <Link to='/transfers_reg' style={ !this.props.isLogin ? {pointerEvents: 'none', color: 'black', textDecoration: 'none', marginRight: '10px'} : {color: 'black', textDecoration: 'none', marginRight: '10px'}} >
-                  Transfers
-                </Link>
-              </NavItem>,*/
             ]}
 
           </Nav>

@@ -2,7 +2,7 @@ import React, { Component }      from 'react';
 import PropTypes from 'prop-types';
 
 // Components
-import { UncontrolledTooltip, Jumbotron, Table, Container, Row, Button } from 'reactstrap';
+import { Col, UncontrolledTooltip, Jumbotron, Table, Container, Row, Button } from 'reactstrap';
 import ClaimsTable from '../ClaimsTable';
 
 // Redux
@@ -75,6 +75,16 @@ class CasesTable extends Component {
     return () => {
       this.props.setSelectedCase(casefile.case_id);
       this.props.setAction('editcase');
+    }
+  }
+  onNewCase() {
+    return () => {
+      this.props.setAction('filecase');
+    }
+  }
+  openArbitratorsSettings() {
+    return () => {
+      this.props.setAction('arbitratorsettings');
     }
   }
 
@@ -222,9 +232,24 @@ class CasesTable extends Component {
         <Jumbotron className="members-home-jumbo scroll-x">
 
           <Row className="table-title">
-            {this.props.caseType === 'claimant' && "My Cases"}
-            {this.props.caseType === 'respondant' && "Respondent Cases"}
-            {this.props.caseType === 'arbitrator' && "Arbitrator Cases"}
+            <Col>
+              {this.props.caseType === 'claimant' && "My Cases"}
+              {this.props.caseType === 'respondant' && "Respondent Cases"}
+              {this.props.caseType === 'arbitrator' && "Arbitrator Cases"}
+            </Col>
+            <Col>
+              {this.props.caseType === 'claimant' &&
+              <Button color="primary" onClick={this.onNewCase()} className="new-case-btn" style={{marginRight: '55px'}}>
+                <i className="fas fa-plus fas-left"></i>
+                New Case
+              </Button>
+              }
+              {this.props.caseType === 'arbitrator' &&
+              <Button color="primary" onClick={this.openArbitratorsSettings()} className="new-case-btn" style={{marginRight: '55px'}}>
+                <i class="fas fa-user-cog"></i> Arbitrator Settings
+              </Button>
+              }
+            </Col>
           </Row>
           <Table className="cases-table-data">
             <thead>

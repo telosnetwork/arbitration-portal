@@ -10,12 +10,3 @@
   justify-content: center;
   margin: 2rem;
 }
-
-.new-case-btn {
-  flex: 0.5;
-  float: right;
-  margin: 10px;
-  margin-right: 20px;
-  background-color: rgb(219, 119, 26);
-  border: none;
-}

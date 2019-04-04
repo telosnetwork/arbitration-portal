@@ -2,21 +2,15 @@ import React, { Component }      from 'react';
 
 // Components
 import CasesTable from  '../CasesTable';
-import { Container, Row, Col, Button } from 'reactstrap';
+import { Container, Row, Col } from 'reactstrap';
 
 // Redux
 import { connect }               from 'react-redux';
-import { ModalActions, CasesActions } from 'business/actions';
+import { CasesActions } from 'business/actions';
 import { CasesSelectors } from 'business/selectors';
 import { AuthenticationSelectors } from "../../business/selectors";
 
 class MembersHome extends Component {
-
-  onNewCase() {
-    return () => {
-      this.props.setAction('filecase');
-    }
-  }
 
   render() {
 
@@ -32,21 +26,12 @@ class MembersHome extends Component {
       );
     }
     return (
-      // <Container>
-
-      <div>
-        {/* <Row className="top-actions"> */}
-          <Button color="primary" onClick={this.onNewCase()} className="new-case-btn" style={{ marginRight: '55px' }}>
-            <i className="fas fa-plus fas-left"></i>
-            New Case
-          </Button>
-        {/* </Row> */}
+      <Container>
 
         <CasesTable caseType="claimant" cases={this.props.claimantCases} />
         <CasesTable caseType="respondant" cases={this.props.respondantCases} />
-      </div>
 
-      // </Container>
+      </Container>
     )
   }
 }
@@ -58,7 +43,6 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = {
-  setAction: ModalActions.setAction,
   fetchCases: CasesActions.fetchCases,
 };
 
