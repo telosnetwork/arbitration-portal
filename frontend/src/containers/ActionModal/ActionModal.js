@@ -403,7 +403,7 @@ class ActionModal extends Component {
         </Alert>
       );
     }
-    if(this.props.actionName === 'setruling' && this.props.case.case_ruling) {
+    if(this.props.actionName === 'setruling' && this.props.casefile.case_ruling) {
       return (
         <Alert color="danger">
           Setting the case ruling again will overwrite the existing ruling link!

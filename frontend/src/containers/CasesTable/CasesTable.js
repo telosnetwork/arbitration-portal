@@ -192,7 +192,7 @@ class CasesTable extends Component {
         <td>
           {casefile.claims.length > 0 ?
             <Button color={this.state.caseClaimsOpen[casefile.case_id] ? 'warning' : 'info'} onClick={() => this.openCaseClaims(casefile.case_id)}>
-              {this.state.caseClaimsOpen[casefile.case_id] ? 'Hide Claims' : 'Show Claims'}
+              {this.state.caseClaimsOpen[casefile.case_id] ? '-' : '+'}
             </Button>
             :
             'No Claims'
@@ -210,7 +210,7 @@ class CasesTable extends Component {
         </td>
         <td/>
         <td/>
-        {this.props.caseType !== 'claimant' && <td/>}
+        {this.props.caseType !== 'claimant'   && <td/>}
         {this.props.caseType !== 'respondant' && <td/>}
         <td/>
       </tr>,
@@ -233,7 +233,7 @@ class CasesTable extends Component {
 
           <Row className="table-title">
             <Col>
-              {this.props.caseType === 'claimant' && "My Cases"}
+              {this.props.caseType === 'claimant'   && "My Cases"}
               {this.props.caseType === 'respondant' && "Respondent Cases"}
               {this.props.caseType === 'arbitrator' && "Arbitrator Cases"}
             </Col>
