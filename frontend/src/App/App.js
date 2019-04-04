@@ -2,9 +2,6 @@ import React, { Component }      from 'react';
 import {  Route, Switch }   from 'react-router-dom';
 
 // Components
-import Transfers                 from '../containers/Transfers';
-import Arbitrators               from '../containers/Arbitrators';
-import Members                   from '../containers/Members';
 import MembersHome               from '../containers/MembersHome';
 import ArbitratorsHome           from '../containers/ArbitratorsHome';
 import NavBar                    from '../containers/NavBar';
@@ -15,7 +12,9 @@ import ErrorModal                from '../containers/ErrorModal';
 import mainLogo                  from '../resources/telosLogo.png'
 
 // Redux
-import { withRouter }            from 'react-router-dom';
+import { withRouter, Redirect }            from 'react-router-dom';
+import { connect } from 'react-redux';
+import { AuthenticationSelectors } from 'business/selectors';
 
 class App extends Component {
 
@@ -31,14 +30,6 @@ class App extends Component {
       </div>
     );
 
-    const NotFound = () => (
-      <div style={{ padding: '20px', textAlign: 'center' }}>
-        <h1>
-          Page not found...
-        </h1>
-      </div>
-    );
-
     return (
       <div className='App'>
         <NavBar />
@@ -46,16 +37,17 @@ class App extends Component {
         <ActionModal />
         <Switch>
           <Route exact path='/' render={Home} />
-          <Route exact path='/members'     component={MembersHome} />
-          <Route exact path='/arbitrators' component={ArbitratorsHome} />
-          <Route exact path='/transfers_reg'   component={Transfers} />
-          <Route exact path='/members_reg'     component={Members} />
-          <Route exact path='/arbitrators_reg' component={Arbitrators} />
-          <Route render={NotFound}/>
+          {this.props.isLogin && <Route exact path='/members'     component={MembersHome} />}
+          {this.props.isLogin && <Route exact path='/arbitrators' component={ArbitratorsHome} />}
+          <Redirect to="/" />
         </Switch>
       </div>
     );
   }
 }
 
-export default withRouter(App);
+const mapStateToProps = state => ({
+  isLogin: AuthenticationSelectors.isLogin(state),
+});
+
+export default withRouter(connect(mapStateToProps, null)(App));

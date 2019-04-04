@@ -64,7 +64,6 @@ export default class ScatterBridge {
   logout = async () => {
     this.isConnected = !(await this.scatter.logout());
     this.currentAccount = null;
-    alert('Logout Successful');
   }
 
   makeAction = async (contract, actionName, data, perm = { actor: this.currentAccount.name, permission: this.currentAccount.authority }) => {
