@@ -1,25 +1,25 @@
 .c-nav-link {
   text-decoration: none;
-  margin-right: 10px;
+  margin-right:    10px;
 }
 .nav-link-disabled {
-  pointer-events: none;
-  color: black;
+  pointer-events:  none;
+  color:         black;
 }
 
 .nav-links {
   float: left;
-  margin-left: 10px;
+  margin-left:   10px;
   margin-bottom: 10px;
 }
 
 .nav-text {
-  font-family: 'Lato', sans-serif;
-  display: inline-block;
-  font-weight: 400;
-  line-height: 16.8px;
-  color: #615A53;
-  margin-left: 5px;
+  font-family:   'Lato', sans-serif;
+  display:       inline-block;
+  font-weight:   400;
+  line-height:   16.8px;
+  color:       #615A53;
+  margin-left:   5px;
 }
 
 .nav-test :hover {
@@ -27,10 +27,10 @@
 }
 
 .nav-title {
-  font-family: 'Lato', sans-serif;
-  font-weight: 600;
-  line-height: 49px;
-  color: #615A53;
+  font-family:   'Lato', sans-serif;
+  font-weight:   600;
+  line-height:   49px;
+  color:       #615A53;
 }
 
 .nav-title :hover {

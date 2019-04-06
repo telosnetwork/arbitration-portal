@@ -21,19 +21,19 @@ const forms = {
       value: '',
       type: 'text',
       placeholder: 'account_name',
-      text: 'Please input a valid TELOS account name'
+      text: 'Please input a valid TELOS account name.'
     },
     claim_link: {
       label: 'Claim File:',
       placeholder: 'ipfs_link',
       special: 'ipfs',
-      text: 'Please select a file to upload'
+      text: 'Please select a file to upload.'
     },
     lang_codes: {
       label: 'Language Codes:',
       value: [],
       special: 'languages',
-      text: 'Please select from the following language codes'
+      text: 'Please select from the following language codes.'
     },
   },
   addclaim: {
@@ -41,7 +41,7 @@ const forms = {
       label: 'Claim File:',
       placeholder: 'ipfs_link',
       special: 'ipfs',
-      text: 'Please select a file to upload'
+      text: 'Please select a file to upload.'
     }
   },
   respondclaim: {
@@ -49,7 +49,7 @@ const forms = {
       label: 'Response File:',
       placeholder: 'ipfs_link',
       special: 'ipfs',
-      text: 'Please select a file to upload'
+      text: 'Please select a file to upload.'
     }
   },
   acceptclaim: {
@@ -57,13 +57,13 @@ const forms = {
       label: 'Decision File:',
       placeholder: 'ipfs_link',
       special: 'ipfs',
-      text: 'Please select a file to upload'
+      text: 'Please select a file to upload.'
     },
     decision_class: {
       label: 'Decision Class:',
       placeholder: 'decision_class',
       special: 'decision_class',
-      text: 'Please set a decision class'
+      text: 'Please set a decision class.'
     }
   },
   dismissclaim: {
@@ -71,7 +71,7 @@ const forms = {
       label: 'Memo:',
       placeholder: 'memo',
       type: 'text',
-      text: 'Please provide a note'
+      text: 'Please provide a note.'
     }
   },
   addarbs: {
@@ -80,7 +80,7 @@ const forms = {
       value: 1,
       type: 'text',
       placeholder: 'num_arbs_to_assign',
-      text: 'Please input the number of arbitrators to assign'
+      text: 'Please input the number of arbitrators to assign.'
     }
   },
   setruling: {
@@ -88,7 +88,7 @@ const forms = {
       label: 'Ruling File:',
       placeholder: 'ipfs_link',
       special: 'ipfs',
-      text: 'Please select a file to upload'
+      text: 'Please select a file to upload.'
     }
   },
   recuse: {
@@ -96,20 +96,20 @@ const forms = {
       label: 'Rationale:',
       placeholder: 'rationale',
       type: 'text',
-      text: 'Please provide a rationale for recusing'
+      text: 'Please provide a rationale for recusing.'
     }
   },
   arbitratorsettings: {
     new_status: {
       label: 'Arbitrator Status:',
       special: 'arb_status',
-      text: 'Please select a status'
+      text: 'Please select a status.'
     },
     lang_codes: {
       label: 'Language Codes:',
       value: [],
       special: 'languages',
-      text: 'Please select from the following language codes'
+      text: 'Please select from the following language codes.'
     },
   },
   dismisscase: {
@@ -117,7 +117,7 @@ const forms = {
       label: 'Ruling File:',
       placeholder: 'ipfs_link',
       special: 'ipfs',
-      text: 'Please select a file to upload'
+      text: 'Please select a file to upload.'
     }
   },
 };
@@ -257,7 +257,7 @@ class ActionModal extends Component {
       case 'languages': {
 
         return Object.keys(LanguageCodes).map(language =>
-          <div key={`lg-select-${language}`}>
+          <div key={`lg-select-${language}`} style={{marginLeft:'16px'}}>
             <Input
               type="checkbox"
               name={formElement.id}
@@ -345,7 +345,7 @@ class ActionModal extends Component {
   getTitle() {
     switch (this.props.actionName) {
       case 'filecase': {
-        return 'CREATE CASE';
+        return 'CREATE NEW CASE';
       }
       case 'addclaim': {
         return 'ADD CLAIM';
@@ -418,13 +418,13 @@ class ActionModal extends Component {
       <ModalHeader key="header" toggle={this.props.toggle}>
         <Container>
           <Row>
-            <Col sm={7}>
+            <Col sm={6} style={{paddingLeft: '0px'}}>
               {this.getTitle()}
             </Col>
             {this.props.casefile &&
-            <Col sm={5} style={{textAlign: 'end'}}>
+            <Col sm={6} style={{textAlign: 'end'}}>
               Case #{this.props.casefile.case_id} &nbsp;<br></br>
-              Status: <i className="case-status text-muted">{CaseStatus[this.props.casefile.case_status]}</i>
+              <span style={{whiteSpace: 'nowrap'}}>Status: <i className="case-status text-muted">{CaseStatus[this.props.casefile.case_status]}</i></span>
             </Col>
             }
           </Row>
@@ -487,7 +487,7 @@ class ActionModal extends Component {
       rendered.push(
         <ModalFooter key="footer">
           <Button color='primary' onClick={this.handleSubmit()}>Submit</Button>
-          <Button color="secondary" onClick={this.close()}>Cancel</Button>
+          <Button color="danger" onClick={this.close()}>Cancel</Button>
         </ModalFooter>
       );
 
@@ -556,6 +556,7 @@ class ActionModal extends Component {
                   </ListGroupItem>
                 )}
               </ListGroup>
+              <p style={{verticalAlign: 'top', marginTop: '10px'}}>All approvals need to be green before this case can advance</p>
             </Col>
           </Row>
         </ModalBody>

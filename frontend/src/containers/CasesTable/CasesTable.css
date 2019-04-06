@@ -1,19 +1,18 @@
 .table-title {
   justify-content: center;
-  margin:    1rem;
-  font-size: 1.3rem;
+  margin:      1rem;
+  font-size:   1.3rem;
   font-weight: 500;
 }
 
 .case-ruling {
   max-width: 130px;
   text-overflow: ellipsis;
-  overflow: hidden;
+  overflow:  hidden;
 }
 
 .cases-table {
   margin-top: 40px;
-  margin-left:100px;
 }
 
 .cases-table .btn {
@@ -25,7 +24,7 @@
 }
 
 .new-case-btn {
-  float: right;
+  float:  right;
   background-color: rgb(219, 119, 26);
   border: none;
 }

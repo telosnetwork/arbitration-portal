@@ -227,58 +227,61 @@ class CasesTable extends Component {
   render() {
 
     return (
-      <Container className="cases-table">
+      <div className="cases-table">
+        <Row className="table-title">
+          <Col>
+            {this.props.caseType === 'claimant'   && "My Cases"}
+            {this.props.caseType === 'respondant' && "Respondent Cases"}
+            {this.props.caseType === 'arbitrator' && "Arbitrator Cases"}
+          </Col>
+          <Col>
+            {this.props.caseType === 'claimant' &&
+            <Button color="primary" onClick={this.onNewCase()} className="new-case-btn" style={{marginRight: '55px'}}>
+              <i className="fas fa-plus fas-left"></i>
+              New Case
+            </Button>
+            }
+            {this.props.caseType === 'arbitrator' &&
+            <Button color="primary" onClick={this.openArbitratorsSettings()} className="new-case-btn" style={{marginRight: '55px'}}>
+              <i class="fas fa-user-cog"></i> Arbitrator Settings
+            </Button>
+            }
+          </Col>
+        </Row>
 
-        <Jumbotron className="members-home-jumbo scroll-x">
+        <Container className="cases-table">
 
-          <Row className="table-title">
-            <Col>
-              {this.props.caseType === 'claimant'   && "My Cases"}
-              {this.props.caseType === 'respondant' && "Respondent Cases"}
-              {this.props.caseType === 'arbitrator' && "Arbitrator Cases"}
-            </Col>
-            <Col>
-              {this.props.caseType === 'claimant' &&
-              <Button color="primary" onClick={this.onNewCase()} className="new-case-btn" style={{marginRight: '55px'}}>
-                <i className="fas fa-plus fas-left"></i>
-                New Case
-              </Button>
-              }
-              {this.props.caseType === 'arbitrator' &&
-              <Button color="primary" onClick={this.openArbitratorsSettings()} className="new-case-btn" style={{marginRight: '55px'}}>
-                <i class="fas fa-user-cog"></i> Arbitrator Settings
-              </Button>
-              }
-            </Col>
-          </Row>
-          <Table className="cases-table-data">
-            <thead>
-            <tr>
-              <th sm="1">Case ID</th>
-              <th sm="1">Status</th>
-              <th sm="3">Arbitrators</th>
-              <th sm="3">Approvals</th>
-              {this.props.caseType !== 'claimant' &&
-              <th>
-                Claimant
-              </th>
-              }
-              {this.props.caseType !== 'respondant' &&
-              <th>
-                Respondent
-              </th>
-              }
-              <th sm="4" style={{textAlign: 'right'}}>Actions</th>
-            </tr>
-            </thead>
-            <tbody>
-            {this.props.cases.map(this.renderCase.bind(this))}
-            </tbody>
-          </Table>
+          <Jumbotron className="members-home-jumbo scroll-x">
 
-        </Jumbotron>
+            <Table className="cases-table-data">
+              <thead>
+              <tr>
+                <th sm="1">Case ID</th>
+                <th sm="1">Status</th>
+                <th sm="3">Arbitrators</th>
+                <th sm="3">Approvals</th>
+                {this.props.caseType !== 'claimant' &&
+                <th>
+                  Claimant
+                </th>
+                }
+                {this.props.caseType !== 'respondant' &&
+                <th>
+                  Respondent
+                </th>
+                }
+                <th sm="4" style={{textAlign: 'right'}}>Actions</th>
+              </tr>
+              </thead>
+              <tbody>
+              {this.props.cases.map(this.renderCase.bind(this))}
+              </tbody>
+            </Table>
 
-      </Container>
+          </Jumbotron>
+
+        </Container>
+      </div>
     )
   }
 }

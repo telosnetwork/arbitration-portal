@@ -65,7 +65,7 @@ class NavBar extends Component {
                   className="c-nav-link"
                   activeClassName="nav-link-disabled"
                 >
-                  <i class="fas fa-users"></i><p className="nav-text">MEMBER</p>
+                  <i className="fas fa-users"></i><p className="nav-text">MEMBER</p>
                 </NavLink>
               </NavItem>,
               this.props.isArbitrator &&
@@ -75,7 +75,7 @@ class NavBar extends Component {
                   className="c-nav-link"
                   activeClassName="nav-link-disabled"
                 >
-                  <i class="fas fa-user-shield"></i><p className="nav-text">ARBITRATOR</p>
+                  <i className="fas fa-user-shield"></i><p className="nav-text">ARBITRATOR</p>
                 </NavLink>
               </NavItem>,
             ]}

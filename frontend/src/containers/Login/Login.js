@@ -52,15 +52,14 @@ class Login extends Component {
     if (this.props.authentication.isLogin && this.props.authentication.account) {
 
       return (<div>
-        <Button color='primary' style={{ fontWeight: 'bold' }} onClick={this.toggleModal} outline>
+        <Button color='info' style={{ fontWeight: 'bold' }} onClick={this.toggleModal} outline>
           <img className="fas-left" alt="scatter" src={scatterBadgeSvg} height={20}  />
           Logged in as: {this.props.authentication.account.name}
         </Button>
         <Modal isOpen={this.state.modal} toggle={this.toggleModal} className={this.props.className}>
           <ModalHeader toggle={this.toggleModal} className={this.props.className}>
             <ModalBody>
-              You are now logged in to Scatter on the Arbitration Portal! <br></br>
-              Please feel free to navigate around. <br></br>
+              Thank you for using the Telos Arbitration Portal!
             </ModalBody>
             <ModalFooter>
               <Button color='danger' onClick={this.logout}>Logout</Button>
