@@ -257,7 +257,7 @@ class ActionModal extends Component {
       case 'languages': {
 
         return Object.keys(LanguageCodes).map(language =>
-          <div key={`lg-select-${language}`} style={{marginLeft:'16px'}}>
+          <div key={`lg-select-${language}`} style={{marginLeft: '16px'}}>
             <Input
               type="checkbox"
               name={formElement.id}

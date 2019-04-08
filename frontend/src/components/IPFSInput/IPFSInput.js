@@ -16,7 +16,7 @@ class IPFSInput extends Component {
       loading: false,
     };
 
-    this.ipfs = ipfsClient('ipfs.emanate.live', '5002', { protocol: 'https' });
+    this.ipfs = ipfsClient('ipfs.telosfoundation.io', '443', { protocol: 'https' });
 
   }
 
@@ -77,7 +77,7 @@ class IPFSInput extends Component {
             <a className="ipfs-url" href={'https://' + this.props.value}>
               {this.props.value}
             </a>
-            <Button style={{ marginLeft: '10px' }} onClick={this.reset()}>Remove</Button>
+            <Button style={{marginTop: '5px', marginBottom: '5px'}} onClick={this.reset()}>Remove</Button>
           </div>
           :
           <label>

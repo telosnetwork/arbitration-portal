@@ -2,7 +2,7 @@ import React, { Component }      from 'react';
 import PropTypes from 'prop-types';
 
 // Components
-import { Col, UncontrolledTooltip, Jumbotron, Table, Container, Row, Button } from 'reactstrap';
+import { Col, UncontrolledTooltip, Jumbotron, Container, Row, Button } from 'reactstrap';
 import ClaimsTable from '../ClaimsTable';
 
 // Redux
@@ -105,121 +105,230 @@ class CasesTable extends Component {
   renderCase(casefile) {
 
     return [
-      <tr key={casefile.case_id}>
-        <th scope="row">
-          {casefile.case_id}
-        </th>
-        <td>
-          {CaseStatus[casefile.case_status]}
-        </td>
-        <td style={{wordBreak: 'break-all'}}>
-          {casefile.arbitrators.length > 0 ?
-            casefile.arbitrators.join(', ') :
-            '-'
-          }
-        </td>
-        <td>
-          {casefile.approvals.length > 0 ?
-            casefile.approvals.join(', ') :
-            '-'
-          }
-        </td>
-        {this.props.caseType !== 'claimant' &&
-        <td>
-          {casefile.claimant}
-        </td>
-        }
-        {this.props.caseType !== 'respondant' &&
-        <td>
-          {casefile.respondant}
-        </td>
-        }
-        <td align="right">
-          {this.isClaimant() && casefile.case_status === 0 &&
-          <Button id={`shred-case-btn-${casefile.case_id}`} color="danger" onClick={this.onShredCasefile(casefile)}>
-            <i className="fas fa-trash-alt"></i>
-            <UncontrolledTooltip placement="bottom" target={`shred-case-btn-${casefile.case_id}`}>
-              Shred Case
-            </UncontrolledTooltip>
-          </Button>
-          }
-          {casefile.case_ruling &&
-          <Button id={`open-case-ruling-btn-${casefile.case_id}`} color="primary" onClick={this.onOpenCaseRuling(casefile)}>
-            <i className="fas fa-file-alt"></i>
-            <UncontrolledTooltip placement="bottom" target={`open-case-ruling-btn-${casefile.case_id}`}>
-              Open Case Ruling
-            </UncontrolledTooltip>
-          </Button>
-          }
-          {this.isArbitrator() && casefile.case_status === 6 &&
-          <Button id={`set-case-ruling-btn-${casefile.case_id}`} color="info" onClick={this.onSetCaseRuling(casefile)}>
-            <i className="fas fa-file-alt"></i>
-            <UncontrolledTooltip placement="bottom" target={`set-case-ruling-btn-${casefile.case_id}`}>
-              Set Case Ruling
-            </UncontrolledTooltip>
-          </Button>
-          }
-          {this.isArbitrator() && casefile.case_status === 2 &&
-          <Button id={`case-addarbs-btn-${casefile.case_id}`} color="info" onClick={this.onAddArbs(casefile)}>
-            <i className="fas fa-user-plus"></i>
-            <UncontrolledTooltip placement="bottom" target={`case-addarbs-btn-${casefile.case_id}`}>
-              Add Arbitrators
-            </UncontrolledTooltip>
-
-          </Button>
-          }
-          {this.isArbitrator() && casefile.case_status >= 2 && casefile.case_status <= 6 &&
-          <Button id={`case-recuse-btn-${casefile.case_id}`} color="info" onClick={this.onRecuse(casefile)}>
-            <i className="fas fa-user-minus"></i>
-            <UncontrolledTooltip placement="bottom" target={`case-recuse-btn-${casefile.case_id}`}>
-              Recuse
-            </UncontrolledTooltip>
-          </Button>
-          }
-          {this.isArbitrator() &&
-          <Button id={`case-edit-btn-${casefile.case_id}`} color="info" onClick={this.onEdit(casefile)}>
-            <i className="fas fa-user-edit"></i>
-            <UncontrolledTooltip placement="bottom" target={`case-edit-btn-${casefile.case_id}`}>
-              Edit Case
-            </UncontrolledTooltip>
-          </Button>
-          }
-
-
-        </td>
-      </tr>,
-      <tr key="caseactions">
-        <td>
-          {casefile.claims.length > 0 ?
-            <Button color={this.state.caseClaimsOpen[casefile.case_id] ? 'warning' : 'info'} onClick={() => this.openCaseClaims(casefile.case_id)}>
-              {this.state.caseClaimsOpen[casefile.case_id] ? '-' : '+'}
+      <Jumbotron className="members-home-jumbo border-x">
+        <Row key={casefile.case_id}>
+          <Col className='cases-info'>
+            <h3>Case : #{casefile.case_id}</h3>
+          </Col>
+          <Col style={{textAlign: 'right'}}>
+            {this.isClaimant() && casefile.case_status === 0 &&
+            <Button id={`shred-case-btn-${casefile.case_id}`} color="danger" onClick={this.onShredCasefile(casefile)}>
+              <i className="fas fa-trash-alt"></i>
+              <UncontrolledTooltip placement="bottom" target={`shred-case-btn-${casefile.case_id}`}>
+                Shred Case
+              </UncontrolledTooltip>
             </Button>
-            :
-            'No Claims'
-          }
-        </td>
-        <td>
-          {this.isClaimant() && casefile.case_status === 0  &&
-          <Button color="primary" onClick={this.onAddClaim(casefile)}>Add Claim</Button>
-          }
-        </td>
-        <td align="right">
+            }
+            {casefile.case_ruling &&
+            <Button id={`open-case-ruling-btn-${casefile.case_id}`} color="primary" onClick={this.onOpenCaseRuling(casefile)}>
+              <i className="fas fa-file-alt"></i>
+              <UncontrolledTooltip placement="bottom" target={`open-case-ruling-btn-${casefile.case_id}`}>
+                Open Case Ruling
+              </UncontrolledTooltip>
+            </Button>
+            }
+            {this.isArbitrator() && casefile.case_status === 6 &&
+            <Button id={`set-case-ruling-btn-${casefile.case_id}`} color="info" onClick={this.onSetCaseRuling(casefile)}>
+              <i className="fas fa-file-alt"></i>
+              <UncontrolledTooltip placement="bottom" target={`set-case-ruling-btn-${casefile.case_id}`}>
+                Set Case Ruling
+              </UncontrolledTooltip>
+            </Button>
+            }
+            {this.isArbitrator() && casefile.case_status === 2 &&
+            <Button id={`case-addarbs-btn-${casefile.case_id}`} color="info" onClick={this.onAddArbs(casefile)}>
+              <i className="fas fa-user-plus"></i>
+              <UncontrolledTooltip placement="bottom" target={`case-addarbs-btn-${casefile.case_id}`}>
+                Add Arbitrators
+              </UncontrolledTooltip>
+
+            </Button>
+            }
+            {this.isArbitrator() && casefile.case_status >= 2 && casefile.case_status <= 6 &&
+            <Button id={`case-recuse-btn-${casefile.case_id}`} color="info" onClick={this.onRecuse(casefile)}>
+              <i className="fas fa-user-minus"></i>
+              <UncontrolledTooltip placement="bottom" target={`case-recuse-btn-${casefile.case_id}`}>
+                Recuse
+              </UncontrolledTooltip>
+            </Button>
+            }
+            {this.isArbitrator() &&
+            <Button id={`case-edit-btn-${casefile.case_id}`} color="info" onClick={this.onEdit(casefile)}>
+              <i className="fas fa-user-edit"></i>
+              <UncontrolledTooltip placement="bottom" target={`case-edit-btn-${casefile.case_id}`}>
+                Edit Case
+              </UncontrolledTooltip>
+            </Button>
+            }
+          </Col>
+        </Row>
+        <Row>
+          <Col className='cases-info'>
+            <i><b>Case Status</b>: {CaseStatus[casefile.case_status]}</i>
+          </Col>
+        </Row>
+        <Row>
+          <Col className='cases-info'>
+            <i><b>Claimant</b>: {casefile.claimant}</i>
+          </Col>
+        </Row>
+        <Row>
+          <Col className='cases-info'>
+            <i><b>Respondent</b>: {casefile.respondant}</i>
+          </Col>
+        </Row>
+        <Row style={{wordBreak: 'break-all'}}>
+          <Col className='cases-info'>
+            <i><b>Arbitrators</b>: {casefile.arbitrators.length > 0 ?
+                                    casefile.arbitrators.join(', '): '-'}</i>
+          </Col>
+        </Row>
+        <br></br>
+        <Row>
+          <Col>
+            {casefile.claims.length > 0 ?
+              <Button color={this.state.caseClaimsOpen[casefile.case_id] ? 'warning' : 'info'} onClick={() => this.openCaseClaims(casefile.case_id)}>
+                {this.state.caseClaimsOpen[casefile.case_id] ? '-' : '+'}
+              </Button>
+              :
+              'No Claims'
+            }
+          </Col>
+          <Col style={{textAlign: 'right'}}>
+            {this.isClaimant() && casefile.case_status === 0  &&
+              <Button color="primary" onClick={this.onAddClaim(casefile)}>Add Claim</Button>
+            }
+          </Col>
+        </Row>
+        <br></br>
+        {this.state.caseClaimsOpen[casefile.case_id] ? 
+          <Row key="claims">
+            <ClaimsTable casefile={casefile} caseType={this.props.caseType} />
+          </Row> : null}
+        <Row>
           {this.isClaimant() && casefile.case_status === 0 &&
-          <Button color="success" onClick={this.onSubmitCasefile(casefile)}>Submit for Arbitration</Button>
+            <Col>
+              <Button color="success" onClick={this.onSubmitCasefile(casefile)}>Submit for Arbitration</Button>
+            </Col>
           }
-        </td>
-        <td/>
-        <td/>
-        {this.props.caseType !== 'claimant'   && <td/>}
-        {this.props.caseType !== 'respondant' && <td/>}
-        <td/>
-      </tr>,
-      this.state.caseClaimsOpen[casefile.case_id] &&
-      <tr key="claims">
-        <td colSpan={7 - ((this.props.caseType === 'claimant' || this.props.caseType === 'respondant') ? 1 : 0)}>
-          <ClaimsTable casefile={casefile} caseType={this.props.caseType} />
-        </td>
-      </tr>,
+        </Row>
+      </Jumbotron>
+
+      // <Row key={casefile.case_id}>
+      //   <th scope="row">
+      //     {casefile.case_id}
+      //   </th>
+      //   <td>
+      //     {CaseStatus[casefile.case_status]}
+      //   </td>
+      //   <td style={{wordBreak: 'break-all'}}>
+      //     {casefile.arbitrators.length > 0 ?
+      //       casefile.arbitrators.join(', ') :
+      //       '-'
+      //     }
+      //   </td>
+      //   <td>
+      //     {casefile.approvals.length > 0 ?
+      //       casefile.approvals.join(', ') :
+      //       '-'
+      //     }
+      //   </td>
+      //   {this.props.caseType !== 'claimant' &&
+      //   <td>
+      //     {casefile.claimant}
+      //   </td>
+      //   }
+      //   {this.props.caseType !== 'respondant' &&
+      //   <td>
+      //     {casefile.respondant}
+      //   </td>
+      //   }
+      //   <td align="right">
+          // {this.isClaimant() && casefile.case_status === 0 &&
+          // <Button id={`shred-case-btn-${casefile.case_id}`} color="danger" onClick={this.onShredCasefile(casefile)}>
+          //   <i className="fas fa-trash-alt"></i>
+          //   <UncontrolledTooltip placement="bottom" target={`shred-case-btn-${casefile.case_id}`}>
+          //     Shred Case
+          //   </UncontrolledTooltip>
+          // </Button>
+          // }
+          // {casefile.case_ruling &&
+          // <Button id={`open-case-ruling-btn-${casefile.case_id}`} color="primary" onClick={this.onOpenCaseRuling(casefile)}>
+          //   <i className="fas fa-file-alt"></i>
+          //   <UncontrolledTooltip placement="bottom" target={`open-case-ruling-btn-${casefile.case_id}`}>
+          //     Open Case Ruling
+          //   </UncontrolledTooltip>
+          // </Button>
+          // }
+          // {this.isArbitrator() && casefile.case_status === 6 &&
+          // <Button id={`set-case-ruling-btn-${casefile.case_id}`} color="info" onClick={this.onSetCaseRuling(casefile)}>
+          //   <i className="fas fa-file-alt"></i>
+          //   <UncontrolledTooltip placement="bottom" target={`set-case-ruling-btn-${casefile.case_id}`}>
+          //     Set Case Ruling
+          //   </UncontrolledTooltip>
+          // </Button>
+          // }
+          // {this.isArbitrator() && casefile.case_status === 2 &&
+          // <Button id={`case-addarbs-btn-${casefile.case_id}`} color="info" onClick={this.onAddArbs(casefile)}>
+          //   <i className="fas fa-user-plus"></i>
+          //   <UncontrolledTooltip placement="bottom" target={`case-addarbs-btn-${casefile.case_id}`}>
+          //     Add Arbitrators
+          //   </UncontrolledTooltip>
+
+          // </Button>
+          // }
+          // {this.isArbitrator() && casefile.case_status >= 2 && casefile.case_status <= 6 &&
+          // <Button id={`case-recuse-btn-${casefile.case_id}`} color="info" onClick={this.onRecuse(casefile)}>
+          //   <i className="fas fa-user-minus"></i>
+          //   <UncontrolledTooltip placement="bottom" target={`case-recuse-btn-${casefile.case_id}`}>
+          //     Recuse
+          //   </UncontrolledTooltip>
+          // </Button>
+          // }
+          // {this.isArbitrator() &&
+          // <Button id={`case-edit-btn-${casefile.case_id}`} color="info" onClick={this.onEdit(casefile)}>
+          //   <i className="fas fa-user-edit"></i>
+          //   <UncontrolledTooltip placement="bottom" target={`case-edit-btn-${casefile.case_id}`}>
+          //     Edit Case
+          //   </UncontrolledTooltip>
+          // </Button>
+          // }
+
+
+      //   </td>
+      // </Row>,
+      // <Row key="caseactions">
+      //   <td>
+      //     {casefile.claims.length > 0 ?
+      //       <Button color={this.state.caseClaimsOpen[casefile.case_id] ? 'warning' : 'info'} onClick={() => this.openCaseClaims(casefile.case_id)}>
+      //         {this.state.caseClaimsOpen[casefile.case_id] ? '-' : '+'}
+      //       </Button>
+      //       :
+      //       'No Claims'
+      //     }
+      //   </td>
+      //   <td>
+      //     {this.isClaimant() && casefile.case_status === 0  &&
+      //     <Button color="primary" onClick={this.onAddClaim(casefile)}>Add Claim</Button>
+      //     }
+      //   </td>
+      //   <td align="right">
+      //     {this.isClaimant() && casefile.case_status === 0 &&
+      //     <Button color="success" onClick={this.onSubmitCasefile(casefile)}>Submit for Arbitration</Button>
+      //     }
+      //   </td>
+      //   <td/>
+      //   <td/>
+      //   {this.props.caseType !== 'claimant'   && <td/>}
+      //   {this.props.caseType !== 'respondant' && <td/>}
+      //   <td/>
+      // </Row>,
+      // this.state.caseClaimsOpen[casefile.case_id] &&
+      // <Row key="claims">
+      //   <td colSpan={7 - ((this.props.caseType === 'claimant' || this.props.caseType === 'respondant') ? 1 : 0)}>
+      //     <ClaimsTable casefile={casefile} caseType={this.props.caseType} />
+      //   </td>
+      // </Row>,
     ];
 
   }
@@ -236,13 +345,13 @@ class CasesTable extends Component {
           </Col>
           <Col>
             {this.props.caseType === 'claimant' &&
-            <Button color="primary" onClick={this.onNewCase()} className="new-case-btn" style={{marginRight: '55px'}}>
+            <Button color="primary" onClick={this.onNewCase()} className="new-case-btn" style={{marginRight: '20px'}}>
               <i className="fas fa-plus fas-left"></i>
               New Case
             </Button>
             }
             {this.props.caseType === 'arbitrator' &&
-            <Button color="primary" onClick={this.openArbitratorsSettings()} className="new-case-btn" style={{marginRight: '55px'}}>
+            <Button color="primary" onClick={this.openArbitratorsSettings()} className="new-case-btn" style={{marginRight: '20px'}}>
               <i class="fas fa-user-cog"></i> Arbitrator Settings
             </Button>
             }
@@ -251,10 +360,10 @@ class CasesTable extends Component {
 
         <Container className="cases-table">
 
-          <Jumbotron className="members-home-jumbo scroll-x">
+          {/* <Jumbotron className="members-home-jumbo scroll-x"> */}
 
-            <Table className="cases-table-data">
-              <thead>
+            {/* <Table className="cases-table-data"> */}
+              {/* <thead>
               <tr>
                 <th sm="1">Case ID</th>
                 <th sm="1">Status</th>
@@ -273,12 +382,12 @@ class CasesTable extends Component {
                 <th sm="4" style={{textAlign: 'right'}}>Actions</th>
               </tr>
               </thead>
-              <tbody>
+              <tbody> */}
               {this.props.cases.map(this.renderCase.bind(this))}
-              </tbody>
-            </Table>
+              {/* </tbody> */}
+            {/* </Table> */}
 
-          </Jumbotron>
+          {/* </Jumbotron> */}
 
         </Container>
       </div>

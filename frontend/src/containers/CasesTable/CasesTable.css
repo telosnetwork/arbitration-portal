@@ -2,7 +2,7 @@
   justify-content: center;
   margin:      1rem;
   font-size:   1.3rem;
-  font-weight: 500;
+  font-weight: 600;
 }
 
 .case-ruling {
@@ -19,12 +19,17 @@
   margin: 5px;
 }
 
-.scroll-x {
-  overflow-y: scroll;
+.border-x {
+  border-radius: 15px 50px 30px 5px;
 }
 
 .new-case-btn {
   float:  right;
   background-color: rgb(219, 119, 26);
   border: none;
+}
+
+.cases-info {
+  margin-left: 5px;
+  margin-top:  2px;
 }
