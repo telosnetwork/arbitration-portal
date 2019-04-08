@@ -203,7 +203,9 @@ class CasesTable extends Component {
         <br></br>
         {this.state.caseClaimsOpen[casefile.case_id] ? 
           <Row key="claims">
-            <ClaimsTable casefile={casefile} caseType={this.props.caseType} />
+            <Col>
+              <ClaimsTable casefile={casefile} caseType={this.props.caseType} />
+            </Col>
           </Row> : null}
         <Row>
           {this.isClaimant() && casefile.case_status === 0 &&

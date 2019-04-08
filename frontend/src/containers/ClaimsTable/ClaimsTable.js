@@ -140,7 +140,7 @@ class ClaimsTable extends Component {
           <th sm="1">Claim ID</th>
           <th sm="3">Status</th>
           <th sm="3">Decision</th>
-          <th sm="5" style={{textAlign: 'right'}}>Actions</th>
+          <th sm="5" style={{textAlign: 'left'}}>Actions</th>
         </tr>
         </thead>
         <tbody>
