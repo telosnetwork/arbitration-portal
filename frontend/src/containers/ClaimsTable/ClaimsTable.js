@@ -134,7 +134,7 @@ class ClaimsTable extends Component {
 
     const { casefile } = this.props;
     return (
-      <Table hover>
+      <Table hover borderless>
         <thead>
         <tr>
           <th sm="1">Claim ID</th>
