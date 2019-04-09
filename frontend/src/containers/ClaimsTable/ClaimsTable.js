@@ -52,13 +52,13 @@ class ClaimsTable extends Component {
 
 
   openSummary(claim) {
-    window.open(`https://${claim.claim_summary}`);
+    window.open(`https://web.ipfs.telosfoundation.io/${claim.claim_summary}`);
   }
   openResponse(claim) {
-    window.open(`https://${claim.response_link}`);
+    window.open(`https://web.ipfs.telosfoundation.io/${claim.response_link}`);
   }
   openDecision(claim) {
-    window.open(`https://${claim.decision_link}`);
+    window.open(`https://web.ipfs.telosfoundation.io/${claim.decision_link}`);
   }
 
   renderClaim(claim) {

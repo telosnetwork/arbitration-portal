@@ -423,14 +423,14 @@ class ActionModal extends Component {
             </Col>
             {this.props.casefile &&
             <Col sm={6} style={{textAlign: 'end'}}>
-              Case #{this.props.casefile.case_id} &nbsp;<br></br>
+              Case #{this.props.casefile.case_id}<br></br>
               <span style={{whiteSpace: 'nowrap'}}>Status: <i className="case-status text-muted">{CaseStatus[this.props.casefile.case_status]}</i></span>
             </Col>
             }
           </Row>
         </Container>
       </ModalHeader>,
-      this.props.claim && // TODO change styling of that
+      this.props.claim &&
       <ModalBody key="information">
         <Container>
           <Row>
@@ -510,8 +510,6 @@ class ActionModal extends Component {
       rendered.push(
         <ModalBody key="description">
           In order to submit the case for arbitration, you are required to make a deposit of 100 TLOS.
-          <br/>
-          If your account's credit balance is lower than 100 TLOS, a transfer will be enforced prior to submitting the case.
         </ModalBody>
       );
       rendered.push(

@@ -43,7 +43,7 @@ class IPFSInput extends Component {
         console.log('Response: ', response);
         ipfsId = response[0].hash;
         console.log('IPFS ID: ' , ipfsId);
-        const fileUrl = `ipfs.io/ipfs/${ipfsId}`;
+        const fileUrl = `${ipfsId}`;
 
         this.setState({loading: false});
         this.props.onChange({
@@ -74,7 +74,7 @@ class IPFSInput extends Component {
       <div className='uploadForm'>
         {this.props.value ?
           <div>
-            <a className="ipfs-url" href={'https://' + this.props.value}>
+            <a className="ipfs-url" href={'https://web.ipfs.telosfoundation.io/' + this.props.value}>
               {this.props.value}
             </a>
             <Button style={{marginTop: '5px', marginBottom: '5px'}} onClick={this.reset()}>Remove</Button>

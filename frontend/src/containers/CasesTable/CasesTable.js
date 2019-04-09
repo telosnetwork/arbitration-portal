@@ -98,7 +98,7 @@ class CasesTable extends Component {
 
   onOpenCaseRuling(casefile) {
     return () => {
-      window.open(`https://${casefile.case_ruling}`);
+      window.open(`https://web.ipfs.telosfoundation.io/${casefile.case_ruling}`);
     };
   }
 
