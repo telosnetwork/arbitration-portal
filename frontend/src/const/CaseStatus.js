@@ -5,7 +5,7 @@
 export default {
 
   0: 'CASE SETUP',
-  1: 'AWAITING ARBS',
+  1: 'AWAITING ARBITRATORS',
   2: 'CASE INVESTIGATION',
   3: 'HEARING',
   4: 'DELIBERATION',

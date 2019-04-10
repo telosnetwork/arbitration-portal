@@ -418,11 +418,11 @@ class ActionModal extends Component {
       <ModalHeader key="header" toggle={this.props.toggle}>
         <Container>
           <Row>
-            <Col sm={6} style={{paddingLeft: '0px'}}>
+            <Col sm={5} style={{paddingLeft: '0px'}}>
               {this.getTitle()}
             </Col>
             {this.props.casefile &&
-            <Col sm={6} style={{textAlign: 'end'}}>
+            <Col sm={7} style={{textAlign: 'end'}}>
               Case #{this.props.casefile.case_id}<br></br>
               <span style={{whiteSpace: 'nowrap'}}>Status: <i className="case-status text-muted">{CaseStatus[this.props.casefile.case_status]}</i></span>
             </Col>
@@ -434,11 +434,13 @@ class ActionModal extends Component {
       <ModalBody key="information">
         <Container>
           <Row>
-            Claim ID: {this.props.claim.claim_id}
-            <br/>
-            Claim Status: {this.props.claim.claim_status}
-            <br/>
-            Claim Hash: {this.props.claim.claim_summary}
+            <i><b>Claim ID</b>: {this.props.claim.claim_id}</i>
+          </Row>
+          <Row>
+            <i><b>Claim Status</b>: {this.props.claim.claim_status}</i>
+          </Row>
+          <Row>
+            <i><b>Claim Hash</b>: {this.props.claim.claim_summary}</i>
           </Row>
         </Container>
       </ModalBody>

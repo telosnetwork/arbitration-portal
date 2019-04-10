@@ -37,7 +37,7 @@ class NavBar extends Component {
 
     return (
       <div>
-      <Navbar color='light' light expand='md'>
+      <Navbar color='danger' light expand='md'>
         <NavLink to='/' style={{ color: 'black', textDecoration: 'none' }}>
             <img src={mainLogo} alt='mainLogo' height="50" width="50" />
             <h5 className='nav-title' style={{display: 'inline-block'}}>Telos Arbitration Portal</h5>
@@ -53,7 +53,7 @@ class NavBar extends Component {
           </Nav>
         </Collapse>
       </Navbar>
-      <Navbar color='light' light expand='md'>
+      <Navbar color='white' light expand='md'>
         <div className='nav-links'>
           <Nav className='ml-auto' navbar>
 
