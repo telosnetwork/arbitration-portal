@@ -39,7 +39,7 @@ class App extends Component {
           <Route exact path='/' render={Home} />
           {this.props.isLogin && <Route exact path='/members'     component={MembersHome} />}
           {this.props.isLogin && <Route exact path='/arbitrators' component={ArbitratorsHome} />}
-          <Redirect to="/" />
+          <Redirect from="*" to="/" />
         </Switch>
       </div>
     );

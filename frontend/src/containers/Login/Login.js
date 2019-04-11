@@ -54,7 +54,7 @@ class Login extends Component {
       return (<div>
         <Button color='info' style={{ fontWeight: 'bold' }} onClick={this.toggleModal} outline>
           <img className="fas-left" alt="scatter" src={scatterBadgeSvg} height={20}  />
-          Logged in as: {this.props.authentication.account.name}
+          <span>Logged in as: {this.props.authentication.account.name}</span>
         </Button>
         <Modal isOpen={this.state.modal} toggle={this.toggleModal} className={this.props.className}>
           <ModalHeader toggle={this.toggleModal} className={this.props.className}>

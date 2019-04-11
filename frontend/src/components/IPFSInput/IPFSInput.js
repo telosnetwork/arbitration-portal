@@ -82,7 +82,7 @@ class IPFSInput extends Component {
           </div>
           :
           <label>
-            <span className="btn btn-primary">Select file</span>
+            <span className="btn btn-info">Select file</span>
             <Input type="file" className="hidden-input" onChange={this.captureFile}/>
           </label>
         }

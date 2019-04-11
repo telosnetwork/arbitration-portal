@@ -25,8 +25,12 @@
 
 .new-case-btn {
   float:  right;
-  background-color: rgb(219, 119, 26);
+  /* background-color: rgb(219, 119, 26); */
   border: none;
+}
+
+.new-case-btn:hover {
+    background-color: #47413a;
 }
 
 .cases-info {

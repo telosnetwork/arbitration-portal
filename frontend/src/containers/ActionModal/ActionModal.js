@@ -33,7 +33,7 @@ const forms = {
       label: 'Language Codes:',
       value: [],
       special: 'languages',
-      text: 'Please select from the following language codes.'
+      text: 'Please select the appropriate language code(s).'
     },
   },
   addclaim: {
@@ -109,7 +109,7 @@ const forms = {
       label: 'Language Codes:',
       value: [],
       special: 'languages',
-      text: 'Please select from the following language codes.'
+      text: 'Please select the appropriate language code(s).'
     },
   },
   dismisscase: {
@@ -530,7 +530,7 @@ class ActionModal extends Component {
         <ModalBody key="description">
           <Row>
             <Col>
-              <h4>Arbitrator Approvals</h4>
+              <h4>Arbitrator Approval(s)</h4>
 
               <ListGroup>
                 {casefile.arbitrators.map(arbitrator =>
@@ -538,7 +538,7 @@ class ActionModal extends Component {
                     key={arbitrator}
                     color={casefile.approvals.find(a => a === arbitrator) ? 'success' : ''}
                   >
-                    {arbitrator}
+                    {casefile.approvals.find(a => a === arbitrator) ? arbitrator + ' - Approved' : arbitrator + ' - Pending Approval'}
                   </ListGroupItem>
                 )}
               </ListGroup>
@@ -556,7 +556,7 @@ class ActionModal extends Component {
                   </ListGroupItem>
                 )}
               </ListGroup>
-              <p style={{verticalAlign: 'top', marginTop: '10px'}}>All approvals need to be green before this case can advance</p>
+              <p style={{verticalAlign: 'top', marginTop: '10px'}}>Arbitrator consensus is needed before this case can advance.</p>
             </Col>
           </Row>
         </ModalBody>

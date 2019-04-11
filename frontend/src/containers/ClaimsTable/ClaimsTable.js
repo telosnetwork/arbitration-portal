@@ -78,16 +78,16 @@ class ClaimsTable extends Component {
           {DecisionClass[claim.decision_class] || '-'}
         </td>
         <td align="right">
-          <Button color="primary" onClick={() => this.openSummary(claim)}>
-            Document
+          <Button color="primary" className='doc-btn' onClick={() => this.openSummary(claim)}>
+            Claim
           </Button>
           {!!claim.response_link &&
-          <Button color="primary" onClick={() => this.openResponse(claim)}>
+          <Button color="primary" className='doc-btn' onClick={() => this.openResponse(claim)}>
             Response
           </Button>
           }
           {!!claim.decision_link &&
-          <Button color="primary" onClick={() => this.openDecision(claim)}>
+          <Button color="primary" className='doc-btn' onClick={() => this.openDecision(claim)}>
             Decision
           </Button>
           }

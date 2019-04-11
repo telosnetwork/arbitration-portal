@@ -12,12 +12,12 @@
   top: -100em;
 }
 
-.select-file {
+/* .select-file {
   border: 1px solid black;
   cursor: pointer;
   color: #fff;
   background-color: #47bac1;
-}
+} */
 
 .ipfs-url {
   font-size: 0.6rem;

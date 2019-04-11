@@ -187,7 +187,7 @@ class CasesTable extends Component {
         <Row>
           <Col>
             {casefile.claims.length > 0 ?
-              <Button color={this.state.caseClaimsOpen[casefile.case_id] ? 'warning' : 'info'} onClick={() => this.openCaseClaims(casefile.case_id)}>
+              <Button color={this.state.caseClaimsOpen[casefile.case_id] ? 'light' : 'dark'} onClick={() => this.openCaseClaims(casefile.case_id)}>
                 {this.state.caseClaimsOpen[casefile.case_id] ? '-' : '+'}
               </Button>
               :
@@ -347,13 +347,13 @@ class CasesTable extends Component {
           </Col>
           <Col>
             {this.props.caseType === 'claimant' &&
-            <Button color="primary" onClick={this.onNewCase()} className="new-case-btn" style={{marginRight: '20px'}}>
+            <Button color="light" onClick={this.onNewCase()} className="new-case-btn" style={{marginRight: '20px'}}>
               <i className="fas fa-plus fas-left"></i>
               New Case
             </Button>
             }
             {this.props.caseType === 'arbitrator' &&
-            <Button color="primary" onClick={this.openArbitratorsSettings()} className="new-case-btn" style={{marginRight: '20px'}}>
+            <Button color="light" onClick={this.openArbitratorsSettings()} className="new-case-btn" style={{marginRight: '20px'}}>
               <i class="fas fa-user-cog"></i> Arbitrator Settings
             </Button>
             }
