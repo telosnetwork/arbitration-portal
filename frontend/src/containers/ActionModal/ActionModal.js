@@ -538,7 +538,7 @@ class ActionModal extends Component {
                     key={arbitrator}
                     color={casefile.approvals.find(a => a === arbitrator) ? 'success' : ''}
                   >
-                    {casefile.approvals.find(a => a === arbitrator) ? arbitrator + ' - Approved' : arbitrator + ' - Pending Approval'}
+                    {casefile.approvals.find(a => a === arbitrator) ? arbitrator + ' - Approved' : arbitrator + ' - Pending'}
                   </ListGroupItem>
                 )}
               </ListGroup>
