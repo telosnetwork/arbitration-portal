@@ -74,8 +74,8 @@ class Login extends Component {
         <div>
           <Button color='primary' style={{ fontWeight: 'bold' }} onClick={this.login} outline>
           {/* <Button color='primary' style={{ fontWeight: 'bold' }} onClick={this.toggleModal} outline> */}
-            <img className="fas-left" alt="scatter" src={scatterBadgeSvg} height={25}  />
-            Scatter Login
+            <img  className="fas-left" alt="scatter" src={scatterBadgeSvg} height={25}  />
+            <span style={{ position: 'relative', top: '2px' }} >Scatter Login</span>
           </Button>
           {/* <img alt="Login with scatter" src={scatterSvg} onClick={this.toggleModal} height={33} style={{  cursor: 'pointer'}} /> */}
           {/* <Modal isOpen={this.state.modal} toggle={this.toggleModal} className={this.props.className}>

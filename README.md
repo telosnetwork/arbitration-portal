@@ -2,7 +2,11 @@
 React Front-End and Node Server for eosio.arb DApp
 
 ## Run Mongo with Docker in a single Docker command
-`docker run --rm --name mongo_container -d -p 127.0.0.1:27017:27017 mongo:4.0`
+`Mainnet`
+`docker run --rm --name mongo_container_main -d -p 127.0.0.1:27017:27017 mongo:4.0`
+
+`Testnet`
+`docker run --rm --name mongo_container_test -d -p 127.0.0.1:27018:27017 mongo:4.0`
 
 Access Docker Container & Mongo Shell
 `docker exec -it mongo_container`
