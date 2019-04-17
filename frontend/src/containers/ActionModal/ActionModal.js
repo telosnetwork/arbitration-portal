@@ -27,7 +27,7 @@ const forms = {
       label: 'Claim File:',
       placeholder: 'ipfs_link',
       special: 'ipfs',
-      text: 'Please select a file to upload.'
+      text: 'Please select a file to upload. Maximum file size is 10 MB with no file type restriction.'
     },
     lang_codes: {
       label: 'Language Codes:',
@@ -41,7 +41,7 @@ const forms = {
       label: 'Claim File:',
       placeholder: 'ipfs_link',
       special: 'ipfs',
-      text: 'Please select a file to upload.'
+      text: 'Please select a file to upload. Maximum file size is 10 MB with no file type restriction.'
     }
   },
   respondclaim: {
@@ -49,7 +49,7 @@ const forms = {
       label: 'Response File:',
       placeholder: 'ipfs_link',
       special: 'ipfs',
-      text: 'Please select a file to upload.'
+      text: 'Please select a file to upload. Maximum file size is 10 MB with no file type restriction.'
     }
   },
   acceptclaim: {
@@ -57,7 +57,7 @@ const forms = {
       label: 'Decision File:',
       placeholder: 'ipfs_link',
       special: 'ipfs',
-      text: 'Please select a file to upload.'
+      text: 'Please select a file to upload. Maximum file size is 10 MB with no file type restriction.'
     },
     decision_class: {
       label: 'Decision Class:',
@@ -88,7 +88,7 @@ const forms = {
       label: 'Ruling File:',
       placeholder: 'ipfs_link',
       special: 'ipfs',
-      text: 'Please select a file to upload.'
+      text: 'Please select a file to upload. Maximum file size is 10 MB with no file type restriction.'
     }
   },
   recuse: {
@@ -117,7 +117,7 @@ const forms = {
       label: 'Ruling File:',
       placeholder: 'ipfs_link',
       special: 'ipfs',
-      text: 'Please select a file to upload.'
+      text: 'Please select a file to upload. Maximum file size is 10 MB with no file type restriction.'
     }
   },
 };
@@ -511,7 +511,7 @@ class ActionModal extends Component {
       // TODO get and display account's balance on the contract
       rendered.push(
         <ModalBody key="description">
-          In order to submit the case for arbitration, you are required to make a deposit of 100 TLOS.
+          In order to submit the case for arbitration, you are required sign 2 transactions, one to make a deposit of 100 TLOS and the other to submit the case for arbitration.
         </ModalBody>
       );
       rendered.push(
